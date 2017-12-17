@@ -6102,7 +6102,7 @@ Jump_To_First_Available(){
 }
 Class Keywords{
 	__New(){
-		static Dates:={ahk:"20171217120832",xml:"20171201061116",html:"20171201061319"},BaseURL:="https://raw.githubusercontent.com/maestrith/AHK-Studio/master/lib/Languages/",BaseDir:="Lib\Languages\"
+		static Dates:={ahk:"20171217134307",xml:"20171201061116",html:"20171201061319"},BaseURL:="https://raw.githubusercontent.com/maestrith/AHK-Studio/master/lib/Languages/",BaseDir:="Lib\Languages\"
 		for a,b in StrSplit("IndentRegex,KeywordList,Suggestions,Languages,Comments,OmniOrder,CodeExplorerExempt,Words,FirstChar,Delimiter,ReplaceFirst,SearchTrigger",",")
 			Keywords[b]:=[]
 		if(!IsObject(v.OmniFind))
@@ -8321,7 +8321,7 @@ Publish(Return="",Branch:="",Version:=""){
 			if(!Branch:=SSN(VVersion.Find("//info/@file",Current(2).File),"descendant::*[@select]/ancestor::branch/@name").text)
 				return m("Branch not set for this Project."),new Version_Tracker()
 		Change:=(AutoBranch:=Settings.SSN("//auto_branch").Text)?AutoBranch:"Branch:=""" Branch """",Publish:=RegExReplace(Publish,"\x3Bauto_branch",(Change:=RegExReplace(Change,"\Q$v\E",Branch)))
-	}Publish:=RegExReplace(Publish,"U)^\s*(;{.*\R|;}.*\R)","`n")
+	}Publish:=RegExReplace(Publish,"U)^\s*(;\{.*\R|;\}.*\R)","`n")
 	if(!Publish)
 		return sc.GetEnc()
 	if(Return)
