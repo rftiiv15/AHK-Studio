@@ -598,11 +598,10 @@ Check_For_Update(startup:=""){
 	AutoUpdate:
 	Master:=NewWin[].Master,Branch:=(Master?"master":"Beta")
 	URL:=RegExReplace(DownloadURL,"\$1",Branch)
-	/*
-		return m(URL,Branch)
-	*/
 	Save(),Settings.Save(1),menus.Save(1),Studio:=URLDownloadToVar(URL)
-	if(!InStr(studio,";download complete"))
+	if(!InStr(Studio,";download complete"))
+		URL:=RegExReplace(DownloadURL,"\$1","master"),Studio:=URLDownloadToVar(URL)
+	if(!InStr(Studio,";download complete"))
 		return m("There was an error. Please contact maestrith@gmail.com if this error continues")
 	SplitPath,A_ScriptFullPath,,,ext,NNE
 	if(!FileExist("Older Versions"))
@@ -6186,12 +6185,13 @@ Class Keywords{
 		if(!IsObject(Obj:=Keywords.Obj))
 			Obj:=Keywords.Obj:=[]
 		Obj[Language]:=[],Lang:=this.GetXML(Language),Keywords.IndentRegex[Language]:=RegExReplace(Lang.SSN("//Indent").text," ","|")
-		if(Keywords.IndentRegex[Language]){
+		if(Optional:=Settings.SSN("//CustomIndent/Language[@language='" Language "']").Text)
+			Keywords.IndentRegex[Language]:=Optional
+		else if(Keywords.IndentRegex[Language]){
 			Key:=Keywords.IndentRegex[Language]
 			Sort,Key,UD|
 			Keywords.IndentRegex[Language]:=Key
-		}if(Optional:=Settings.SSN("//CustomIndent/Language[@language='" Language "']"))
-			Keywords.IndentRegex[Language]:=Optional
+		}
 		Obj:=Keywords.KeywordList[Language]:=[],MainXML:=Keywords.GetXML(Language),Suggestions:=Keywords.Suggestions[Language]:=[],KeywordXML:=MainXML.SN("//Styles/keyword")
 		while(kk:=KeywordXML.item[A_Index-1],ea:=XML.EA(kk)){
 			KeywordList:=kk.text
@@ -12044,15 +12044,44 @@ CheckOpen(){
 	}
 }
 Custom_Indent(){
-	New:=InputBox(HWND(1),"Auto Indent List","Enter in a list of items that you want to have auto-indent for: " (Language:=Current(3).Lang),Keywords.IndentRegex[Language])
-	;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	;~ !!!!!!          ERROR CHECKING          !!!!!!!
-	;~ !!!!!! make sure it is all | delimited  !!!!!!!
-	;~ !!!!!! make sure there are no blank ||  !!!!!!!
-	;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	if(!Node:=Settings.SSN("//CustomIndent/Language[@language='" Language "']"))
-		Node:=Settings.Add("CustomIndent/Language",{language:Language},1)
-	Node.text:=New,Keywords.IndentRegex[Language]:=New
+	static
+	NewWin:=new GUIKeep("Custom_Indent"),Language:=Current(3).Lang
+	NewWin.Add("ListView,w200 h300,Indent Word,wh","Edit,w200 vIndent,,wy","Button,gAddIndentWord Default,&Add Word,y","Button,gDeleteIndentWord,&Delete Selected,y","Button,gAddIndentDefault,Restore Defaults,y"),NewWin.Show("Custom Indent")
+	Goto,CIPopulate
+	return
+	CIPopulate:
+	Default("SysListView321","Custom_Indent")
+	LV_Delete()
+	for a,b in StrSplit(Keywords.IndentRegex[Language],"|")
+		LV_Add("",b)
+	return
+	AddIndentDefault:
+	Lang:=Keywords.GetXML(Language),Keywords.IndentRegex[Language]:=RegExReplace(Lang.SSN("//Indent").text," ","|")
+	Goto,CIPopulate
+	return
+	AddIndentWord:
+	Default("SysListView321","Custom_Indent")
+	if(!Indent:=NewWin[].Indent)
+		return m("Add a word in the edit box to add to the list")
+	LV_Add("",Indent)
+	GuiControl,Custom_Indent:,Edit1
+	return
+	DeleteIndentWord:
+	Default("SysListView321","Custom_Indent")
+	while(Next:=LV_GetNext())
+		LV_Delete(Next)
+	return
+	Custom_IndentEscape:
+	Custom_IndentClose:
+	Default("SysListView321","Custom_Indent")
+	Next:=0,Total:=""
+	Loop,% LV_GetCount(){
+		LV_GetText(Item,A_Index)
+		Total.=Item "|"
+	}if(!Node:=Settings.SSN("//CustomIndent/Language[@language='" Language "']"))
+		Node:=Settings.Add("CustomIndent/Language",{language:Language},,1)
+	Keywords.IndentRegex[Language]:=Node.Text:=Trim(Total,"|"),NewWin.Exit()
+	return
 }
 DebugWindow(Text,Clear:=0,LineBreak:=0,Sleep:=0,AutoHide:=0,MsgBox:=0){
 	x:=ComObjActive("{DBD5A90A-A85C-11E4-B0C7-43449580656B}"),x.DebugWindow(Text,Clear,LineBreak,Sleep,AutoHide,MsgBox)
