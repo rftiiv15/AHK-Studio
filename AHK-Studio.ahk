@@ -10514,7 +10514,6 @@ Test_Plugin(){
 	Exit(1)
 }
 Testing(){
-	return Custom_Indent()
 	if(A_UserName!="maest")
 		return m("Testing")
 	return m("I'm sleepy.")
