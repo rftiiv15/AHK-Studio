@@ -6111,19 +6111,13 @@ Class Keywords{
 			SplitPath,a,,,,NNE
 			xx:=new XML(NNE,a)
 			if((Date:=Dates[NNE]),URL:=BaseURL Format("{:L}",NNE) ".xml?refresh=" A_Now){
-				/*
-					if(!FileExist(BaseDir NNE ".xml")){
-						SplashTextOn,200,100,Downloading %NNE%.xml,Please Wait...
-						;~ URLDownloadToFile,% BaseURL Format("{:L}",NNE) ".xml?refresh=" A_Now,%a%
-						m(url)
-						;~ xx:=new XML(Language,a,URLDownloadToVar(URL)),m(URL,xx[],URLDownloadToVar(URL))
-					}
-				*/
-				if(xx.SSN("//date").text!=Date){
+				if(!FileExist(a)){
+					Data:=URLDownloadToVar(URL)
+					xx:=new XML(NNE,a,Data)
+				}else if(xx.SSN("//date").text!=Date){
 					SplashTextOn,200,100,Downloading %NNE%.xml,Please Wait...
-					if(!(TempXML:=new XML((Language:=Format("{:L}",NNE)),"",(XMLText:=URLDownloadToVar(URL))))[])
-						NoUpdate:=1,xx:=new XML(Language,a),xx.XML.LoadXML(XMLText),TempXML:=""
-					else
+					TempXML:=new XML(Language:=Format("{:L}",NNE)),TempXML.XML.LoadXML(URLDownloadToVar(Url))
+					if(TempXML[])
 						xx:=TempXML,xx.File:=a
 				}if(!Node:=xx.SSN("//date"))
 					Node:=xx.Add("date")
