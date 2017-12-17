@@ -1,6 +1,7 @@
 <ahk>
 	<FileTypes lexer="ahk" language="ahk" name="AutoHotkey">ahk</FileTypes>
 	<Comments Open="OUm`n)^\s*\/\*" Close="OUm`n)^\s*\*\/" Line="OUm`n)^\s*\;.*($|\R)" Single=";"></Comments>
+	<AutoReplace version=";auto_version" branch=";auto_branch"></AutoReplace>
 	<Command>
 		<syntax syntax=", On|Off">AutoTrim</syntax>
 		<syntax syntax=", On|Off|Send|Mouse|SendAndMouse|Default|MouseMove|MouseMoveOff">BlockInput</syntax>
@@ -119,7 +120,6 @@
 		<syntax syntax=", OutputVar, HKLM|HKU|HKCU|HKCR|HKCC, SubKey [, ValueName]">RegRead</syntax>
 		<syntax syntax=", REG_SZ|REG_EXPAND_SZ|REG_MULTI_SZ|REG_DWORD|REG_BINARY, HKLM|HKU|HKCU|HKCR|HKCC, SubKey [, ValueName, Value]">RegWrite</syntax>
 		<syntax syntax="Replaces the currently running instance of the script with a new one.">Reload</syntax>
-		<syntax syntax="[, Expression*]">return</syntax>
 		<syntax syntax=", Target [, WorkingDir, Max|Min|Hide|UseErrorLevel, OutputVarPID]">Run</syntax>
 		<syntax syntax="[, User, Password, Domain] ">RunAs</syntax>
 		<syntax syntax=", Target [, WorkingDir, Max|Min|Hide|UseErrorLevel, OutputVarPID]">RunWait</syntax>
@@ -520,5 +520,5 @@
 			<list list="Off On Permit Toggle">Suspend</list>
 		</Suspend>
 	</Context>
-	<date>20171118144345</date>
+	<date>20171215094351</date>
 </ahk>
