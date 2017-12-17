@@ -2797,22 +2797,29 @@ Compile(main=""){
 	Loop,%dirr%\Compile_AHK.exe,1,1
 		compile:=A_LoopFileFullPath
 	if(FileExist(compile)&&v.Options.Disable_Compile_AHK!=1){
-		run:=Current(2).file
-		Run,%compile% "%run%"
+		Run:=Current(2).File
+		Run,%compile% "%Run%"
 		return
 	}
 	Loop,%dirr%\Ahk2Exe.exe,1,1
-		file:=A_LoopFileFullPath
+		File:=A_LoopFileFullPath
 	if(!FileExist("temp"))
 		FileCreateDir,temp
 	FileDelete,temp\temp.upload
 	FileAppend,% Publish(1),temp\temp.upload
 	SplashTextOn,200,100,Compiling,Please wait.
-	Loop,%dir%\*.ico
-		icon:=A_LoopFileFullPath
-	if(icon)
-		add=/icon "%icon%"
-	RunWait,%file% /in "%main%" /out "%dir%\%name%.exe" %add%
+	if(!FileExist((Icon:=dir "\" name ".ico"))){
+		Loop,%dir%\*.ico
+		{
+			Icon:=A_LoopFileFullPath
+			m(Icon)
+			Break
+		}
+	}
+	m(Icon,"Here")
+	if(Icon)
+		add=/Icon "%Icon%"
+	RunWait,%File% /in "%main%" /out "%dir%\%name%.exe" %add%
 	if(FileExist("upx.exe")){
 		SplashTextOn,,50,Compressing EXE,Please wait...
 		RunWait,upx.exe -9 "%dir%\%name%.exe" ;,,Hide
@@ -3152,6 +3159,7 @@ ContextMenu(){
 		if(Trim(SubStr(ATitle,1,InStr(ATitle,"-",0,0,1)-1))=Current(2).file){
 			Menu,RCM,Add,Kill Current Script,KillCurrentScript
 			Kill:=ID
+			Break
 		}
 	}
 	ControlFocus,,% "ahk_id" csc().sc
@@ -6094,7 +6102,7 @@ Jump_To_First_Available(){
 }
 Class Keywords{
 	__New(){
-		static Dates:={ahk:"20171215094351",xml:"20171201061116",html:"20171201061319"},BaseURL:="https://raw.githubusercontent.com/maestrith/AHK-Studio/master/lib/Languages/",BaseDir:="Lib\Languages\"
+		static Dates:={ahk:"20171217120832",xml:"20171201061116",html:"20171201061319"},BaseURL:="https://raw.githubusercontent.com/maestrith/AHK-Studio/master/lib/Languages/",BaseDir:="Lib\Languages\"
 		for a,b in StrSplit("IndentRegex,KeywordList,Suggestions,Languages,Comments,OmniOrder,CodeExplorerExempt,Words,FirstChar,Delimiter,ReplaceFirst,SearchTrigger",",")
 			Keywords[b]:=[]
 		if(!IsObject(v.OmniFind))
@@ -6121,9 +6129,8 @@ Class Keywords{
 						xx:=TempXML,xx.File:=a
 				}if(!Node:=xx.SSN("//date"))
 					Node:=xx.Add("date")
-				if(!NoUpdate),NoUpdate:=0{
+				if(!NoUpdate),NoUpdate:=0
 					Node.text:=Date,xx.Save(1)
-				}
 				SplashTextOff
 			}LEA:=XML.EA(Lexer:=xx.SSN("//FileTypes")),Keywords.Languages[(Language:=Format("{:L}",LEA.Language))]:=xx
 			for _,Ext in StrSplit(Lexer.text," "){
@@ -6229,7 +6236,17 @@ Kill_Process(){
 		ID:=AList%A_Index%
 		WinGetTitle,ATitle,ahk_id%ID%
 		if(Trim(SubStr(ATitle,1,InStr(ATitle,"-",0,0,1)-1))=Current(2).file){
-			PostMessage,0x111,65405,0,,ahk_id%id%
+			PostMessage,0x111,65405,0,,ahk_id%ID%
+			WinGet,PID,PID,ahk_id%ID%
+			Sleep,200
+			Process,Exist,%PID%
+			if(ErrorLevel)
+				WinKill,ahk_id%ID%
+			Process,Exist,%PID%
+			if(ErrorLevel){
+				Run,TaskMgr
+				m("Unable to kill this Process. Please kill this task in the Task Manager")
+			}
 			Break
 		}
 	}
@@ -9039,10 +9056,9 @@ Run(){
 	main:=SSN(Current(1),"@file").text
 	if(FileExist(A_ScriptDir "\AutoHotkey.exe"))
 		run:=Chr(34) A_ScriptDir "\AutoHotkey.exe" Chr(34) " " Chr(34) file Chr(34)
-	else{
+	else
 		run:=FileExist(dir "\AutoHotkey.exe")?Chr(34) dir "\AutoHotkey.exe" Chr(34) " " Chr(34) file Chr(34):Chr(34) file Chr(34)
-	}
-	admin:=v.options.Run_As_Admin?"*RunAs ":""
+	admin:=v.Options.Run_As_Admin?"*RunAs ":""
 	if(!v.Options.Run_As_Admin&&!v.Options.Disable_Exemption_Handling)
 		ExecScript()
 	else

@@ -1,3 +1,6 @@
 1.005.01:
 Added: Requested by Joe Glines
 -Add Separators the Right Click Menus
+Changed: Suggested by maltaannon
+-If there is an icon with the same name as the project in the project folder it will use that icon when compiling, but if not it will use the first found icon
+-Kill Process will try to kill a process the nice way first, then it will kill the process another way, then if it doesn't still work it will launch the Task Manager and show a MsgBox that will tell you that it was unable to do so.
