@@ -177,7 +177,6 @@
 		<syntax syntax="[, On|Off|Toggle|Permit]">Suspend</syntax>
 		<syntax syntax=", OutputVar, Sub-command [, Param3]">SysGet</syntax>
 		<syntax syntax=", Setting, P2 [, P3]">Thread</syntax>
-		<syntax syntax="[, Expression]">Throw</syntax>
 		<syntax syntax="[, Text, X, Y, WhichToolTip]">ToolTip</syntax>
 		<syntax syntax=", OutputVar, Cmd, Value1 [, Value2]">Transform</syntax>
 		<syntax syntax="[, Title, Text, Seconds, Options]">TrayTip</syntax>
@@ -520,5 +519,4 @@
 			<list list="Off On Permit Toggle">Suspend</list>
 		</Suspend>
 	</Context>
-	<date>20171215094351</date>
 </ahk>
