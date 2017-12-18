@@ -15,8 +15,6 @@ if(!settings[]){
 }v.LineEdited:=[],v.LinesEdited:=[],v.RunObject,ComObjError(0),new Keywords(),FileCheck(%True%)
 Options("startup"),Menus:=new XML("menus","Lib\Menus.xml"),Gui(),DefaultRCM(),CheckLayout(),Allowed(),SetTimer("RemoveXMLBackups",-1000),CheckOpen()
 SetTimer("SplashDestroy",-1000)
-
-
 return
 SplashDestroy:
 Gui,Splash:Destroy
@@ -3826,13 +3824,12 @@ Dlg_Color(Node,Default:="",hwnd:="",Attribute:="color"){
 		m("Bottom of Dlg_Color()",Node.xml,Color)
 	return Color
 }
-DLG_FileSave(HWND:=0,DefaultFilter=1,DialogTitle="Select file to open",DefaultFile:="",Flags:=0x00000002,ForceFile:=0){
-	Filter:=GetExtensionList(Current(2).Lang?Current(2).Lang:"ahk"),VarSetCapacity(lpstrFileTitle,0xFFFF,0),VarSetCapacity(lpstrFile,0xFFFF,0),VarSetCapacity(lpstrFilter,0xFFFF,0),VarSetCapacity(lpstrCustomFilter,0xFF,0),VarSetCapacity(OFName,90,0),VarSetCapacity(lpstrTitle,255,0),Address:=&lpstrFilter
+DLG_FileSave(HWND:=0,DefaultFilter=0,DialogTitle="Select file to open",DefaultFile:="",Flags:=0x00000002,ForceFile:=0){
+	Filter:=GetExtensionList(Current(3).Lang?Current(3).Lang:"ahk"),VarSetCapacity(lpstrFileTitle,0xFFFF,0),VarSetCapacity(lpstrFile,0xFFFF,0),VarSetCapacity(lpstrFilter,0xFFFF,0),VarSetCapacity(lpstrCustomFilter,0xFF,0),VarSetCapacity(OFName,90,0),VarSetCapacity(lpstrTitle,255,0),Address:=&lpstrFilter
 	for a,b in StrSplit(Filter,"|"){
 		for c,d in StrSplit(b)
 			Address:=NumPut(Asc(d),Address+0,"UChar")
-		Address:=NumPut(0,Address+0,"UChar")
-		RegExMatch(b,"OU)\((.*)\)",Found)
+		Address:=NumPut(0,Address+0,"UChar"),RegExMatch(b,"OU)\((.*)\)",Found)
 		for c,d in StrSplit(Found.1)
 			Address:=NumPut(Asc(d),Address+0,"UChar")
 		Address:=NumPut(0,Address+0,"UChar")
@@ -3840,25 +3837,17 @@ DLG_FileSave(HWND:=0,DefaultFilter=1,DialogTitle="Select file to open",DefaultFi
 	;Structure https://msdn.microsoft.com/en-us/library/windows/desktop/ms646839(v=vs.85).aspx
 	Address:=&OFName
 	SplitPath,DefaultFile,FileName,Initial,Ext,NNE
-	if((InStr(NNE,"Untitled")||!FileExist(DefaultFile))&&!ForceFile){
-		;#[This needs re-visitied.]
-		/*
-			if(!DefaultFile:=Settings.SSN("//SaveAs").text){
-				Initial:=A_ScriptDir "\Projects"
-			}else
-		*/
+	if((InStr(NNE,"Untitled")||!FileExist(DefaultFile))&&!ForceFile)
 		SplitPath,DefaultFile,FileName,Initial,Ext,NNE
-	}
 	if(FileExist(Initial)!="D")
 		FileCreateDir,%Initial%
-	;here later
 	Initial:=DefaultFile?DefaultFile:Initial "\"
-	VarSetCapacity(lpstrInitialDir,0XFFFF,0)
-	StrPut(Initial,&lpstrInitialDir,"UTF-8")
-	if(FileExist(DefaultFile)!="D"){
+	SplitPath,Initial,,InitialPath
+	VarSetCapacity(lpstrInitialDir,0XFFFF,0),StrPut(InitialPath,&lpstrInitialDir,"UTF-8")
+	if(FileExist(DefaultFile)!="D")
 		VarSetCapacity(lpstrFile,0XFF,0),StrPut(FileName,&lpstrFile,"UTF-8")
-	}
-	for a,b in [76,HWND,0,&lpstrFilter,&lpstrCustomFilter,255,defaultFilter,&lpstrFile,0xFFFF,&lpstrFileTitle,0xFFFF,&lpstrInitialDir,&lpstrTitle,Flags,0,&lpstrDefExt]
+	RegExReplace(SubStr(Filter,1,InStr(Filter,Settings.SSN("//Languages/" Current(3).Lang "/@name").text " (")),"\|","",Count),DefaultFilter:=DefaultFilter?DefaultFilter:Count+1
+	for a,b in [76,HWND,0,&lpstrFilter,&lpstrCustomFilter,255,DefaultFilter,&lpstrFile,0xFFFF,&lpstrFileTitle,0xFFFF,&lpstrInitialDir,&lpstrTitle,Flags,0,&lpstrDefExt]
 		Address:=NumPut(b,Address+0,"UInt")
 	if(!DllCall("comdlg32\GetSaveFileNameA","Uint",&OFName))
 		Exit
@@ -3975,16 +3964,16 @@ Duplicate_Line(){
 	csc().2404
 }
 Duplicates(){
-	static LastSearch
-	sc:=csc(),sc.2500(3),sc.2505(0,sc.2006),dup:=[],search:=sc.TextRange((start:=sc.2143),(end:=sc.2145)),v.lastsearch:=search,v.selectedduplicates:=""
-	if(end-start<2)
+	Sleep,300
+	sc:=csc(),sc.2500(3),sc.2505(0,sc.2006),Search:=sc.TextRange((Start:=sc.2143),(End:=sc.2145)),v.LastSearch:=Search
+	if(End-Start<2)
 		return
-	sc.2686(0,sc.2006),sc.2500(3),sc.2198(v.Options.Match_Any_Word?0:0x2),len:=StrPut(search,"UTF-8")-1,obj:=v.duplicateselect[sc.2357]:=[],count:=0
-	while(found:=sc.2197(len,[search]))>=0
-		sc.2686(found+1,sc.2006),obj[found]:=len,count++
-	if(count>1)
-		for a,b in obj
-			sc.2504(a,len)
+	sc.2686(0,sc.2006),sc.2500(3),sc.2198(v.Options.Match_Any_Word?0:0x2),Len:=StrPut(Search,"UTF-8")-1,Obj:=v.DuplicateSelect[sc.2357]:=[],Count:=0
+	while(Found:=sc.2197(Len,[Search]))>=0
+		sc.2686(Found+1,sc.2006),Obj[Found]:=Len,Count++
+	if(Count>1)
+		for a,b in Obj
+			sc.2504(a,Len),List.=a  " - " Len "`n"
 }
 DynaRun(Script,Wait:=true,name:="Untitled"){
 	static exec,started,filename
@@ -4022,7 +4011,6 @@ Edit_Hotkeys(ret:=""){
 	if(ret.NodeName)
 		return ea:=XML.EA(ret),Default("SysTreeView321","Edit_Hotkeys"),TV_Modify(TV_GetSelection(),"",RegExReplace(ea.clean,"_"," ")(ea.hotkey?" - " Convert_Hotkey(ea.hotkey):""))
 	NewWin:=new GUIKeep("Edit_Hotkeys")
-	;NewWin.Add("ComboBox,w400 gehfind vfind,,w","TreeView,w400 h400,,wh","Button,gehgo,C&hange Hotkey,y"),all:=menus.SN("//main/descendant::*")
 	NewWin.Add("Edit,w400 gEHFind vfind -Multi,Search For Menu Item {Enter to find next},w","TreeView,w400 h400,,wh","Button,gehgo,C&hange Hotkey,y","Button,x+M Default gEHNext,&Next Found,y"),all:=menus.SN("//main/descendant::*")
 	Attributes:=[]
 	Default("SysTreeView321","Edit_Hotkeys")
@@ -4081,8 +4069,6 @@ XMLSearchText(Attributes,Search){
 		SearchText.="contains(translate(translate(@" a ", 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'),'\&','') , '" Search "') or "
 	return SearchText "contains(translate(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'),'\&','') , '" Search "')"
 }
-
-
 EditHotkey(node,window){
 	static nw,EditNode,Win,Control
 	MenuWipe(),EditNode:=node,Win:=window,nw:=new GUIKeep("Edit_Hotkey"),nw.Add("Hotkey,w240 vhotkey gEditHotkey","Edit,w240 vedit gCustomHotkey","ListView,w240 h220,Duplicate Hotkey Definitions","Button,gEHSet Default,&Set Hotkey,y"),nw.Show("Edit Hotkey")
@@ -9101,7 +9087,7 @@ SanitizePath(File){
 Save_As(){
 	Send,{Alt Up}
 	Current:=Current(1),CurrentFile:=Current(2).file
-	if(!NewFile:=DLG_FileSave(hwnd(1),1,"Save File As...",CurrentFile))
+	if(!NewFile:=DLG_FileSave(hwnd(1),0,"Save File As...",CurrentFile))
 		return
 	SplitPath,CurrentFile,,dir
 	SplitPath,NewFile,NewFN,NewDir,Ext,NNE
@@ -9559,7 +9545,7 @@ SelectFile(FileName:="",Title:="New File",Ext:="",Options:="S16",Force:=0){
 	FileName:=FileName?FileName:Dir "\" BackupFileName
 	if(!FileExist(Dir))
 		FileCreateDir,%Dir%
-	FileName:=DLG_FileSave(hwnd(1),1,Title,FileName,,Force)
+	FileName:=DLG_FileSave(hwnd(1),,Title,FileName,,Force)
 	if(ErrorLevel)
 		Exit
 	return FileName
@@ -10611,18 +10597,19 @@ ToggleDuplicate(){
 	if(!sc:=s.ctrl[Control+0])
 		return
 	ControlGetPos,wx,wy,,,,% "ahk_id" sc.sc
-	pos:=sc.2022(x-wx,y-wy),main:=Selection.GetMain(),select:=[]
-	for a,b in v.duplicateselect[sc.2357]
-		if(a<pos&&a+b>pos){
-			select:={start:a,end:a+b}
+	Pos:=sc.2022(x-wx,y-wy) ;,main:=Selection.GetMain()
+	Select:=[]
+	for a,b in v.DuplicateSelect[sc.2357]
+		if(a<Pos&&a+b>Pos){
+			Select:={Start:a,end:a+b}
 			Break
 		}
-	if(!select.end)
-		return
+	if(!Select.end)
+		return,Duplicates()
 	Loop,% sc.2570{
-		if(sc.2585(A_Index-1)=select.start)
-			return sc.2671(A_Index-1)
-	}sc.2573(select.end,select.start)
+		if(sc.2585(A_Index-1)=Select.Start)
+			return sc.2671(A_Index-1),Duplicates()
+	}sc.2573(Select.end,Select.Start),Duplicates()
 	return
 }
 Toolbar_Editor(control){
@@ -11011,17 +10998,17 @@ UnderlineDuplicateWords(){
 	sc:=csc(),sc.2500(6),sc.2505(0,sc.2006)
 	if(sc.2507(6,sc.2008))
 		return
-	word:=sc.GetWord(),length:=StrPut(word,"UTF-8")-1
-	if(length<=1)
+	Word:=sc.GetWord(),Length:=StrPut(Word,"UTF-8")-1
+	if(Length<=1)
 		return
-	dup:=[],sc.2686(0,sc.2006),sc.2500(6)
-	if(!word)
+	Dup:=[],sc.2686(0,sc.2006),sc.2500(6)
+	if(!Word)
 		return
-	while(found:=sc.2197(length,[word]))>=0
-		dup.Insert(found),sc.2686(++found,sc.2006)
-	if(dup.MaxIndex()>1){
-		for a,b in dup
-			sc.2500(6),sc.2504(b,length)
+	while(Found:=sc.2197(Length,[Word]))>=0
+		Dup.Insert(Found),sc.2686(++Found,sc.2006)
+	if(Dup.MaxIndex()>1){
+		for a,b in Dup
+			sc.2500(6),sc.2504(b,Length)
 }}
 Undo(){
 	csc().2176
