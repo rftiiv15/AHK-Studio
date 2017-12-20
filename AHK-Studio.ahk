@@ -11560,8 +11560,6 @@ EncodeFile(x*){
 	;~ !!!!!!                                     will be ok                                     !!!!!!!
 	;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	
-	
-	
 	;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!                 OH YEA!                  !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	;~ !!!!!!!!!!!!!!!!!!!!!!!!!!! Doing a push without re-starting Studio  !!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -11578,127 +11576,7 @@ EncodeFile(x*){
 ;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      Create Repo       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  More Things I'm sure  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-VersionDropFiles(FileList,Ctrl,x,y,Object){
-	Gui,Version:Default
-	Node:=VVersion.SSN("//*[@tv='" TV_GetSelection() "']/ancestor-or-self::branch")
-	if(!Node)
-		return m("Please Re-Launch this window (Sorry)")
-	for a,b in FileList{
-		if(!VVersion.Find(Node,"files/file/@file",b)){
-			if(!Top:=SSN(Node,"files"))
-				Top:=VVersion.Under(Node,"files")
-			VVersion.Under(Top,"file",{file:b}) ;,m(New.xml,"","",Node.xml)
-		}
-	}
-	Version_Tracker.Populate(1)
-	
-	/*
-		m(List,Ctrl,x,y,SSN(VVersion.Find("//info/@file",Current(2).File),"descendant-or-self::*[@select]/ancestor-or-self::branch").xml,Current(2).File)
-	*/
-	/*
-		<file file="SciLexer.dll" filepath="D:\Testing\Studio Now Master\SciLexer.dll" folder="" time="20171214173716" sha="3283f1b0c7e576fb44454c1a0a7cf25bb1f22b05"></file>
-		<file file="Another File.txt" filepath="D:\Testing\Studio Now Master\Lib\Another File.txt" folder="Lib" time="20171215125416" sha="8e2b5c59ac0d64f415ddafc1f21016be423a9543"></file>
-	*/
-}
-Class ConvertStyle Extends CommitClass{
-	ConvertStyle(){
-		static
-		xx:=VVersion
-		All:=xx.SN("//version[text()]"),Headings:=[],Users:=[]
-		while(aa:=All.Item[A_Index-1]){
-			if(InStr(aa.Text,"`n"))
-				aa.Text:=RegExReplace(aa.Text,"\R",Chr(127))
-			for a,Text in StrSplit(aa.Text,Chr(127)){
-				Pos:=LastPos:=1
-				while(RegExMatch(Text,"Oim`n)^\s*(?<Text>(\w|[^\x00-\x7F])+):(.*)$",Found),Pos:=Found.Pos("Text")+Found.Len("Text")){
-					if(Pos=LastPos),LastPos:=Pos
-						Break
-					RegExMatch(Found.0,"Oi)by(.*)",User)
-					Headings[Found.Text]:=1
-					if(UserName:=Trim(RegExReplace(User.1,"(\s*#.*)")))
-						Users[UserName]:=1
-			}}
-		}
-		ListCon:=new GUIKeep("ListCon")
-		ListCon.Add("Text,,Press:`nDelete to remove an item`nEnter to edit an item","ListView,w300 h500 vSysListView321,Headings","ListView,x+M w300 h500 vSysListView322,Users","Button,xm gSaveVersionHeaders,&Save Information")
-		ListCon.Show("Confirm Headings And Users")
-		Hotkey,IfWinActive,% ListCon.ID
-		for a,b in {Delete:"PreVersionDelete",Enter:"PreVersionChange"}
-			Hotkey,%a%,%b%
-		Gui,ListCon:ListView,SysListView321
-		for a in Headings
-			LV_Add("",a)
-		LV_Modify(1,"Select Vis Focus")
-		Gui,ListCon:ListView,SysListView322
-		for a in Users
-			LV_Add("",a)
-		LV_Modify(1,"Select Vis Focus")
-		return
-		PreVersionChange:
-		ControlGetFocus,Focus,% ListCon.ID
-		ListCon.Default(Focus)
-		if(Next:=LV_GetNext()){
-			LV_GetText(ItemText,Next),Value:=InputBox(ListCon.HWND,"Replace","Replace this text",ItemText)
-			if(Value)
-				LV_Modify(Next,"",Value)
-		}else
-			return m("Select an item to change")
-		return
-		PreVersionDelete:
-		ControlGetFocus,Focus,% ListCon.ID
-		Gui,ListCon:Default
-		Gui,ListCon:ListView,%Focus%
-		if(Next:=LV_GetNext())
-			LV_Delete(Next)
-		return
-		SaveVersionHeaders:
-		xx:=VVersion
-		Default("SysListView321","ListCon"),Next:=1,HeadingsList:=""
-		Loop,% LV_GetCount()
-		{
-			LV_GetText(Text,A_Index)
-			if(!Text)
-				Break
-			HeadingsList.=Text "|"
-		}Find:=Trim(HeadingsList,"|")
-		Default("SysListView322","ListCon"),Next:=1
-		Loop,% LV_GetCount()
-		{
-			LV_GetText(Text,A_Index)
-			if(!Text)
-				Break
-		}Find:=Trim(HeadingsList,"|"),All:=xx.SN("//version[text()]")
-		while(aa:=All.Item[A_Index-1]){
-			OXML:=aa.xml,Text:=aa.Text,LastPos:=Pos:=1,Fixed:=0,aa.Text:=""
-			while(RegExMatch(Text,"OUi)\b(" Find ")\b:\s*(.*)(\b(" Find ")\b:|$)",Found,Pos),Pos:=Found.Pos(1)+Found.Len(1)){
-				Fixed:=1
-				if(Pos=LastPos),LastPos:=Pos
-					Break
-				User:="",NewText:="",CheckUser:=StrSplit(Found.2,Chr(127)).1
-				if(InStr(CheckUser,"#")){
-					if(RegExMatch(CheckUser,"OUi)^((.*)by(.*)(#\d+)\b)",User))
-						NewText:=Trim(RegExReplace(Found.2,"\Q" User.0 "\E"),Chr(127))
-				}else if(RegExMatch(CheckUser,"OUi)^((.*)\bby\b(.*))$",User)){
-					NewText:=Trim(RegExReplace(Found.2,"\Q" User.0 "\E"),Chr(127))
-				}else{
-					New:=xx.Under(aa,"info",{type:Found.1,action:"",issue:"",user:""},NewText:=Trim(RegExReplace(Found.2,"\Q" User.0 "\E"),Chr(127)))
-					Continue
-				}
-				for a,b in UserSub{
-					Replace:=""
-					if(InStr(Found.0,b)){
-						Replace:=b
-						Break
-					}
-				}
-				xx.Under(aa,"info",{type:Found.1,action:Trim(User.2),issue:User.4,user:trim(RegExReplace(User.3,"(#.*)"))},(NewText?NewText:Trim(Trim(Found.2,Chr(127)))))
-			}if(!Fixed){
-				New:=xx.Under(aa,"info",{type:"",action:"",issue:"",user:""},Text)
-			}
-		}xx.Transform(2),ListCon.Close()
-		return new Version_Tracker()
-	}
-}
+
 Class Version_Tracker Extends ConvertStyle{
 	__New(){
 		if(!IsObject(VVersion))
@@ -11899,7 +11777,6 @@ Class Version_Tracker Extends ConvertStyle{
 			;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   Do I want the branches   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! to have different files?!  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			
 			
 			if(FileNode.xml!=LastFileNode.xml){
 				LastFileNode:=FileNode,LV_Delete()
@@ -12502,6 +12379,118 @@ Class CommitClass{
 		DXML.Save(1)
 		return
 	}
+}
+Class ConvertStyle Extends CommitClass{
+	ConvertStyle(){
+		static
+		xx:=VVersion
+		All:=xx.SN("//version[text()]"),Headings:=[],Users:=[]
+		while(aa:=All.Item[A_Index-1]){
+			if(InStr(aa.Text,"`n"))
+				aa.Text:=RegExReplace(aa.Text,"\R",Chr(127))
+			for a,Text in StrSplit(aa.Text,Chr(127)){
+				Pos:=LastPos:=1
+				while(RegExMatch(Text,"Oim`n)^\s*(?<Text>(\w|[^\x00-\x7F])+):(.*)$",Found),Pos:=Found.Pos("Text")+Found.Len("Text")){
+					if(Pos=LastPos),LastPos:=Pos
+						Break
+					RegExMatch(Found.0,"Oi)by(.*)",User)
+					Headings[Found.Text]:=1
+					if(UserName:=Trim(RegExReplace(User.1,"(\s*#.*)")))
+						Users[UserName]:=1
+			}}
+		}
+		ListCon:=new GUIKeep("ListCon")
+		ListCon.Add("Text,,Press:`nDelete to remove an item`nEnter to edit an item","ListView,w300 h500 vSysListView321,Headings","ListView,x+M w300 h500 vSysListView322,Users","Button,xm gSaveVersionHeaders,&Save Information")
+		ListCon.Show("Confirm Headings And Users")
+		Hotkey,IfWinActive,% ListCon.ID
+		for a,b in {Delete:"PreVersionDelete",Enter:"PreVersionChange"}
+			Hotkey,%a%,%b%
+		Gui,ListCon:ListView,SysListView321
+		for a in Headings
+			LV_Add("",a)
+		LV_Modify(1,"Select Vis Focus")
+		Gui,ListCon:ListView,SysListView322
+		for a in Users
+			LV_Add("",a)
+		LV_Modify(1,"Select Vis Focus")
+		return
+		PreVersionChange:
+		ControlGetFocus,Focus,% ListCon.ID
+		ListCon.Default(Focus)
+		if(Next:=LV_GetNext()){
+			LV_GetText(ItemText,Next),Value:=InputBox(ListCon.HWND,"Replace","Replace this text",ItemText)
+			if(Value)
+				LV_Modify(Next,"",Value)
+		}else
+			return m("Select an item to change")
+		return
+		PreVersionDelete:
+		ControlGetFocus,Focus,% ListCon.ID
+		Gui,ListCon:Default
+		Gui,ListCon:ListView,%Focus%
+		if(Next:=LV_GetNext())
+			LV_Delete(Next)
+		return
+		SaveVersionHeaders:
+		xx:=VVersion
+		Default("SysListView321","ListCon"),Next:=1,HeadingsList:=""
+		Loop,% LV_GetCount()
+		{
+			LV_GetText(Text,A_Index)
+			if(!Text)
+				Break
+			HeadingsList.=Text "|"
+		}Find:=Trim(HeadingsList,"|")
+		Default("SysListView322","ListCon"),Next:=1
+		Loop,% LV_GetCount()
+		{
+			LV_GetText(Text,A_Index)
+			if(!Text)
+				Break
+		}Find:=Trim(HeadingsList,"|"),All:=xx.SN("//version[text()]")
+		while(aa:=All.Item[A_Index-1]){
+			OXML:=aa.xml,Text:=aa.Text,LastPos:=Pos:=1,Fixed:=0,aa.Text:=""
+			while(RegExMatch(Text,"OUi)\b(" Find ")\b:\s*(.*)(\b(" Find ")\b:|$)",Found,Pos),Pos:=Found.Pos(1)+Found.Len(1)){
+				Fixed:=1
+				if(Pos=LastPos),LastPos:=Pos
+					Break
+				User:="",NewText:="",CheckUser:=StrSplit(Found.2,Chr(127)).1
+				if(InStr(CheckUser,"#")){
+					if(RegExMatch(CheckUser,"OUi)^((.*)by(.*)(#\d+)\b)",User))
+						NewText:=Trim(RegExReplace(Found.2,"\Q" User.0 "\E"),Chr(127))
+				}else if(RegExMatch(CheckUser,"OUi)^((.*)\bby\b(.*))$",User)){
+					NewText:=Trim(RegExReplace(Found.2,"\Q" User.0 "\E"),Chr(127))
+				}else{
+					New:=xx.Under(aa,"info",{type:Found.1,action:"",issue:"",user:""},NewText:=Trim(RegExReplace(Found.2,"\Q" User.0 "\E"),Chr(127)))
+					Continue
+				}
+				for a,b in UserSub{
+					Replace:=""
+					if(InStr(Found.0,b)){
+						Replace:=b
+						Break
+					}
+				}
+				xx.Under(aa,"info",{type:Found.1,action:Trim(User.2),issue:User.4,user:trim(RegExReplace(User.3,"(#.*)"))},(NewText?NewText:Trim(Trim(Found.2,Chr(127)))))
+			}if(!Fixed){
+				New:=xx.Under(aa,"info",{type:"",action:"",issue:"",user:""},Text)
+			}
+		}xx.Transform(2),ListCon.Close()
+		return new Version_Tracker()
+	}
+}
+VersionDropFiles(FileList,Ctrl,x,y,Object){
+	Gui,Version:Default
+	Node:=VVersion.SSN("//*[@tv='" TV_GetSelection() "']/ancestor-or-self::branch")
+	if(!Node)
+		return m("Please Re-Launch this window (Sorry)")
+	for a,b in FileList{
+		m(b,RelativePath(Current(2).File,b))
+		if(!VVersion.Find(Node,"files/file/@file",b)){
+			if(!Top:=SSN(Node,"files"))
+				Top:=VVersion.Under(Node,"files")
+			VVersion.Under(Top,"file",{file:b}) ;,m(New.xml,"","",Node.xml)
+	}}Version_Tracker.Populate(1)
 }
 DebugWindow(Text,Clear:=0,LineBreak:=0,Sleep:=0,AutoHide:=0,MsgBox:=0){
 	x:=ComObjActive("{DBD5A90A-A85C-11E4-B0C7-43449580656B}"),x.DebugWindow(Text,Clear,LineBreak,Sleep,AutoHide,MsgBox)
