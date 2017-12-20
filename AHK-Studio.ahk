@@ -10403,9 +10403,9 @@ ShowLabels(x:=0){
 Sleep(Time:="-10"){
 	Sleep,%Time%
 }
-SplitPath(file){
-	SplitPath,file,filename,dir,ext,nne,drive
-	return {file:file,filename:filename,dir:dir,ext:ext,nne:nne,drive:drive}
+SplitPath(File){
+	SplitPath,File,FileName,Dir,Ext,NNE,Drive
+	return {File:File,FileName:FileName,Dir:Dir,Ext:Ext,NNE:NNE,Drive:Drive}
 }
 Step_Into(){
 	if(!debug.socket)
@@ -10513,10 +10513,6 @@ Test_Plugin(){
 	Exit(1)
 }
 Testing(){
-	Git:=new GitHub()
-	m(Git.Owner,Git.Repo,Git.Token)
-	Git.CreateRepo("MyName-Repo-Jeff")
-	return
 	if(A_UserName!="maest")
 		return m("Testing")
 	return m("I'm sleepy.")
@@ -11608,7 +11604,7 @@ Class Version_Tracker Extends ConvertStyle{
 		VersionGUI:
 		NewWin:=new GUIKeep("Version"),Version_Tracker.NewWin:=NewWin
 		NewWin.Add("TreeView,w350 h250 vVT gVersionShowVersion vTVVersion AltSubmit,,h"
-			,"Edit,x+M w500 h500 gVerEdit vEdit,,wh","ListView,xm w350 y250 h250,Directory|File,y"
+			,"Edit,x+M w500 h500 gVerEdit vEdit,,wh","ListView,xm w350 y250 h250 NoSortHdr,Directory|File,y"
 			,"Button,xm gCommitProject,Co&mmit Project,y","Checkbox,x+M gVersionOneFile vCommitAsOne,Commit As &One File,y")
 		NewWin.Show((Settings.SSN("//github")?"Github ":"")"Version Tracker")
 		NewWin.Hotkeys({Delete:"VerDelete","!a":"VersionAddAction",F1:"VersionCompileCurrent","!Up":"VersionMove"
@@ -11778,19 +11774,14 @@ Class Version_Tracker Extends ConvertStyle{
 			}else
 				NewWin.Disable("VerEdit")
 			FileNode:=SSN(Node,"ancestor-or-self::branch")
-			
-			;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   Do I want the branches   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! to have different files?!  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			
 			if(FileNode.xml!=LastFileNode.xml){
 				LastFileNode:=FileNode,LV_Delete()
 				All:=SN(Node,"ancestor-or-self::branch/descendant::files/file")
-				while(aa:=All.Item[A_Index-1],ea:=XML.EA(aa)){
-					LV_Add("","Directory needed",ea.File)
-				}
-				t("here","time:1")
+				while(aa:=All.Item[A_Index-1],ea:=XML.EA(aa))
+					LV_Add("",ea.Folder,ea.File)
+				Loop,% LV_GetCount("Column")
+					LV_ModifyCol(A_Index,"AutoHDR")
+				LV_Modify(1,"Select Vis Focus")
 			}
 			GuiControl,Version:,% NewWin.XML.SSN("//*[@var='CommitAsOne']/@hwnd").text,% SSN(Node,"ancestor-or-self::branch/@onefile")?1:0
 		}
@@ -11936,6 +11927,10 @@ Class Version_Tracker Extends ConvertStyle{
 					aa.RemoveAttribute("select")
 				Next.SetAttribute("select",1),Node.ParentNode.RemoveChild(Node),Version_Tracker.Populate()
 			}
+		}else if(Focus="SysListView321"){
+			Node:=Version_Tracker.GetNode("ancestor::branch/files")
+			Gui,Version:Default
+			Rem:=SSN(Node,"*[" LV_GetNext() "]"),Rem.ParentNode.RemoveChild(Rem),Version_Tracker.Populate()
 		}else
 			Send,{Delete}
 		return
@@ -12489,25 +12484,15 @@ VersionDropFiles(FileList,Ctrl,x,y,Object){
 	Node:=VVersion.SSN("//*[@tv='" TV_GetSelection() "']/ancestor-or-self::branch")
 	if(!Node)
 		return m("Please Re-Launch this window (Sorry)")
-	/*
-		<files>
-			<file file="html.xml" filepath="D:\AHK\AHK-Studio\lib\Languages\html.xml" folder="lib/Languages"></file>
-			<file file="xml.xml" filepath="D:\AHK\AHK-Studio\lib\Languages\xml.xml" folder="lib/Languages"></file>
-			<file file="ahk.xml" filepath="D:\AHK\AHK-Studio\lib\Languages\ahk.xml" folder="lib/Languages"></file>
-		</files>
-		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      Need To Check:      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!           Sha            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!           Time           !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! I think they are there.  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	*/
 	for a,b in FileList{
-		m(b,RelativePath(Current(2).File,b))
+		Folder:=SplitPath(RelativePath(Current(2).File,b)).Dir
+		if(InStr(Folder,".."))
+			Folder:="lib"
+		Folder:=RegExReplace(Folder,"\\","/")
 		if(!VVersion.Find(Node,"files/file/@file",b)){
 			if(!Top:=SSN(Node,"files"))
 				Top:=VVersion.Under(Node,"files")
-			VVersion.Under(Top,"file",{file:b}) ;,m(New.xml,"","",Node.xml)
+			VVersion.Under(Top,"file",{file:SplitPath(b).FileName,filepath:b,folder:Folder})
 	}}Version_Tracker.Populate(1)
 }
 DebugWindow(Text,Clear:=0,LineBreak:=0,Sleep:=0,AutoHide:=0,MsgBox:=0){
