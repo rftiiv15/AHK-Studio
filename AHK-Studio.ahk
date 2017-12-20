@@ -12045,14 +12045,8 @@ Custom_Indent(){
 	Keywords.IndentRegex[Language]:=Node.Text:=Trim(Total,"|"),NewWin.Exit()
 	return
 }
-EncodeGF(text){
-	if(text="")
-		return
-	cp:=0,VarSetCapacity(rawdata,StrPut(text,"UTF-8")),sz:=StrPut(text,&rawdata,"UTF-8")-1,DllCall("Crypt32.dll\CryptBinaryToString","ptr",&rawdata,"uint",sz,"uint",0x40000001,"ptr",0,"uint*",cp),VarSetCapacity(str,cp*(A_IsUnicode?2:1)),DllCall("Crypt32.dll\CryptBinaryToString","ptr",&rawdata,"uint",sz,"uint",0x40000001,"str",str,"uint*",cp)
-	return str
-}
 UpdateBranches(a*){
-	m("HERE! UpdateBranches umm...")
+	m("HERE! UpdateBranches umm... Coming Soon?")
 	/*
 		;~ this downloads all the branch info so keep it
 		;~ BUT MAKE SURE TO NOT OVERWRITE ANY VERSIONS THAT ALREADY EXIST!!!!!!!!!!!!!
@@ -12113,7 +12107,7 @@ Class Github{
 		return this
 	}Blob(repo,text,skip:=""){
 		if(!skip)
-			text:=EncodeGF(text)
+			text:=this.EncodeGF(text)
 		json={"content":"%text%","encoding":"base64"}
 		return this.Sha(this.Send("POST",this.url "/repos/" this.owner "/" repo "/git/blobs" this.Token,json))
 	}Branch(){
@@ -12151,7 +12145,12 @@ Class Github{
 			this.HTTP.Open("DELETE",url),this.HTTP.send(this.json({"message":"Deleted","sha":sha,"branch":this.Branch()}))
 			d.ParentNode.RemoveChild(d)
 			return this.HTTP
-	}}Find(search,text){
+	}}EncodeGF(text){
+		if(text="")
+			return
+		cp:=0,VarSetCapacity(rawdata,StrPut(text,"UTF-8")),sz:=StrPut(text,&rawdata,"UTF-8")-1,DllCall("Crypt32.dll\CryptBinaryToString","ptr",&rawdata,"uint",sz,"uint",0x40000001,"ptr",0,"uint*",cp),VarSetCapacity(str,cp*(A_IsUnicode?2:1)),DllCall("Crypt32.dll\CryptBinaryToString","ptr",&rawdata,"uint",sz,"uint",0x40000001,"str",str,"uint*",cp)
+		return str
+	}Find(search,text){
 		RegExMatch(text,"UOi)\x22" search "\x22\s*:\s*(.*)[,|\}]",found)
 		return Trim(found.1,Chr(34))
 	}GetRef(){
@@ -12490,6 +12489,19 @@ VersionDropFiles(FileList,Ctrl,x,y,Object){
 	Node:=VVersion.SSN("//*[@tv='" TV_GetSelection() "']/ancestor-or-self::branch")
 	if(!Node)
 		return m("Please Re-Launch this window (Sorry)")
+	/*
+		<files>
+			<file file="html.xml" filepath="D:\AHK\AHK-Studio\lib\Languages\html.xml" folder="lib/Languages"></file>
+			<file file="xml.xml" filepath="D:\AHK\AHK-Studio\lib\Languages\xml.xml" folder="lib/Languages"></file>
+			<file file="ahk.xml" filepath="D:\AHK\AHK-Studio\lib\Languages\ahk.xml" folder="lib/Languages"></file>
+		</files>
+		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      Need To Check:      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!           Sha            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!           Time           !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! I think they are there.  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	*/
 	for a,b in FileList{
 		m(b,RelativePath(Current(2).File,b))
 		if(!VVersion.Find(Node,"files/file/@file",b)){
