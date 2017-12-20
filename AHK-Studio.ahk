@@ -11603,7 +11603,6 @@ VersionDropFiles(FileList,Ctrl,x,y,Object){
 Class ConvertStyle Extends CommitClass{
 	ConvertStyle(){
 		static
-		return m("HERE")
 		xx:=VVersion
 		All:=xx.SN("//version[text()]"),Headings:=[],Users:=[]
 		while(aa:=All.Item[A_Index-1]){
@@ -11705,7 +11704,6 @@ Class Version_Tracker Extends ConvertStyle{
 		if(!IsObject(VVersion))
 			VVersion:=new XML("versions",(FileExist("lib\Github.xml")?"lib\Github.xml":"lib\Versions.xml"))
 		xx:=VVersion
-		this.ConvertStyle()
 		if((All:=xx.SN("//version[text()]")).Length)
 			return this.ConvertStyle()
 		this.VersionWindow()
@@ -12490,7 +12488,6 @@ Class CommitClass{
 			}
 			Upload[a]:=blob
 		}Tree:=Git.Tree(Git.Repo,Current_Commit,Upload),Commit:=Git.Commit(Git.Repo,Tree,Current_Commit,CommitMsg,Git.Name,Git.EMail),Info:=Git.Ref(Git.Repo,Commit)
-		m("Tree: " Tree,"Commit: " Commit,"Info: " Info)
 		if(Info=200){
 			Top:=DXML.Find("//branch/@name",Branch)
 			for a,b in Uploads{
