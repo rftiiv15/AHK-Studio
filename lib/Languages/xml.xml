@@ -1,4 +1,3 @@
-﻿<?xml version="1.0"?>
 <xml>
 	<FileTypes lexer="xml" language="xml" name="XML">xml</FileTypes>
 	<Styles>
