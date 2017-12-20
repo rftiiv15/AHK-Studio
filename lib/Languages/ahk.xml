@@ -1,4 +1,3 @@
-﻿<?xml version="1.0"?>
 <ahk>
 	<FileTypes lexer="ahk" language="ahk" name="AutoHotkey">ahk</FileTypes>
 	<Comments Open="OUm`n)^\s*\/\*" Close="OUm`n)^\s*\*\/" Line="OUm`n)^\s*\;.*($|\R)" Single=";"></Comments>
