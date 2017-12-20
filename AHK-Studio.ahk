@@ -2828,13 +2828,15 @@ Compile(main=""){
 }
 CompileFont(XMLObject,RGB:=1){
 	ea:=XML.EA(XMLObject),style:=[],name:=ea.name,styletext:="norm",Default:=Settings.EA("//theme/default")
+	for a,b in ea
+		Default[a]:=b
 	for a,b in {bold:"",color:"c",italic:"",size:"s",strikeout:"",underline:""}{
-		if(a="color")
-			Value:=ea.color!=""?ea.color:Default.color,styletext.=" c" (RGB?RGB(Value):Value)
-		else if(ea[a])
-			styletext.=" " (b?b ea[a]:a)
-	}
-	return styletext
+		Value:=Trim(Default[a])
+		if(a="color"&&Value!=""&&Value!=0)
+			styletext.=" c" (RGB?RGB(Value):Value)
+		else if(Value!=""&&Value!=0)
+			styletext.=" " (b?b Value:a)
+	}return styletext
 }
 Context(return=""){
 	Static FindFirst:="O)^[\s|}]*((\w|[^\x00-\x7F])+)"
@@ -4549,7 +4551,7 @@ FEUpdate(Redraw:=0){
 }
 FileCheck(file:=""){
 	static base:="https://raw.githubusercontent.com/maestrith/AHK-Studio/master/"
-	,scidate:=20171122084657,XMLFiles:={menus:[20171216222939,"lib/menus.xml","lib\Menus.xml"]}
+	,scidate:=20171122084657,XMLFiles:={menus:[20171220173750,"lib/menus.xml","lib\Menus.xml"]}
 	,OtherFiles:={scilexer:{date:20171122084436,loc:"SciLexer.dll",url:"SciLexer.dll",type:1},icon:{date:20150914131604,loc:"AHKStudio.ico",url:"AHKStudio.ico",type:1},Studio:{date:20170906124736,loc:A_MyDocuments "\Autohotkey\Lib\Studio.ahk",url:"lib/Studio.ahk",type:1}}
 	,DefaultOptions:="Manual_Continuation_Line,Full_Auto_Indentation,Focus_Studio_On_Debug_Breakpoint,Word_Wrap_Indicators,Context_Sensitive_Help,Auto_Complete,Auto_Complete_In_Quotes,Auto_Complete_While_Tips_Are_Visible"
 	if(!Settings.SSN("//fonts|//theme"))
@@ -12496,6 +12498,34 @@ VersionDropFiles(FileList,Ctrl,x,y,Object){
 				Top:=VVersion.Under(Node,"files")
 			VVersion.Under(Top,"file",{file:SplitPath(b).FileName,filepath:b,folder:Folder})
 	}}Version_Tracker.Populate(1)
+}
+Create_Function_From_Selected(){
+	sc:=csc(),Start:=sc.2167((Line:=sc.2166(sc.2143))),End:=sc.2136(sc.2166(sc.2145)),Text:=sc.TextRange(Start,End)
+	if(Start=End){
+		m("Select some text first")
+		ExitApp
+	}sc.2160(Start,End),Indent:=Settings.Get("//tab",5),Width:=sc.2127(Line)
+	Add:=Floor(Width/Indent)
+	Function:=InputBox(sc.sc,"Enter Function Name","Enter the name of the function you want to create")
+	if(ErrorLevel||!Function)
+		return
+	Loop,%Add%
+		Total.="`t"
+	Total.=Function "(){`n"
+	for a,b in StrSplit(Text,"`n"){
+		Total.="`t" b "`n"
+	}Loop,%Add%
+		Total.="`t"
+	Total.="}`n"
+	Loop,%Add%
+		Total.="`t"
+	Encode(Total,return),csc().2170(0,&return),sc.2025(sc.2128(Line)+StrPut(Function,"UTF-8"))
+	SetTimer("CFFSFocus","-100")
+	return
+	CFFSFocus:
+	WinActivate,% hwnd([1])
+	sc.2400()
+	return
 }
 DebugWindow(Text,Clear:=0,LineBreak:=0,Sleep:=0,AutoHide:=0,MsgBox:=0){
 	x:=ComObjActive("{DBD5A90A-A85C-11E4-B0C7-43449580656B}"),x.DebugWindow(Text,Clear,LineBreak,Sleep,AutoHide,MsgBox)
