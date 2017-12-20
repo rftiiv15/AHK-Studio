@@ -1,4 +1,3 @@
-﻿<?xml version="1.0"?>
 <test>
 	<FileTypes lexer="hypertext" language="hypertext" name="HTML">html htm</FileTypes>
 	<Styles>
