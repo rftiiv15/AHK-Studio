@@ -7,7 +7,7 @@ SetControlDelay,-1
 SetWinDelay,-1
 DetectHiddenWindows,On
 CoordMode,ToolTip,Screen
-global v:=[],MainWin,Settings:=new XML("settings","lib\Settings.xml"),Positions:=new XML("positions","lib\Positions.xml"),cexml:=new XML("cexml","Lib\CEXML.xml"),History:=new XML("HistoryXML"),vversion,scintilla,TVC:=new EasyView(),RCMXML:=new XML("RCM","lib\RCM.xml"),TNotes,DebugWin,Selection:=new SelectionClass(),Menus,Vault:=new XML("vault","lib\Vault.xml")
+global v:=[],MainWin,Settings:=new XML("settings","lib\Settings.xml"),Positions:=new XML("positions","lib\Positions.xml"),cexml:=new XML("cexml","Lib\CEXML.xml"),History:=new XML("HistoryXML"),VVersion,scintilla,TVC:=new EasyView(),RCMXML:=new XML("RCM","lib\RCM.xml"),TNotes,DebugWin,Selection:=new SelectionClass(),Menus,Vault:=new XML("vault","lib\Vault.xml")
 v.WordsObj:=[],v.Tick:=A_TickCount,new ScanFile(),History("Startup")
 if(!settings[]){
 	Run,lib\Settings.xml
@@ -4358,6 +4358,7 @@ Exit(ExitApp:=0){
 		aa.RemoveAttribute("tv")
 	if(All.Length)
 		menus.Save(1)
+	vversion.Save(1)
 	if(0)
 		m("Disabled Saving ScanFile.xml","time:.5")
 	else{
@@ -5575,7 +5576,7 @@ class GUIKeep{
 			Gui,%win%:Margin,0,0
 		Gui,%win%:Font,% "c" info.color " s" info.size,% info.font
 		Gui,%win%:Color,% info.Background,% info.Background
-		this.XML:=new XML("gui"),this.XML.Add("window",{name:win}),this.gui:=[],this.sc:=[],this.hwnd:=hwnd,this.con:=[],this.AHKID:=this.id:="ahk_id" hwnd,this.win:=win,this.Table[win]:=this,this.var:=[],this.classcount:=[]
+		this.XML:=new XML("gui"),this.XML.Add("window",{name:win}),this.gui:=[],this.sc:=[],this.hwnd:=hwnd,this.con:=[],this.AHKID:=this.id:="ahk_id" hwnd,this.win:=win,this.Table[win]:=this,this.var:=[],this.classcount:=[],this.Table[HWND]:=this
 		for a,b in {border:A_OSVersion~="^10"?3:0,caption:DllCall("GetSystemMetrics",int,4,"int")}
 			this[a]:=b
 		Gui,%win%:+LabelGUIKeep.
@@ -5650,10 +5651,10 @@ class GUIKeep{
 			GuiControl,% this.Win ":Disable",% ea.HWND
 		else
 			GuiControl,% this.Win ":Enable",% ea.HWND
-	}DropFiles(filelist,ctrl,x,y){
-		df:="DropFiles"
-		if(IsFunc(df))
-			%df%(filelist,ctrl,x,y)
+	}DropFiles(FileList,Ctrl,x,y){
+		DF:=(Object:=GUIKeep.Table[this].win) "DropFiles"
+		if(IsFunc(DF))
+			%DF%(FileList,Ctrl,x,y,Object)
 	}Enable(Label,Enable:=1){
 		ea:=XML.EA(Node:=this.XML.SSN("//*[@label='" Label "']"))
 		if(Enable)
@@ -5706,7 +5707,7 @@ class GUIKeep{
 	}SetValue(Control,Value){
 		GuiControl,% this.Win ":",% this.XML.SSN("//*[@var='" Control "']/@hwnd").text,%Value%
 	}SetWinPos(){
-		DllCall("SetWindowPos",int,ctrl,int,0,int,x,int,y,int,w,int,h,uint,(ea.type~="Project Explorer|Code Explorer|QF")?0x0004|0x0010|0x0020:0x0008|0x0004|0x0010|0x0020),DllCall("RedrawWindow",int,ctrl,int,0,int,0,uint,0x401|0x2)
+		DllCall("SetWindowPos",int,Ctrl,int,0,int,x,int,y,int,w,int,h,uint,(ea.type~="Project Explorer|Code Explorer|QF")?0x0004|0x0010|0x0020:0x0008|0x0004|0x0010|0x0020),DllCall("RedrawWindow",int,Ctrl,int,0,int,0,uint,0x401|0x2)
 	}Show(name,position:="",NA:=0,Select:=0){
 		static defpos,pos,sel,nn,Displays
 		defpos:=position,this.GetPos(),pos:=this.resize=1?"":"AutoSize",this.name:=name,sel:=Select,this.NA:=NA
@@ -8366,8 +8367,10 @@ PublishIndent(Code,Indent:="`t",Newline:="`r`n"){
 			ParentIndent:=0
 		ParentIndentObj[Cur]:=ParentIndent,Special:=0
 	}
-	if(Braces)
-		throw Exception("Include Open! You have " braces " open braces")
+	/*
+		if(Braces)
+			throw Exception("Include Open! You have " braces " open braces")
+	*/
 	return SubStr(Out,StrLen(Newline)+1)
 }
 QF(x:=0){
@@ -8404,7 +8407,7 @@ QF(x:=0){
 	}if(v.Options.Current_Area){
 		if((Parent:=sc.2225(sc.2166(sc.2008)))>=0){
 			MinMax.XML.LoadXML("<MinMax/>"),Top:=MinMax.Add("list"),Last:=sc.2224(Parent,-1),MinMax.Under(Top,"sel",{min:sc.2167(Parent),max:sc.2167(Last)})
-	}}Search:=sc.GetText(),Ignore:=Settings.SSN("//QuickFind/Language[@language='" Current(3).Lang "']").Text,Pos:=LastPos:=1
+	}}Search:=sc.GetText(),Ignore:=Settings.SSN("//QuickFind/Language[@language='" Current(3).Lang "']").Text,Pos:=1,LastPos:=0
 	while(RegExMatch(Search,Find1,Found,Pos)){
 		if(LastPos=Found.Pos(0)),LastPos:=Found.Pos(0)
 			Break
@@ -9181,7 +9184,7 @@ Save(option=""){
 		FileGetTime,time,% ea.file
 		aa.SetAttribute("time",time),aa.RemoveAttribute("edited")
 	}WinSetTitle(1,Current(3)),plural:=SavedFiles.MaxIndex()=1?"":"s",SetStatus(Round(SavedFiles.MaxIndex()) " File" plural " Saved",3)
-	LineStatus.Save(),LineStatus.tv(),SaveGUI(),vversion.Save(1),LastFiles()
+	LineStatus.Save(),LineStatus.tv(),SaveGUI(),LastFiles()
 }
 SaveGUI(win:=1){
 	WinGet,max,MinMax,% hwnd([win])
@@ -10510,6 +10513,10 @@ Test_Plugin(){
 	Exit(1)
 }
 Testing(){
+	Git:=new GitHub()
+	m(Git.Owner,Git.Repo,Git.Token)
+	Git.CreateRepo("MyName-Repo-Jeff")
+	return
 	if(A_UserName!="maest")
 		return m("Testing")
 	return m("I'm sleepy.")
@@ -11037,12 +11044,14 @@ Update_Github_Info(){
 	info:=Settings.EA("//github"),Setup(36)
 	controls:={owner:"Owner (GitHub Username)",email:"Email",name:"Your Full Name"}
 	for a,b in {owner:100,email:200,name:100}{
-		Gui,Add,Text,xm,% controls[a]
-		Gui,Add,Edit,x+5 w%b% gUpdateGithubInfo v%a%,% info[a]
+		Gui,Add,Text,xm,% controls[a] ":"
+		Gui,Add,Edit,x+M yp-3 w%b% gUpdateGithubInfo v%a%,% info[a]
 	}
-	Gui,Add,Text,xm,Github Token
-	Gui,Add,Edit,xm w300 Password gUpdateGithubInfo vtoken,% info.token
-	Gui,Add,Button,ggettoken,Get A Token
+	Gui,Add,Text,xm hwndGTText,Github Token:
+	Gui,Add,Edit,x+M w300 yp-3 Password hwndPassword gUpdateGithubInfo vtoken,% info.token
+	ControlGetPos,x,y,w,h,,ahk_id%Password%
+	ControlGetPos,tx,,,,,ahk_id%GTText%
+	Gui,Add,Button,% "xm w" x+w-tx " ggettoken",Get A Token
 	Gui,Show,,Github Information
 	return
 	UpdateGithubInfo:
@@ -11531,16 +11540,70 @@ Create_Comment(){
 	NewWin.Exit()
 	return
 }
-Class Version_Tracker{
-	__New(){
-		if(!IsObject(VVersion))
-			VVersion:=new XML("versions",(FileExist("lib\Github.xml")?"lib\Github.xml":"lib\Versions.xml"))
-		xx:=VVersion
-		if((All:=xx.SN("//version[text()]")).Length)
-			return this.ConvertStyle()
-		this.VersionWindow()
-	}ConvertStyle(){
+EncodeFile(x*){
+}DeleteExtraFiles(FileList,DD){
+	static DXML
+	for a,b in FileList
+		Total.=a "`n"
+	DXML:=DD
+	if(Total)
+		m("These Files May Need Deleted On GitHub:",Total)
+	return
+	;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!! make a GUI to allow you to remove them !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!         and maybe checkboxes?          !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	
+	;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	;~ !!!!!!    this throws the files here that need deleted or at the very least for review    !!!!!!!
+	;~ !!!!!! you can get the DXML and the files will be there. Maybe push DXML here so that it  !!!!!!!
+	;~ !!!!!!                                     will be ok                                     !!!!!!!
+	;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	
+	
+	
+	;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!                 OH YEA!                  !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	;~ !!!!!!!!!!!!!!!!!!!!!!!!!!! Doing a push without re-starting Studio  !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!     Throws an error, with no message     !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	
+}
+;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! This seems to work now !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!     for basic push     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!     Create Branch      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!                        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!     Need To Check:     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      Create Repo       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  More Things I'm sure  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+VersionDropFiles(FileList,Ctrl,x,y,Object){
+	Gui,Version:Default
+	Node:=VVersion.SSN("//*[@tv='" TV_GetSelection() "']/ancestor-or-self::branch")
+	if(!Node)
+		return m("Please Re-Launch this window (Sorry)")
+	for a,b in FileList{
+		if(!VVersion.Find(Node,"files/file/@file",b)){
+			if(!Top:=SSN(Node,"files"))
+				Top:=VVersion.Under(Node,"files")
+			VVersion.Under(Top,"file",{file:b}) ;,m(New.xml,"","",Node.xml)
+		}
+	}
+	Version_Tracker.Populate(1)
+	
+	/*
+		m(List,Ctrl,x,y,SSN(VVersion.Find("//info/@file",Current(2).File),"descendant-or-self::*[@select]/ancestor-or-self::branch").xml,Current(2).File)
+	*/
+	/*
+		<file file="SciLexer.dll" filepath="D:\Testing\Studio Now Master\SciLexer.dll" folder="" time="20171214173716" sha="3283f1b0c7e576fb44454c1a0a7cf25bb1f22b05"></file>
+		<file file="Another File.txt" filepath="D:\Testing\Studio Now Master\Lib\Another File.txt" folder="Lib" time="20171215125416" sha="8e2b5c59ac0d64f415ddafc1f21016be423a9543"></file>
+	*/
+}
+Class ConvertStyle Extends CommitClass{
+	ConvertStyle(){
 		static
+		return m("HERE")
 		xx:=VVersion
 		All:=xx.SN("//version[text()]"),Headings:=[],Users:=[]
 		while(aa:=All.Item[A_Index-1]){
@@ -11635,8 +11698,20 @@ Class Version_Tracker{
 			}
 		}xx.Transform(2),ListCon.Close()
 		return new Version_Tracker()
+	}
+}
+Class Version_Tracker Extends ConvertStyle{
+	__New(){
+		if(!IsObject(VVersion))
+			VVersion:=new XML("versions",(FileExist("lib\Github.xml")?"lib\Github.xml":"lib\Versions.xml"))
+		xx:=VVersion
+		this.ConvertStyle()
+		if((All:=xx.SN("//version[text()]")).Length)
+			return this.ConvertStyle()
+		this.VersionWindow()
 	}GetNode(VersionNode:=""){
-		Version_Tracker.NewWin.Default("VT"),Node:=VVersion.SSN("//*[@tv='" TV_GetSelection() "']" (VersionNode=1?"ancestor-or-self::version":VersionNode?VersionNode:""))
+		Version_Tracker.NewWin.Default("VT")
+		Node:=VVersion.SSN("//*[@tv='" TV_GetSelection() "']" (VersionNode=1?"ancestor-or-self::version":VersionNode?VersionNode:""))
 		return Node
 	}GetRoot(){
 		xx:=VVersion
@@ -11647,18 +11722,19 @@ Class Version_Tracker{
 		static
 		xx:=VVersion
 		if(!Root:=xx.Find("//info/@file",Current(2).File))
-			Info:=xx.Under(xx.Under((Branch:=xx.Under((Root:=xx.Add("info",{file:Current(2).File},,1)),"branch",{name:"master"})),"version",{name:"1",draft:"false",prerelease:"true",target_commitish:"master"}),"info",{type:"",action:"",issue:"",user:""}),Select:=Info
+			Info:=xx.Under(xx.Under((Branch:=xx.Under((Root:=xx.Add("info",{file:Current(2).File},,1)),"branch",{name:"master"})),"version",{name:"1",draft:"false",prerelease:"true",target_commitish:"master"}),"info",{type:"",action:"",issue:"",user:"",select:1}),Select:=Info
 		VersionGUI:
 		NewWin:=new GUIKeep("Version"),Version_Tracker.NewWin:=NewWin
-		NewWin.Add("TreeView,w350 h500 vVT gVersionShowVersion vTVVersion AltSubmit,,h"
-			,"Edit,x+M w500 h500 gVerEdit vEdit,,wh","Button,xm gLaunchExternalFile,&Launch External File,y","Checkbox,x+M gVersionOneFile vCommitAsOne,Commit As &One File,y")
+		NewWin.Add("TreeView,w350 h250 vVT gVersionShowVersion vTVVersion AltSubmit,,h"
+			,"Edit,x+M w500 h500 gVerEdit vEdit,,wh","ListView,xm w350 y250 h250,Directory|File,y"
+			,"Button,xm gCommitProject,Co&mmit Project,y","Checkbox,x+M gVersionOneFile vCommitAsOne,Commit As &One File,y")
 		NewWin.Show((Settings.SSN("//github")?"Github ":"")"Version Tracker")
 		NewWin.Hotkeys({Delete:"VerDelete","!a":"VersionAddAction",F1:"VersionCompileCurrent","!Up":"VersionMove"
 					,"!Down":"VersionMove",Enter:"VersionEdit","!n":"NewVersionBranch"
 					,"^Up":"AddNewVersion","^Down":"AddNewVersion"})
-		if(Select)
+		if(Select:=SSN(Root,"descendant::*[@select]"))
 			return Version_Tracker.Select(Select)
-		return Version_Tracker.Populate()
+		return Version_Tracker.Select(SSN(Root,"descendant::info"))
 		VersionOneFile:
 		if(!Node:=Version_Tracker.GetNode("ancestor-or-self::branch")){
 			m("Please select a version to apply this to")
@@ -11670,10 +11746,12 @@ Class Version_Tracker{
 		else
 			Node.RemoveAttribute("onefile")
 		return
-		LaunchExternalFile:
-		Version_Tracker.SetSelected()
-		Save()
-		Run,"D:\AHK\AHK-Studio\Projects\GitHub\GitHub Test.ahk"
+		CommitProject:
+		Version_Tracker.Commit()
+		/*
+			Save()
+			Run,"D:\AHK\AHK-Studio\Projects\GitHub\GitHub Test.ahk"
+		*/
 		return
 		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		;~ !!!! MAKE SURE TO NOT REMOVE ANYTHING IF/WHEN THE USER RE-DOWNLOADS EVERYTHING FROM GITHUB  !!!!!
@@ -11719,16 +11797,6 @@ Class Version_Tracker{
 		NewVersionBranch:
 		Node:=Version_Tracker.GetNode()
 		Root:=SSN(Node,"ancestor::info")
-		if(Repo:=SSN(Root,"@repo").text){
-			;here
-			;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!          DO Things           !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      to make this work       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!            Please            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Re-Write the Github thingie  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			m("Create the actual Branch on Github",Repo)
-		}
 		Branch:=InputBox(NewWin.HWND,"New Branch","Enter the name for this new branch`nSpaces will be replaced with -`nAnything other than [A-Za-z0-9_-] will be removed")
 		Branch:=RegExReplace(RegExReplace(Branch,"\s","-"),"[^a-zA-Z-_]")
 		if(SSN(Root,"//branch[@name='" Branch "']"))
@@ -11762,7 +11830,7 @@ Class Version_Tracker{
 						;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 						Root.SetAttribute("repo",Value),Version_Tracker.Select(Select)
 						if(m("Refresh This Repo?","btn:ync","def:2")="Yes"){
-							;heree
+							;here
 						}
 						return
 				}}else if(Value:=InputBox(NewWin.ID,"Enter A New Value","Enter A New Value For: " Format("{:T}",Key),SSN(Node,"@" Key).text))
@@ -11827,6 +11895,22 @@ Class Version_Tracker{
 				NewWin.Disable("VerEdit")
 			}else
 				NewWin.Disable("VerEdit")
+			FileNode:=SSN(Node,"ancestor-or-self::branch")
+			
+			;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!   Do I want the branches   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! to have different files?!  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			
+			
+			if(FileNode.xml!=LastFileNode.xml){
+				LastFileNode:=FileNode,LV_Delete()
+				All:=SN(Node,"ancestor-or-self::branch/descendant::files/file")
+				while(aa:=All.Item[A_Index-1],ea:=XML.EA(aa)){
+					LV_Add("","Directory needed",ea.File)
+				}
+				t("here","time:1")
+			}
 			GuiControl,Version:,% NewWin.XML.SSN("//*[@var='CommitAsOne']/@hwnd").text,% SSN(Node,"ancestor-or-self::branch/@onefile")?1:0
 		}
 		return
@@ -11977,7 +12061,7 @@ Class Version_Tracker{
 	}SetSelected(){
 		if(!Root:=Version_Tracker.GetNode("ancestor::info")),NewWin:=Version_Tracker.NewWin,xx:=VVersion
 			Root:=xx.Find("//info/@file",Current(2).File)
-		Node:=Version_Tracker.GetNode(),All:=SN(Root,"//Github/descendant::*[@select]|descendant::*[@select]")
+		Node:=Version_Tracker.GetNode(),All:=SN(Root,"descendant::*[@select]")
 		while(aa:=All.Item[A_Index-1])
 			aa.RemoveAttribute("select")
 		Node.SetAttribute("select",1)
@@ -11990,12 +12074,12 @@ Class Version_Tracker{
 				aa.RemoveAttribute("select")
 			Node.SetAttribute("select",1)
 		}GuiControl,Version:-Redraw,SysTreeView321
-		NewWin.Default("VT"),TV_Delete(),All:=SN(Root,"descendant::*")
+		NewWin.Default("VT"),TV_Delete(),All:=SN(Root,"descendant::*"),FileRoot:="",LV_Delete()
 		while(aa:=All.Item[A_Index-1],ea:=XML.EA(aa)){
+			if(SSN(aa,"ancestor-or-self::files"))
+				Continue
 			if(aa.NodeName="Users")
 				Break
-			if(aa.NodeName~="\b(files|file)\b")
-				Continue
 			aa.SetAttribute("tv",TV_Add((aa.NodeName~="i)\b(branch|version)\b"?ea.Name:aa.NodeName="info"?(ea.Type?ea.Type (ea.Action?" - " ea.Action " by " ea.User:"")(ea.Issue?" " ea.Issue:""):"(Enter to change this)"):aa.xml),SSN(aa.ParentNode,"@tv").text))
 		}for a,b in Settings.EA("//github"){
 			if(A_Index=1)
@@ -12079,6 +12163,348 @@ Custom_Indent(){
 		Node:=Settings.Add("CustomIndent/Language",{language:Language},,1)
 	Keywords.IndentRegex[Language]:=Node.Text:=Trim(Total,"|"),NewWin.Exit()
 	return
+}
+EncodeGF(text){
+	if(text="")
+		return
+	cp:=0,VarSetCapacity(rawdata,StrPut(text,"UTF-8")),sz:=StrPut(text,&rawdata,"UTF-8")-1,DllCall("Crypt32.dll\CryptBinaryToString","ptr",&rawdata,"uint",sz,"uint",0x40000001,"ptr",0,"uint*",cp),VarSetCapacity(str,cp*(A_IsUnicode?2:1)),DllCall("Crypt32.dll\CryptBinaryToString","ptr",&rawdata,"uint",sz,"uint",0x40000001,"str",str,"uint*",cp)
+	return str
+}
+UpdateBranches(a*){
+	m("HERE! UpdateBranches umm...")
+	/*
+		;~ this downloads all the branch info so keep it
+		;~ BUT MAKE SURE TO NOT OVERWRITE ANY VERSIONS THAT ALREADY EXIST!!!!!!!!!!!!!
+		UpdateBranches(){
+			root:=this.DXML.SSN("//*"),pos:=1,node:=Node()
+			info:=git.Send("GET",git.RepoURL("git/refs/heads")),List:=[]
+			while(RegExMatch(info,"OUi)\x22ref\x22:\x22(.*)\x22",Found,pos),pos:=Found.Pos(1)+Found.len(1)){
+				List[(item:=StrSplit(Found.1,"/").Pop())]:=1
+				if(!this.DXML.Find("//branch/@name",item))
+					this.DXML.Under(root,"branch",{name:item})
+				if(!new:=vversion.Find(node,"branch/@name",item))
+					new:=vversion.Under(node,"branch",{name:item,onefile:1})
+				if(item="master"&&SSN((before:=SSN(node,"branch")),"@name").text!="master")
+					node.InsertBefore(new,before)
+			}blist:=this.DXML.SN("//branch")
+			while(bl:=blist.item[A_Index-1],ea:=XML.EA(bl))
+				if(!List[ea.name])
+					bl.ParentNode.RemoveChild(bl)
+			all:=SN(node,"branch")
+			while(aa:=all.item[A_Index-1],ea:=XML.EA(aa))
+				if(!List[ea.name])
+					aa.ParentNode.RemoveChild(aa)
+			pos:=1,info:=git.Send("GET",git.RepoURL("releases"))
+			while(pos:=RegExMatch(info,"{\x22url\x22:",,pos)){
+				commit:=[]
+				for a,b in {id:",",target_commitish:",",name:",",draft:",",prerelease:",",body:"\}"}
+					RegExMatch(info,"OUi)\x22" a "\x22:(.*)" b,Found,pos),commit[a]:=Trim(Found.1,Chr(34))
+				if(!top:=vversion.Find(node,"branch/@name",commit.target_commitish))
+					top:=vversion.Under(node,"branch",{name:commit.target_commitish})
+				if(!version:=vversion.Find(top,"version/@name",commit.name))
+					version:=this.DXML.Under(top,"version",{name:commit.name})
+				for a,b in commit{
+					if(a!="body")
+						version.SetAttribute(a,b)
+					else
+						version.text:=RegExReplace(b,"\R|\\n|\\r",Chr(127))
+				}
+				pos:=found.Pos(1)+found.Len(1)
+			}for a in list{
+				if(!SSN((top:=vversion.Find(node,"branch/@name",a)),"version"))
+					vversion.Under(top,"version",{name:1})
+			}PopVer()
+		}
+	*/
+}
+Class Github{
+	static url:="https://api.github.com",HTTP:=[]
+	__New(NewWin){
+		ea:=Settings.EA("//github")
+		if(!(ea.owner&&ea.token))
+			return m("Please setup your Github info"),Update_Github_Info()
+		this.HTTP:=ComObjCreate("WinHttp.WinHttpRequest.5.1")
+		if(proxy:=Settings.SSN("//proxy").text)
+			HTTP.setProxy(2,proxy)
+		for a,b in Settings.EA("//github")
+			this[a]:=b
+		this.NewWin:=NewWin,Node:=this.Node(),this.BaseURL:=this.url "/repos/" this.owner "/" this.repo "/",this.repo:=SSN(Node,"ancestor-or-self::info/@repo").text,this.Token:="?access_token=" ea.token,this.Refresh()
+		return this
+	}Blob(repo,text,skip:=""){
+		if(!skip)
+			text:=EncodeGF(text)
+		json={"content":"%text%","encoding":"base64"}
+		return this.Sha(this.Send("POST",this.url "/repos/" this.owner "/" repo "/git/blobs" this.Token,json))
+	}Branch(){
+		return SSN(Version_Tracker.GetNode("ancestor-or-self::branch"),"@name").text
+	}Commit(repo,tree,parent,message:="Updated the file",name:="placeholder",email:="placeholder@gmail.com"){
+		message:=this.UTF8(message),parent:=this.cmtsha,url:=this.url "/repos/" this.owner "/" repo "/git/commits" this.Token
+		json={"message":"%message%","author":{"name": "%name%","email": "%email%"},"parents":["%parent%"],"tree":"%tree%"}
+		sha:=this.Sha(info:=this.Send("POST",url,json))
+		return sha
+	}CreateFile(repo,filefullpath,text,commit="First Commit",realname="Testing",email="Testing"){
+		SplitPath,filefullpath,filename
+		url:=this.url "/repos/" this.owner "/" repo "/contents/" filename this.Token,file:=this.utf8(text)
+		json={"message":"%commit%","committer":{"name":"%realname%","email":"%email%"},"content": "%file%"}
+		this.HTTP.Open("PUT",url),this.HTTP.send(json),RegExMatch(this.HTTP.ResponseText,"U)"Chr(34) "sha" Chr(34) ":(.*),",found)
+	}CreateRepo(name,description="",homepage="",private="false",issues="true",wiki="true",downloads="true"){
+		url:=this.url "/user/repos" this.Token
+		for a,b in {homepage:this.UTF8(homepage),description:this.UTF8(description)}
+			if(b!=""){
+				aa="%a%":"%b%",
+				add.=aa
+			}
+		/*
+			json={"name":"%name%",%add% "private":%private%,"has_issues":%issues%,"has_wiki":%wiki%,"has_downloads":%downloads%,"auto_init":true}
+		*/
+		return this.Send("POST",url,this.json({name:name,private:private,has_issues:issues,has_wiki:wiki,has_downloads:Downloads,auto_init:"true",homepage:this.UTF8(homepage),description:this.UTF8(description)}))
+	}Delete(filenames){
+		node:=this.DXML.Find("//branch/@name",this.Branch())
+		if(SN(node,"*[@sha]").length!=SN(node,"*").length)
+			this.TreeSha()
+		for c,d in filenames{
+			StringReplace,cc,c,\,/,All
+			url:=this.url "/repos/" this.owner "/" this.repo "/contents/" cc this.Token,sha:=SSN(node,"descendant::*[@file='" c "']/@sha").text
+			if(!sha)
+				Continue
+			this.HTTP.Open("DELETE",url),this.HTTP.send(this.json({"message":"Deleted","sha":sha,"branch":this.Branch()}))
+			d.ParentNode.RemoveChild(d)
+			return this.HTTP
+	}}Find(search,text){
+		RegExMatch(text,"UOi)\x22" search "\x22\s*:\s*(.*)[,|\}]",found)
+		return Trim(found.1,Chr(34))
+	}GetRef(){
+		this.cmtsha:=this.Sha(info:=this.Send("GET",this.RepoURL("git/refs/heads/" this.Branch())))
+		if(!this.cmtsha){
+			if((RepoList:=this.Send("GET",this.RepoURL("branches")))~="\x22message\x22:\x22Not Found\x22")
+				this.CreateRepo(this.Repo),RepoList:=this.Send("GET",this.RepoURL("branches"))
+			Pos:=LastPos:=1,RepoObj:=[]
+			while(RegExMatch(RepoList,"OUi)\x22name\x22:\x22(.*)\x22.*\x22sha\x22:\x22(.*)\x22",Found,Pos),Pos:=Found.Pos(1)+Found.Len(1)){
+				if(Pos=LastPos),LastPos:=Pos
+					Break
+				RepoObj.Push({Repo:Found.1,Sha:Found.2})
+			}if(RepoObj.MaxIndex()>1){
+				Selections:=[],ShowList:="There are multiple Repositories to create a branch from`nPlease Enter The NUMBER from this list to create the new branch from`n`n"
+				for a,b in RepoObj
+					ShowList.=A_Index ": " b.Repo "`n",Selections[A_Index]:=b
+				RegExReplace(ShowList,"\R",,Count)
+				InputBox,Number,Choose A Branch,%ShowList%,,,% (Count*15)+150
+				if(!Obj:=Selections[Number]){
+					m(Number " was not one of the options. Exiting.")
+					Exit
+				}
+			}else
+				Obj:=RepoObj.1
+			WinGetTitle,Title,% this.NewWin.ID
+			this.SetTitle("Creating Branch: " this.Branch())
+			this.Send("POST",this.RepoURL("git/refs"),this.json({ref:"refs/heads/" this.Branch(),sha:Obj.Sha}))
+			this.SetTitle("Getting Branch: " this.Branch() " sha")
+			this.cmtsha:=this.Sha(info:=this.Send("GET",this.RepoURL("git/refs/heads/" this.Branch())))
+			this.SetTitle(Title)
+		}
+		RegExMatch(this.Send("GET",this.RepoURL("commits/" this.cmtsha)),"U)tree.:\{.sha.:.(.*)" Chr(34),found)
+		return found1
+	}GetTree(value:=""){
+		info:=this.Send("GET",this.url "/repos/" this.owner "/" this.repo "/git/trees/" this.GetRef() this.Token)
+		if(value){
+			temp:=new XML("tree"),top:=temp.SSN("//tree"),info:=SubStr(info,InStr(info,Chr(34) "tree" Chr(34))),pos:=1
+			while,RegExMatch(info,"OU){(.*)}",found,pos){
+				new:=temp.under(top,"node")
+				for a,b in StrSplit(found.1,",")
+					in:=StrSplit(b,":",Chr(34)),new.SetAttribute(in.1,in.2)
+				pos:=found.pos(1)+found.len(1)
+			}temp.Transform(2)
+		}return temp
+	}json(info){
+		for a,b in info
+			json.=Chr(34) a Chr(34) ":" (b="true"?"true":b="false"?"false":Chr(34) b Chr(34)) ","
+		return "{" Trim(json,",") "}"
+	}Limit(){
+		url:=this.url "/rate_limit" this.Token,this.HTTP.Open("GET",url),this.HTTP.Send()
+		m(this.HTTP.ResponseText)
+	}Node(){
+		if(!node:=vversion.SSN("//info[@file='" Current(2).file "']"))
+			node:=vversion.Under(vversion.SSN("//*"),"info"),node.SetAttribute("file",Current(2).file)
+		this.repo:=SSN(Node,"ancestor-or-self::info/@repo").text
+		if(this.repo){
+			if(!SSN(node,"descendant::branch[@name='master']"))
+				UpdateBranches()
+		}
+		return node
+	}Ref(repo,sha){
+		url:=this.url "/repos/" this.owner "/" repo "/git/refs/heads/" this.Branch() this.Token,this.HTTP.Open("PATCH",url)
+		json={"sha":"%sha%","force":true}
+		this.HTTP.Send(json)
+		SplashTextOff
+		return this.HTTP.Status
+	}Refresh(){
+		this.repo:=SSN(this.Node(),"@repo").text
+		if(this.repo){
+			if(!FileExist(A_ScriptDir "\Github"))
+				FileCreateDir,% A_ScriptDir "\Github"
+			this.DXML:=new XML(this.repo,A_ScriptDir "\Github\" this.repo ".xml")
+			branch:=SSN(this.Node(),"@branch").text
+			this.DXML.Save(1)
+		}
+	}RepoURL(Path:="",Extra:=""){
+		return this.BaseURL:=this.url "/repos/" this.owner "/" this.repo (Path?"/" Path:"") this.Token Extra
+	}Send(verb,url,data=""){
+		this.HTTP.Open(verb,url),this.HTTP.Send(IsObject(data)?this.json(data):data),SB_SetText("Remaining API Calls: " this.remain:=this.HTTP.GetResponseHeader("X-RateLimit-Remaining"))
+		return this.HTTP.ResponseText
+	}SetTitle(Text:="Github Version Tracker"){
+		WinSetTitle,% this.NewWin.ID,,%Text%
+	}Sha(text){
+		RegExMatch(this.HTTP.ResponseText,"U)\x22sha\x22:(.*),",found)
+		return Trim(found1,Chr(34))
+	}Tree(repo,parent,blobs){
+		url:=this.url "/repos/" this.owner "/" repo "/git/trees" this.Token,open:="{"
+		if(parent)
+			json=%open% "base_tree":"%parent%","tree":[
+		else
+			json=%open% "tree":[
+		for a,blob in blobs{
+			add={"path":"%a%","mode":"100644","type":"blob","sha":"%blob%"},
+			json.=add
+		}
+		return this.Sha(info:=this.Send("POST",url,Trim(json,",") "]}"))
+	}TreeSha(){
+		node:=this.DXML.Find("//branch/@name",this.Branch()),url:=this.url "/repos/" this.owner "/" this.repo "/commits/" this.Branch() this.Token,tree:=this.Sha(this.Send("GET",url)),url:=this.url "/repos/" this.owner "/" this.repo "/git/trees/" tree this.Token "&recursive=1",info:=this.Send("GET",url),info:=SubStr(info,InStr(info,"tree" Chr(34)))
+		for a,b in StrSplit(info,"{")
+			if(path:=this.Find("path",b)){
+				if(this.Find("mode",b)!="100644"||path="readme.md"||path=".gitignore")
+					Continue
+				StringReplace,path,path,/,\,All
+				if(!nn:=SSN(node,"descendant::*[@file='" path "']"))
+					nn:=this.DXML.Under(node,"file",{file:path})
+				nn.SetAttribute("sha",this.Find("sha",b))
+	}}UTF8(info){
+		info:=RegExReplace(info,"([" Chr(34) "\\])","\$1")
+		for a,b in {"`n":"\n","`t":"\t","`r":"\r"}
+			StringReplace,info,info,%a%,%b%,All
+		return info
+	}
+}
+Class CommitClass{
+	Commit(){
+		Git:=new GitHub(NewWin)
+		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!                 Now                  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!            Save All Files            !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!       Compile the verison info       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!! See if it needs to be a Single File  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!          Publish If Needed           !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!            Do The Commit             !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! THIS IS  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  COMMIT  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		if(!git.repo)
+			return m("Please setup a repo name in the GUI by clicking Repository Name:")
+		if(!VersionNode:=SSN(Git.Node(),"descendant::*[@select]/ancestor-or-self::version"))
+			return m("Please Select A Version")
+		Current:=main:=file:=Current(2).File,ea:=Settings.EA("//github"),Delete:=[],Path:=A_ScriptDir "\Github\" git.repo,Version:=SSN(VersionNode,"@name").text,All:=SN(VersionNode,"descendant-or-self::*"),Info:=""
+		while(aa:=All.Item[A_Index-1],MEA:=XML.EA(aa)){
+			if(aa.NodeName="Version")
+				CommitMsg.=(CommitMsg?":`r`n":"") MEA.Name ":"
+			else
+				CommitMsg.=(CommitMsg?"`r`n":"") (MEA.Type?MEA.Type ":":"") (MEA.Action?" " MEA.Action " by " MEA.User:"") (MEA.Issue?" " MEA.Issue:"") (MEA.Type?"`r`n":"") RegExReplace(aa.Text,Chr(127),"`r`n")
+		}if(!CommitMsg)
+			return m("Please select a commit message from the list of versions, or enter a commit message in the space provided")
+		if(!(ea.name&&ea.email&&ea.token&&ea.owner))
+			return m("Please make sure that you have set your Github information")
+		if(!FileExist(A_ScriptDir "\GitHub"))
+			FileCreateDir,% A_ScriptDir "\GitHub"
+		TempXML:=new XML("temp"),TempXML.XML.LoadXML(cexml.Find("//main/@file",Current).xml)
+		MainFile:=Current,Branch:=SSN(VersionNode,"ancestor-or-self::branch/@name").text,Uploads:=[]
+		list:=SN(Git.Node(),"descendant::*[@select]/ancestor-or-self::branch/descendant::files/*")
+		if(!Branch)
+			return m("Please select the branch you wish to update.")
+		DXML:=new XML(Git.Repo,A_ScriptDir "\GitHub\" Git.Repo ".xml")
+		if(!Top:=DXML.Find("//branch/@name",Branch))
+			Top:=DXML.Under(DXML.SSN("//*"),"branch",{name:Branch})
+		DeleteList:=[],Node:=SSN(VersionNode,"ancestor::branch"),AllFiles:=SN(Node,"descendant::files/file")
+		while(aa:=AllFiles.item[A_Index-1],ea:=XML.EA(aa))
+			if(ea.sha)
+				DeleteList[ea.File]:={node:aa,ea:ea}
+		all:=SN(Top,"descendant::file")
+		while(aa:=all.item[A_Index-1],ea:=XML.EA(aa))
+			if(ea.sha)
+				DeleteList[ea.File]:={node:aa,ea:ea}
+		SplitPath,Current,FileName,,,NNE
+		if(!FileExist(Path))
+			FileCreateDir,%Path%
+		if(SSN(Version_Tracker.GetNode(),"ancestor-or-self::branch/@onefile")){
+			OOF:=FileOpen(Path "\" FileName,"RW",ea.encoding),text:=OOF.Read(OOF.Length),PublishText:=Publish(1),Version_Tracker.NewWin.Default("VT"),Node:=VVersion.SSN("//*[@tv='" TV_GetSelection() "']" (VersionNode=1?"ancestor-or-self::version":VersionNode?VersionNode:""))
+			if(!(PublishText==text))
+				Uploads[FileName]:={text:PublishText,time:time,local:Path "\" Filename}
+		}else{
+			all:=TempXML.SN("//file")
+			while(aa:=all.item[A_Index-1],ea:=XML.EA(aa)){
+				fn:=ea.file,GitHubFile:=ea.github?ea.github:ea.filename
+				SplitPath,fn,FileName
+				if(!ii:=DXML.Find(Top,"descendant::file/@file",GithubFile))
+					ii:=DXML.Under(Top,"file",{file:GithubFile})
+				FileGetTime,time,%fn%
+				DeleteList.Delete(GithubFile)
+				if(SSN(ii,"@time").text!=time)
+					file:=FileOpen(fn,"RW",ea.encoding),file.Seek(0),text:=file.Read(file.Length),file.Close(),Uploads[RegExReplace(GithubFile,"\\","/")]:={text:text,time:time,node:ii,local:ea.file}
+		}}VTObject:=FileOpen(Path "\" NNE ".text","RW"),CheckVersionText:=VTObject.Read(VTObject.Length),VTObject.Seek(0),VTObject.Write(VersionText),VTObject.Length(VTObject.Position),VTObject.Close()
+		while(aa:=AllFiles.item[A_Index-1],ea:=XML.EA(aa)){
+			fn:=ea.filepath
+			FileGetTime,time,%fn%
+			DeleteList.Delete(ea.filepath)
+			/*
+				make sure to add in the folder before the DeleteList[filename] to make sure it is unique
+			*/
+			if(ea.time!=time||!ea.sha){
+				branch:=(name:=SSN(aa,"ancestor-or-self::branch/@name").text)?name:"master"
+				SplitPath,fn,filename
+				Uploads[(ea.folder?ea.folder "/":"") ea.file]:=EncodeFile(fn,time,aa,branch)
+		}}for a,b in Uploads
+			DeleteList.Delete(a),Finish:=1
+		VersionList:=SN(Git.Node,"descendant-or-self::*[@select]/ancestor-or-self::version/descendant-or-self::*"),VersionText:=""
+		while(aa:=VersionList.Item[A_Index-1],VEA:=XML.EA(aa)){
+			if(aa.NodeName="Version")
+				VersionText.=(VersionText?":`r`n":"") VEA.Name ":"
+			else
+				VersionText.=(VersionText?"`r`n":"") (VEA.Type?VEA.Type ":":"") (VEA.Action?" " VEA.Action " by " VEA.User:"") (VEA.Issue?" " VEA.Issue:"") (VEA.Type?"`r`n":"") RegExReplace(aa.Text,Chr(127),"`r`n")
+		}if(VersionText==CheckVersionText=0)
+			Uploads[NNE ".text"]:={text:VersionText}
+		if(!Finish){
+			if(IsObject(OOF))
+				OOF.Close()
+			return m("Nothing to upload"),VTObject.Close()
+		}if(!Current_Commit:=git.GetRef()){
+			m("No Commit, Please Try Again In A Short Time (GitHub may be down)")
+			Exit
+		}Store:=[],Upload:=[]
+		for a,b in Uploads{
+			WinSetTitle,% NewWin.ID,,Uploading: %a%
+			NewText:=b.text?b.text:";Blank File"
+			if((blob:=Store[a])=""||b.force){
+				Store[a]:=blob:=git.Blob(git.repo,RegExReplace(NewText,Chr(59) "github_version",version),b.skip)
+				if(!blob)
+					return m("Error occured while uploading " text.local)
+				Sleep,250
+			}
+			Upload[a]:=blob
+		}Tree:=Git.Tree(Git.Repo,Current_Commit,Upload),Commit:=Git.Commit(Git.Repo,Tree,Current_Commit,CommitMsg,Git.Name,Git.EMail),Info:=Git.Ref(Git.Repo,Commit)
+		m("Tree: " Tree,"Commit: " Commit,"Info: " Info)
+		if(Info=200){
+			Top:=DXML.Find("//branch/@name",Branch)
+			for a,b in Uploads{
+				if(b.Node)
+					b.Node.SetAttribute("time",b.Time),b.Node.SetAttribute("sha",Upload[a])
+			}if(IsObject(OOF))
+				OOF.Seek(0),OOF.Write(PublishText),OOF.Length(OOF.Position),OOF.Close()
+			DeleteExtraFiles(DeleteList,DXML),DXML.Save(1),PluginClass.TrayTip("GitHub Update Complete")
+		}else
+			m("An Error Occured",commit)
+		WinSetTitle,% NewWin.ID,,Github Repository
+		DXML.Save(1)
+		return
+	}
 }
 DebugWindow(Text,Clear:=0,LineBreak:=0,Sleep:=0,AutoHide:=0,MsgBox:=0){
 	x:=ComObjActive("{DBD5A90A-A85C-11E4-B0C7-43449580656B}"),x.DebugWindow(Text,Clear,LineBreak,Sleep,AutoHide,MsgBox)
