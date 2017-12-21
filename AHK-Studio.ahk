@@ -25,7 +25,7 @@ return
 return
 /*
 	EndThing:
-	sc:=csc()
+	sc:=CSC()
 	if(sc.2102)
 		sc.2101()
 	Send,{%A_ThisHotkey%}
@@ -106,7 +106,7 @@ OR PERFORMANCE OF THIS SOFTWARE.
 )
 	Setup(11),Hotkeys(11,{"Esc":"11Close"}), Version:="1.005.01"
 	Gui,Margin,0,0
-	sc:=new s(11,{pos:"x0 y0 w700 h500"}),csc({hwnd:sc})
+	sc:=new s(11,{pos:"x0 y0 w700 h500"}),CSC({hwnd:sc})
 	Gui,Add,Button,gdonate,Donate
 	Gui,Add,Button,x+M gsite,Website
 	Gui,Show,w700 h550,AHK Studio Help Version: %version%
@@ -115,7 +115,7 @@ OR PERFORMANCE OF THIS SOFTWARE.
 	11Close:
 	11GuiClose:
 	11GuiEscape:
-	hwnd({rem:11})
+	HWND({rem:11})
 	return
 	site:
 	Run,https://github.com/maestrith/AHK-Studio
@@ -125,16 +125,15 @@ Activate(a,b,c,d*){
 	if(A_Gui=1&&a=1){
 		if(a&&v.Options.Check_For_Edited_Files_On_Focus=1)
 			Check_For_Edited()
-		sc:=csc()
+		sc:=CSC()
 		if(sc.sc=v.Debug.sc||sc.sc=MainWin.tnsc.sc)
-			sc:=csc({last:1})
+			sc:=CSC({last:1})
 		sc.2400
-	}
-	Sleep,20
+	}Sleep,20
 	return 0
 }
 Add_Selected_To_Personal_Variables(){
-	sc:=csc()
+	sc:=CSC()
 	if(!text:=sc.GetSelText())
 		return m("Please select some text first")
 	Words:=RegExReplace(RegExReplace(text,"x)([^\w])"," "),"(\b\d+\b|\b(\w{1,2})\b)","")
@@ -152,7 +151,7 @@ Add_Selected_To_Personal_Variables(){
 	*/
 }
 AddBookmark(line,search){
-	sc:=csc(),end:=sc.2136(line),start:=sc.2128(line),name:=(Settings.SSN("//bookmark").text),name:=name?name:SubStr(StrSplit(Current(2).file,"\").pop(),1,-4)
+	sc:=CSC(),end:=sc.2136(line),start:=sc.2128(line),name:=(Settings.SSN("//bookmark").text),name:=name?name:SubStr(StrSplit(Current(2).file,"\").pop(),1,-4)
 	for a,b in {"$file":SubStr(StrSplit(Current(3).file,"\").pop(),1,-4),"$project":SubStr(StrSplit(Current(2).file,"\").pop(),1,-4)}
 		name:=RegExReplace(name,"i)\Q" a "\E",b)
 	if(RegExMatch(name,"UO)\[(.*)\]",time)){
@@ -163,7 +162,7 @@ AddBookmark(line,search){
 }
 AddInclude(FileName:="",text:="",pos:="",Show:=1){
 	static new
-	file:=FileOpen(FileName,"RW","UTF-8"),File.Write(text),File.Length(File.Position),rel:=RelativePath(Current(2).file,FileName),sc:=csc()
+	file:=FileOpen(FileName,"RW","UTF-8"),File.Write(text),File.Length(File.Position),rel:=RelativePath(Current(2).file,FileName),sc:=CSC()
 	Current:=Current(4)
 	SplitPath,FileName,FN,Dir,Ext,NNE,Drive
 	FileGetTime,Time,%FileName%
@@ -209,7 +208,7 @@ AddInclude(FileName:="",text:="",pos:="",Show:=1){
 	/*
 		ScanFiles()
 	*/
-	Default("SysTreeView321")
+	TVC.Default(1)
 	if(Show)
 		tv(SSN(new,"@tv").text,pos)
 }
@@ -277,7 +276,7 @@ SettingsDefault(id,return:=0){
 	return (return?XML.EA(node):node)
 }
 AutoClass(){
-	sc:=csc(),line:=sc.2166(sc.2008),text:=sc.TextRange(sc.2128(line),sc.2008)
+	sc:=CSC(),line:=sc.2166(sc.2008),text:=sc.TextRange(sc.2128(line),sc.2008)
 	if(RegExMatch(text,"i)\bnew\b\s+" v.word)){
 		if(sc.2007(sc.2008)!=40)
 			sc.2003(sc.2008,"()"),sc.2025(sc.2008+1),Context()
@@ -288,7 +287,7 @@ AutoClass(){
 }
 AutoMenu(){
 	AutoMenu:
-	sc:=csc()
+	sc:=CSC()
 	if(sc.2007(sc.2008-1)~="40|123")
 		return
 	Command:=RegExReplace(Context(1).Word,"#")
@@ -302,7 +301,7 @@ AutoMenu(){
 }
 Backspace(sub:=1){
 	ControlGetFocus,focus,A
-	Send:=sub?"Backspace":"Delete",sc:=csc(),Start:=sc.2166(sc.2008)
+	Send:=sub?"Backspace":"Delete",sc:=CSC(),Start:=sc.2166(sc.2008)
 	if(!v.LineEdited[Start])
 		SetScan(Start)
 	if(!InStr(focus,"Scintilla")){
@@ -366,13 +365,13 @@ Backspace(sub:=1){
 BookEnd(add,hotkey){
 	if(!(add&&hotkey))
 		return
-	sc:=csc(),sc.2078,add:=add?add:v.match[hotkey]
+	sc:=CSC(),sc.2078,add:=add?add:v.match[hotkey]
 	loop,% sc.2570
 		start:=sc.2585(A_Index-1),end:=sc.2587(A_Index-1),sc.2686(end,end),sc.2194(1,add),sc.2686(start,start),sc.2194(1,hotkey),sc.2584(A_Index-1,start+1),sc.2586(A_Index-1,end+1)
 	sc.2079
 }
 BraceHighlight(){
-	sc:=csc()
+	sc:=CSC()
 	if(sc.2353(sc.2008-1)>0)
 		sc.2351(v.bracestart:=sc.2008-1,v.braceend:=sc.2353(sc.2008-1)),v.highlight:=1
 	else if(sc.2353(sc.2008)>0)
@@ -386,7 +385,7 @@ BraceSetup(Win:=1){
 	/*
 		make this list editable at some point.
 	*/
-	Hotkey,IfWinActive,% hwnd([win])
+	Hotkey,IfWinActive,% HWND([win])
 	for a,b in setup
 		Try{
 			Hotkey,%a%,Brace,On
@@ -410,7 +409,7 @@ BraceSetup(Win:=1){
 	if(!InStr(focus,"Scintilla")){
 		Send,{%A_ThisHotkey%}
 		return
-	}sc:=csc(),Hotkey:=SubStr(A_ThisHotkey,0),line:=sc.2166(sc.2008),Language:=GetLanguage(sc)
+	}sc:=CSC(),Hotkey:=SubStr(A_ThisHotkey,0),line:=sc.2166(sc.2008),Language:=GetLanguage(sc)
 	if(sc.2102)
 		sc.2101
 	if(sc.2008!=sc.2009)
@@ -504,7 +503,7 @@ BraceSetup(Win:=1){
 	return SetStatus("Last Entered Character: " hotkey " Code:" Asc(hotkey),2)
 	if(Hotkey="}"){
 		FixBrace:
-		sc:=csc(),line:=sc.2166(sc.2008),sc.2078
+		sc:=CSC(),line:=sc.2166(sc.2008),sc.2078
 		Sleep,100
 		match:=sc.2166(pos:=sc.2353(sc.2008-1))
 		if(line!=match&&pos>=0){
@@ -521,13 +520,13 @@ BraceSetup(Win:=1){
 }
 Center(win){
 	Gui,%win%:Show,Hide
-	WinGetPos,x,y,w,h,% hwnd([1])
-	WinGetPos,xx,yy,ww,hh,% hwnd([win])
+	WinGetPos,x,y,w,h,% HWND([1])
+	WinGetPos,xx,yy,ww,hh,% HWND([win])
 	centerx:=(Abs(w-ww)/2),centery:=Abs(h-hh)/2
 	return "x" x+centerx " y" y+centery
 }
 CenterSel(){
-	sc:=csc(),sc.2169
+	sc:=CSC(),sc.2169
 	if(v.Options.Center_Caret!=1){
 		sc.2402(0x04|0x8,0),sc.2403(0x04|0x8,0)
 		Sleep,1
@@ -536,7 +535,7 @@ CenterSel(){
 }
 Check_For_Edited(){
 	static ea,sc
-	All:=cexml.SN("//file"),sc:=csc()
+	All:=cexml.SN("//file"),sc:=CSC()
 	while(aa:=All.Item[A_Index-1],ea:=XML.EA(aa)){
 		FileGetTime,Time,% ea.File
 		if(Time!=ea.Time&&ea.Note!=1){
@@ -731,10 +730,10 @@ class Code_Explorer{
 				tv:=Files.SSN("//file[@id='" SSN(Node,"ancestor::file/@id").text "']/@tv").text,Item:=XML.EA(Node)
 				if(tv!=TVC.Selection(1))
 					tv(tv),Sleep(200)
-				sc:=csc(),Text:=sc.GetUNI(),pre:=SN(Node,"preceding-sibling::*[@type='" item.type "' and @text='" item.text "']").Length,Pos:=0,Search:=RegExReplace(BreakBook[Item.Type],"\$1",Item.Text)
+				sc:=CSC(),Text:=sc.GetUNI(),pre:=SN(Node,"preceding-sibling::*[@type='" item.type "' and @text='" item.text "']").Length,Pos:=0,Search:=RegExReplace(BreakBook[Item.Type],"\$1",Item.Text)
 				Loop,% 1+pre
 					Pos:=RegExMatch(Text,Search,,Pos+1)
-				line:=sc.2166(StrPut(SubStr(Text,1,Pos),"UTF-8")-1),sc.2160(sc.2128(line),sc.2136(line)),hwnd({rem:20}),CenterSel()
+				line:=sc.2166(StrPut(SubStr(Text,1,Pos),"UTF-8")-1),sc.2160(sc.2128(line),sc.2136(line)),HWND({rem:20}),CenterSel()
 			}else{
 				if(Node.NodeName="info"){
 					SelectText(Node,1),CenterSel()
@@ -825,7 +824,7 @@ class Debug{
 	}Disconnect(){
 		Debug.Send("stop")
 		Sleep,200
-		DllCall("ws2_32\WSAAsyncSelect","uint",Debug.Socket,"ptr",A_ScriptHwnd,"uint",0,"uint",0),DllCall("ws2_32\closesocket","uint",Debug.Socket,"int"),DllCall("ws2_32\WSACleanup"),Debug.Socket:="",Debug.Off(),csc().2264(10000000)
+		DllCall("ws2_32\WSAAsyncSelect","uint",Debug.Socket,"ptr",A_ScriptHwnd,"uint",0,"uint",0),DllCall("ws2_32\closesocket","uint",Debug.Socket,"int"),DllCall("ws2_32\WSACleanup"),Debug.Socket:="",Debug.Off(),CSC().2264(10000000)
 		v.DebugHighlight:=[],DebugHighlight(),Debug.Hotkeys(0),Debug.Caret(0)
 	}Encode(text){
 		IfEqual,text,,return
@@ -833,7 +832,7 @@ class Debug{
 		return str
 	}Focus(){
 		if(!v.Options.Focus_Studio_On_Debug_Breakpoint)
-			WinActivate,% hwnd([1])
+			WinActivate,% HWND([1])
 	}Hotkeys(State){
 		state:=state?"On":"Off"
 		if(v.Options.Global_Debug_Hotkeys){
@@ -858,7 +857,7 @@ class Debug{
 			Sleep,100
 			if(A_Index=5){
 				return m("Debugger failed, Please close all instances of " SplitPath(Debug.filename).filename " and try again")
-		}}sc.2004(),sc.2003(0,"Initializing Debugger, Please Wait...`n"),csc().2264(500)
+		}}sc.2004(),sc.2003(0,"Initializing Debugger, Please Wait...`n"),CSC().2264(500)
 		if(v.Options.Auto_Variable_Browser)
 			VarBrowser()
 		SetTimer,cee,-600
@@ -866,7 +865,7 @@ class Debug{
 		cee:
 		if(WinExist("ahk_pid" pid)){
 			ControlGetText,text,Static1,% "ahk_pid" pid
-			sc:=csc(),info:=StripError(text,Debug.filename) ;IMPORTANT
+			sc:=CSC(),info:=StripError(text,Debug.filename) ;IMPORTANT
 			if(info.line&&info.file)
 				SetPos({file:info.file,line:info.line}),v.Debug.2003(v.Debug.2006,"`n" text)
 		}return
@@ -988,6 +987,9 @@ class EasyView{
 		this.Default(Control)
 		GuiControl,% this.win ":+Redraw",% this.Controls[Control].HWND
 		GuiControl,% this.win ":+g" this.Controls[Control].Label,% this.Controls[Control].HWND
+	}Redraw(Control,State:=1){
+		this.Default(Control)
+		GuiControl,% this.win ":" (State?"+":"-") "Redraw",% this.Controls[Control].HWND
 	}Selection(Control){
 		dg:=A_DefaultGui,this.Default(Control),tv:=TV_GetSelection()
 		Gui,%dg%:Default
@@ -1021,7 +1023,6 @@ Spoons(a*){
 		sc:=v.debug
 		if(Code=2027){
 			style:=sc.2010(sc.2008)
-			m(Style)
 			if(style=-106)
 				Run_Program()
 			else if(style=-105)
@@ -1086,7 +1087,7 @@ Class Icon_Browser{
 Class LineStatus{
 	static XML:=new XML("LineStatus"),stored:=[],state:={1:21,2:20}
 	Add(line,state){
-		sc:=csc()
+		sc:=CSC()
 		if(sc.sc=MainWin.tnsc.sc||sc.sc=v.Debug.sc)
 			return
 		if(mask:=sc.2046(line))
@@ -1097,36 +1098,36 @@ Class LineStatus{
 			node:=this.XML.Add("state",{id:id},,1)
 		node.SetAttribute("state",state)
 	}Delete(start,end){
-		add:=start+1=end?0:1,sc:=csc()
+		add:=start+1=end?0:1,sc:=CSC()
 		Loop,% end+add-start
 			sc.2044(end+2-A_Index,-1)
 	}Clear(){
-		sc:=csc(),node:=this.XML.SSN("//*[@id='" Current(8) "']").SetAttribute("state",0),next:=0
+		sc:=CSC(),node:=this.XML.SSN("//*[@id='" Current(8) "']").SetAttribute("state",0),next:=0
 		while((next:=sc.2047(next,2**20+2**21))>=0)
 			this.RemoveStatus(next)
 		node.ParentNode.RemoveChild(node)
 	}Save(id){
 		this.XML.SSN("//*[@id='" id "']").SetAttribute("state",1)
 	}tv(){
-		sc:=csc(),state:=SSN(node:=this.XML.SSN("//*[@id='" Current(8) "']"),"@state").text
+		sc:=CSC(),state:=SSN(node:=this.XML.SSN("//*[@id='" Current(8) "']"),"@state").text
 		if(state=1){
 			next:=0
 			while((next:=sc.2047(next,2**20+2**21))>=0)
 				this.RemoveStatus(next),sc.2043(next,this.state[state]),next++
 		}node.SetAttribute("state",1)
 	}UpdateRange(){
-		sc:=csc()
+		sc:=CSC()
 		for a,b in this.stored
 			this.Add(a,b)
 		this.stored:=[]
 	}RemoveStatus(line){
-		sc:=csc(),mask:=sc.2046(line)
+		sc:=CSC(),mask:=sc.2046(line)
 		if(mask&2**20)
 			sc.2044(line,20)
 		if(mask&2**21)
 			sc.2044(line,21)		
 	}StoreEdited(start,end,add){
-		sc:=csc()
+		sc:=CSC()
 		Loop,% (end+1)-start{
 			if(mask:=sc.2046(start+(A_Index-1)))
 				this.RemoveStatus(start+(A_Index-1)),this.stored[start+(A_Index-1)+add]:=(mask&2**20?2:1)
@@ -1154,16 +1155,15 @@ Class MainWindowClass{
 		Gui,Add,TreeView,x0 y0 w0 h0 hwndce +0x400000 AltSubmit
 		Gui,Add,TreeView,hwndtn x0 y0 w0 h0 +0x400000
 		Gui,Color,% RGB(ea.Background),% RGB(ea.Background)
-		hwnd(1,main),this.QuickFind(),this.hwnd:=main,TVC.Register(1,pe,"tv",,"projectexplorer"),TVC.Register(2,ce,"CEGO",,"codeexplorer"),TVC.Register(3,tn,"tn",,"trackednotestv"),TV_Add("Tracked Notes Here"),TNotes:=new Tracked_Notes(),this.tnsc:=new s(1,{pos:"x0 y0 w0 h0"}),this.tnsc.4006(0,"ahk"),Color(this.tnsc,"ahk"),this.tn:=tn+0,this.win:=1,this.ID:="ahk_id" main,TVC.Add(2,"Right Click to Refresh")
+		v.SaveThis:=tn
+		HWND(1,main),this.QuickFind(),this.hwnd:=main,TVC.Register(1,pe,"tv",,"projectexplorer"),TVC.Register(2,ce,"CEGO",,"codeexplorer"),TVC.Register(3,tn,"tn",,"trackednotestv"),TV_Add("Tracked Notes Here"),TNotes:=new Tracked_Notes(),this.tnsc:=new s(1,{pos:"x0 y0 w0 h0"}),this.tnsc.4006(0,"ahk"),Color(this.tnsc,"ahk"),this.tn:=tn+0,this.win:=1,this.ID:="ahk_id" main,TVC.Add(2,"Right Click to Refresh")
 		Gui,Color,0,0
 		Gui,Menu,% Menu("main")
 		this.pe:=pe+0,this.peid:="ahk_id" pe,this.ce:=ce+0,this.ceid:="ahk_id" ce
 		Gui,Add,StatusBar,hwndsb,Testing
 		Gui,Color,0xAAAAAA,0xAAAAAA
 		ControlGetPos,,,,h,,ahk_id%sb%
-		this.Gui:=new XML("gui","lib\Gui.xml"),this.main:=main,this.ID:="ahk_id" main,this.sb:=h
-		OnMessage(0xA0,MainWindowClass.ChangePointer),OnMessage(0xA1,MainWindowClass.Resize),OnMessage(0x232,MainWindowClass.ExitSizeMove),OnMessage(0x0211,MainWindowClass.EnterOff),OnMessage(0x0212,MainWindowClass.EnterOn)
-		OnMessage(6,"Activate")
+		this.Gui:=new XML("gui","lib\Gui.xml"),this.main:=main,this.ID:="ahk_id" main,this.sb:=h,OnMessage(0xA0,MainWindowClass.ChangePointer),OnMessage(0xA1,MainWindowClass.Resize),OnMessage(0x232,MainWindowClass.ExitSizeMove),OnMessage(0x0211,MainWindowClass.EnterOff),OnMessage(0x0212,MainWindowClass.EnterOn),OnMessage(6,"Activate")
 		for a,b in {all:32646,ns:32645,ew:32644}
 			this["curs" a]:=DllCall("LoadCursor",int,0,int,b,uptr)
 		Gui,Margin,0,0
@@ -1224,17 +1224,17 @@ Class MainWindowClass{
 	}DebugWindow(){
 		if(this.Gui.SSN("//win[@win=1]/descendant::*[@type='Debug']"))
 			return
-		ControlGetFocus,Focus,% hwnd([1])
-		ControlGet,hwnd,hwnd,,%Focus%,% hwnd([1])
+		ControlGetFocus,Focus,% HWND([1])
+		ControlGet,hwnd,hwnd,,%Focus%,% HWND([1])
 		if(!Focus){
 			sc:=v.LastSC
 		}else if(!sc:=s.Ctrl[hwnd+0])
-			sc:=csc()
+			sc:=CSC()
 		Color(sc,"ahk")
 		if(sc.sc=MainWin.tnsc.sc){
 			for a,b in s.Ctrl
 				if(a!=MainWin.TNSC.sc){
-					sc:=csc({hwnd:a})
+					sc:=CSC({hwnd:a})
 					Break
 		}}ControlGetPos,x,y,w,h,,% "ahk_id" sc.sc
 		this.NewCtrlPos:=[],this.NewCtrlPos.y:=Round((y+h)*.75),this.NewCtrlPos.ctrl:=sc.sc,this.Split("Below","Debug",sc),this.DebugSC:=sc
@@ -1344,7 +1344,7 @@ Class MainWindowClass{
 		SetTimer,FocusMain,% oea.type="Search"?-1:-300
 		return
 		FocusMain:
-		ControlFocus,,% "ahk_id" csc(2).sc
+		ControlFocus,,% "ahk_id" CSC(2).sc
 		return
 	}DropFiles(filelist,c*){
 		for a,b in filelist{
@@ -1679,7 +1679,7 @@ Class MainWindowClass{
 		if(ea.type="Scintilla"){
 			if((len:=MainWin.GUI.SN("//win[@win=1]/descendant::*[@type='Scintilla']").length)<=1&&new!="Scintilla"&&ea.type="Scintilla")
 				return m("You need at least 1 Sctintilla control.","Right Click and choose Split Control to create a new space for your " new,len)
-			this.Hidden.push(ea.hwnd),s.ctrl[ea.hwnd].Hidden:=1,this.SetWinPos(ea.hwnd,0,0,0,0,ea),csc(2)
+			this.Hidden.push(ea.hwnd),s.ctrl[ea.hwnd].Hidden:=1,this.SetWinPos(ea.hwnd,0,0,0,0,ea),CSC(2)
 		}
 		if(ea.type="Toolbar")
 			DllCall("DestroyWindow",uptr,hwnd)
@@ -1743,7 +1743,7 @@ Class PluginClass{
 	}__New(){
 		return this
 	}Activate(){
-		WinActivate(hwnd([1]))
+		WinActivate(HWND([1]))
 	}AllCtrl(code,lp,wp){
 		for a,b in s.ctrl
 			b[code](lp,wp)
@@ -1757,14 +1757,14 @@ Class PluginClass{
 			return %func%(Info*)
 		}SetTimer,% Info.1,-100
 	}CallTip(text){
-		sc:=csc(),sc.2200(sc.2128(sc.2166(sc.2008)),text)
+		sc:=CSC(),sc.2200(sc.2128(sc.2166(sc.2008)),text)
 	}Color(con){
 		v.con:=con
 		SetTimer,Color,-1
 		Sleep,10
 		v.con:=""
-	}csc(obj,hwnd){
-		csc({plugin:obj,hwnd:hwnd})
+	}CSC(obj,hwnd){
+		CSC({plugin:obj,hwnd:hwnd})
 	}Current(x:=""){
 		return Current(x)
 	}DebugWindow(Text,Clear:=0,LineBreak:=0,Sleep:=0,AutoHide:=0,MsgBox:=0){
@@ -1790,7 +1790,7 @@ Class PluginClass{
 	}DynaRun(script){
 		return DynaRun(script)
 	}EnableSC(x:=0){
-		sc:=csc()
+		sc:=CSC()
 		if(x){
 			GuiControl,1:+Redraw,% sc.sc
 			GuiControl,1:+gnotify,% sc.sc
@@ -1802,11 +1802,9 @@ Class PluginClass{
 	}Files(){
 		return Update("get").1
 	}Focus(){
-		ControlFocus,Scintilla1,% hwnd([1])
+		ControlFocus,Scintilla1,% HWND([1])
 		GuiControl,+Redraw,Scintilla1
-		Gui,1:Default
-		Gui,1:TreeView,SysTreeView321
-		SetPos(TV_GetSelection()),csc(1)
+		TVC.Default(1),SetPos(TV_GetSelection()),CSC(1)
 	}Get(name){
 		return _:=%name%
 	}GetTV(Control,Window){
@@ -1819,14 +1817,14 @@ Class PluginClass{
 	}Hotkey(win:=1,key:="",label:="",on:=1){
 		if(!(win,key,label))
 			return m("Unable to set hotkey")
-		Hotkey,IfWinActive,% hwnd([win])
+		Hotkey,IfWinActive,% HWND([win])
 		Hotkey,%key%,%label%,% _:=on?"On":"Off"
 	}HotStrings(Text,String,end:=""){
-		sc:=csc(),CPos:=sc.2008,TextLength:=StrPut(Text,"UTF-8")-1,StringLength:=StrPut(String,"UTF-8")-1,sc.2686(CPos-TextLength,CPos),sc.2194(StringLength,[String]),sc.2025((!end?CPos+StringLength-TextLength:CPos+end))
-	}hwnd(win:=1){
-		return hwnd(win)
+		sc:=CSC(),CPos:=sc.2008,TextLength:=StrPut(Text,"UTF-8")-1,StringLength:=StrPut(String,"UTF-8")-1,sc.2686(CPos-TextLength,CPos),sc.2194(StringLength,[String]),sc.2025((!end?CPos+StringLength-TextLength:CPos+end))
+	}HWND(win:=1){
+		return HWND(win)
 	}InsertText(text){
-		Encode(text,return),sc:=csc(),sc.2003(sc.2008,&return)
+		Encode(text,return),sc:=CSC(),sc.2003(sc.2008,&return)
 		if(end=0)
 			sc.2025(sc.2008+StrPut(text,"UTF-8")-1)
 		else if(end)
@@ -1838,7 +1836,7 @@ Class PluginClass{
 		SplitPath,A_ScriptFullPath,,,,name
 		FileMove,%A_ScriptFullPath%,%name%-%version%.ahk,1
 	}Open(Info){
-		tv:=Open(Info),tv(tv),WinActivate(hwnd([1]))
+		tv:=Open(Info),tv(tv),WinActivate(HWND([1]))
 	}Path(){
 		return A_ScriptDir
 	}Plugin(action,hwnd){
@@ -1846,21 +1844,21 @@ Class PluginClass{
 	}Publish(Info:=1){
 		return,Publish(Info,Branch:="",Version:="")
 	}ReplaceSelected(text){
-		Encode(text,return),csc().2170(0,&return)
+		Encode(text,return),CSC().2170(0,&return)
 	}Save(){
 		Save()
 	}sc(){
-		return csc()
+		return CSC()
 	}SetText(contents){
-		length:=VarSetCapacity(text,strput(contents,"utf-8")),StrPut(contents,&text,length,"utf-8"),csc().2181(0,&text)
+		length:=VarSetCapacity(text,strput(contents,"utf-8")),StrPut(contents,&text,length,"utf-8"),CSC().2181(0,&text)
 	}SetTimer(timer,period:=-10){
 		if(!IsFunc(timer)&&!IsLabel(timer))
 			return
 		period:=period>0?-period:period
 		SetTimer,%timer%,%period%
 	}Show(){
-		sc:=csc()
-		WinActivate(hwnd([1]))
+		sc:=CSC()
+		WinActivate(HWND([1]))
 		GuiControl,+Redraw,% sc.sc
 		SetPos(sc.2357),sc.2400
 	}SSN(Node,XPath){
@@ -1927,7 +1925,7 @@ class ScanFile{
 	}RemoveComments(ea,Language:=0,SetCurrentPos:=0){
 		xx:=ScanFile.XML,ScanFile.Before:=Text:=ea.File?Update({get:ea.file}):ea,Tick:=A_TickCount,Search:=[]
 		if(SetCurrentPos)
-			sc:=csc(),Split:=sc.TextRange(0,sc.2008),Text:=SubStr(Text,1,StrLen(Split)) Chr(127) SubStr(Text,StrLen(Split)+1)
+			sc:=CSC(),Split:=sc.TextRange(0,sc.2008),Text:=SubStr(Text,1,StrLen(Split)) Chr(127) SubStr(Text,StrLen(Split)+1)
 		for a,b in Keywords.Comments[Language?Language:(ea.Lang?ea.Lang:Language)]
 			String:=b,Add:="(\x7F\s)?",String:=(Pos:=InStr(String,"^"))?SubStr(String,1,Pos) Add SubStr(String,Pos+1):Add String,Search[a]:=RegExReplace(String,"\x60n","`n")
 		if(Search.Open){
@@ -2094,7 +2092,7 @@ class s{
 				GuiControl,1:-Redraw,% this.sc
 				GuiControl,1:+g,% this.sc
 		}}if(code="GetWord"){
-			sc:=csc(),CPos:=lparam?lparam:sc.2008
+			sc:=CSC(),CPos:=lparam?lparam:sc.2008
 			return sc.TextRange(sc.2266(CPos,1),sc.2267(CPos,1))
 		}else if(code="GetSelText"){
 			VarSetCapacity(text,this.2161),length:=this.2161(0,&text)
@@ -2501,7 +2499,7 @@ Clear_Line_Status(){
 	LineStatus.Clear()
 }
 Close_Debug_Window(){
-	MainWin.NewCtrlPos:={ctrl:v.Debug.sc,win:hwnd(1)},MainWin.Delete(),debug.Disconnect(),Redraw()
+	MainWin.NewCtrlPos:={ctrl:v.Debug.sc,win:HWND(1)},MainWin.Delete(),debug.Disconnect(),Redraw()
 }
 Close(x:=1,all:="",Redraw:=1){
 	parent:=Current(1),pea:=XML.EA(parent),nodes:=all?cexml.SN("//main[@file!='Libraries']"):cexml.SN("//main[@id='" pea.id "']")
@@ -2556,9 +2554,9 @@ Close(x:=1,all:="",Redraw:=1){
 	}
 	Loop,2
 		TVC.Enable(A_Index)
-	Default("SysTreeView321"),TV_Modify(TV_GetChild(0),"Select Vis Focus")
+	TVC.Default(1),TV_Modify(TV_GetChild(0),"Select Vis Focus")
 	if(tv:=cexml.SSN("//main[@file!='Libraries']/file/@tv").text)
-		csc({set:1}).2400(),tv(tv)
+		CSC({set:1}).2400(),tv(tv)
 	else
 		New()
 }
@@ -2690,7 +2688,7 @@ Command_Help(){
 	if(!outdir)
 		SplitPath,A_AhkPath,,outdir
 	CurrentWord:=sc.GetWord()
-	sc:=csc(),info:=Context(1),line:=sc.GetLine((LineNo:=sc.2166(sc.2008))),found1:=info.word
+	sc:=CSC(),info:=Context(1),line:=sc.GetLine((LineNo:=sc.2166(sc.2008))),found1:=info.word
 	if(word:=sc.GetSelText())
 		found1:=word
 	if(!found1)
@@ -2810,11 +2808,9 @@ Compile(main=""){
 		Loop,%dir%\*.ico
 		{
 			Icon:=A_LoopFileFullPath
-			m(Icon)
 			Break
 		}
 	}
-	m(Icon,"Here")
 	if(Icon)
 		add=/Icon "%Icon%"
 	RunWait,%File% /in "%main%" /out "%dir%\%name%.exe" %add%
@@ -2842,10 +2838,10 @@ Context(return=""){
 	Static FindFirst:="O)^[\s|}]*((\w|[^\x00-\x7F])+)"
 	if(v.ShowTT)
 		t("It is getting here","time:1",v.ShowTT.="Context,")
-	ControlGetFocus,Focus,% hwnd([1])
+	ControlGetFocus,Focus,% HWND([1])
 	if(!InStr(Focus,"Scintilla"))
 		return
-	Tick:=A_TickCount,sc:=csc(),cp:=sc.2008,Line:=sc.2166(cp),LineIndent:=Start:=sc.2128(Line)
+	Tick:=A_TickCount,sc:=CSC(),cp:=sc.2008,Line:=sc.2166(cp),LineIndent:=Start:=sc.2128(Line)
 	if(cp<=LineIndent)
 		return sc.2201
 	PFL:=sc.2167(Line),OLineText:=LineText:=sc.GetLine(Line),NewString:=Trim(SubStr(LineText,1,cp-PFL) Chr(127) SubStr(LineText,cp-PFL+1)),Language:=Current(3).Lang,Delimiter:=Keywords.Delimiter[Language]
@@ -3051,7 +3047,7 @@ Context(return=""){
 }
 ContextMenu(){
 	static ONode,Kill,UnRedo:={Undo:2174,Redo:2016}
-	sc:=csc(),SetupEnter()
+	sc:=CSC(),SetupEnter()
 	for a,b in ["RCM","toolbars"]
 		Menu,%b%,DeleteAll
 	ctrl:=MainWin.NewCtrlPos.ctrl
@@ -3162,7 +3158,7 @@ ContextMenu(){
 			Break
 		}
 	}
-	ControlFocus,,% "ahk_id" csc().sc
+	ControlFocus,,% "ahk_id" CSC().sc
 	Menu,RCM,Show
 	for a,b in ["Lock","Above","Below","Left","Right","Split","Type"]
 		Menu,%b%,DeleteAll
@@ -3246,7 +3242,7 @@ ContextMenu(){
 		Send,^a
 	else
 		m("Coming soon:",A_ThisMenu,A_ThisMenuItem)
-	ControlFocus,,% "ahk_id" csc().sc
+	ControlFocus,,% "ahk_id" CSC().sc
 	SetupEnter(1)
 	return
 	RCMRC:
@@ -3364,13 +3360,13 @@ Copy_File_Path(){
 	Clipboard:=Current(3).File
 }
 Copy(){
-	ControlGetFocus,Focus,% hwnd([1])
-	ControlGet,hwnd,hwnd,,%Focus%,% hwnd([1])
-	sc:=csc()
+	ControlGetFocus,Focus,% HWND([1])
+	ControlGet,hwnd,hwnd,,%Focus%,% HWND([1])
+	sc:=CSC()
 	if(sc.sc!=hwnd){
-		SendMessage,0x301,0,0,%Focus%,% hwnd([1])
+		SendMessage,0x301,0,0,%Focus%,% HWND([1])
 		return
-	}csc().2178(),Clipboard:=RegExReplace(Clipboard,"\R","`r`n")
+	}CSC().2178(),Clipboard:=RegExReplace(Clipboard,"\R","`r`n")
 }
 Create_Toolbar(){
 	FormatTime,date,%A_Now%,longdate
@@ -3383,7 +3379,7 @@ Create_Toolbar(){
 	Sleep,1
 	return {id:id,node:next}
 }
-csc(set:=0){
+CSC(set:=0){
 	static Current,last
 	if(!Set&&!Current)
 		return Current:=s.ctrl[s.MinIndex()]
@@ -3434,14 +3430,14 @@ Current(Parent=""){
 	return Node
 }
 Custom_Version(){
-	change:=Settings.SSN("//auto_version").text?Settings.SSN("//auto_version").text:"Version:=" Chr(34) "$v" Chr(34),cc:=InputBox(csc().sc,"Custom auto_version","Enter your custom" Chr(59) "auto_version in the form of Version:=$v",change)
+	change:=Settings.SSN("//auto_version").text?Settings.SSN("//auto_version").text:"Version:=" Chr(34) "$v" Chr(34),cc:=InputBox(CSC().sc,"Custom auto_version","Enter your custom" Chr(59) "auto_version in the form of Version:=$v",change)
 	if(cc)
 		Settings.Add("auto_version").text:=cc
 }
 Cut(){
-	;ControlGetFocus,Focus,% hwnd([1])
-	;SendMessage,0x300,0,0,%Focus%,% hwnd([1])
-	SendMessage,0x300,0,0,,% "ahk_id" csc().sc
+	;ControlGetFocus,Focus,% HWND([1])
+	;SendMessage,0x300,0,0,%Focus%,% HWND([1])
+	SendMessage,0x300,0,0,,% "ahk_id" CSC().sc
 	if(v.Options.Clipboard_History){
 		for a,b in v.Clipboard
 			if(b=Clipboard)
@@ -3449,7 +3445,7 @@ Cut(){
 		v.Clipboard.push(Clipboard)
 }}
 DebugHighlight(){
-	sc:=csc(),sc.2045(2),sc.2045(3)
+	sc:=CSC(),sc.2045(2),sc.2045(3)
 	for a,b in v.DebugHighlight[Current(3).file]{
 		sc.2043(b,2)
 		if(A_Index=1){
@@ -3460,7 +3456,7 @@ DebugHighlight(){
 		}
 }}
 SelectDebugLine(line){
-	sc:=csc()
+	sc:=CSC()
 	if(v.Options.Select_Current_Debug_Line)
 		sc.2160(sc.2167(line),sc.2136(line))
 	else
@@ -3472,9 +3468,9 @@ SelectDebugLine(line){
 		if(Text.Select!="")
 			return sc.2025(Text.Select)
 		if(!WinExist("ahk_id" sc.sc)){
-			csc:=csc(),NewWin:=new GUIKeep("Debug"),NewWin.Add("s,w400 h200,,wh")
+			csc:=CSC(),NewWin:=new GUIKeep("Debug"),NewWin.Add("s,w400 h200,,wh")
 			GuiControl,Debug:+g,% NewWin.sc.1.sc
-			NewWin.Show("Debug Window",,1),sc:=NewWin.sc.1,sc.2277(1),csc({hwnd:csc.sc})
+			NewWin.Show("Debug Window",,1),sc:=NewWin.sc.1,sc.2277(1),CSC({hwnd:csc.sc})
 		}
 		text.="`n"
 		sc.2003(sc.2006,text),sc.2025(sc.2006)
@@ -3585,10 +3581,10 @@ DefaultRCM(){
 	}
 }
 Delete_Line(){
-	sc:=csc(),line:=sc.2166(sc.2008),pos:=sc.2128(line),diff:=sc.2008-pos,sc.2338(),start:=sc.2128(line),end:=sc.2136(line),sc.2025(diff<=end-start?start+diff:end)
+	sc:=CSC(),line:=sc.2166(sc.2008),pos:=sc.2128(line),diff:=sc.2008-pos,sc.2338(),start:=sc.2128(line),end:=sc.2136(line),sc.2025(diff<=end-start?start+diff:end)
 }
 Delete_Matching_Brace(){
-	sc:=csc(),value:=[],CPos:=sc.2008
+	sc:=CSC(),value:=[],CPos:=sc.2008
 	GuiControl,1:+g,% sc.sc
 	if((Match:=sc.2353(CPos-1))>=0)
 		value[Match]:=1,value[CPos-1]:=1
@@ -3631,7 +3627,7 @@ Delete(){
 	return Backspace(0)
 }
 DisplayType(type){
-	all:=SN(cexml.Find("//main/@file",Current(2).file),"descendant-or-self::info[@type='" type "']/@text"),sc:=csc(),word:=sc.getword(),sc.2634(1)
+	all:=SN(cexml.Find("//main/@file",Current(2).file),"descendant-or-self::info[@type='" type "']/@text"),sc:=CSC(),word:=sc.getword(),sc.2634(1)
 	while(aa:=all.item[A_Index-1])
 		if(aa.text~="i)^" word)
 			list.=aa.text " "
@@ -3692,14 +3688,14 @@ Display(PopulateVarBrowser:=0){
 				v.afterbug.Insert(b)
 			SetTimer,AfterDebug,-300
 		}if(rea.status="stopped"){
-			sc:=csc(),sc.2045(2),sc.2045(3),sc:=v.debug,sc.2003(sc.2006,"Execution Complete"),sc.2025(sc.2006),debug.Caret(0)
+			sc:=CSC(),sc.2045(2),sc.2045(3),sc:=v.debug,sc.2003(sc.2006,"Execution Complete"),sc.2025(sc.2006),debug.Caret(0)
 			SetTimer,VarBrowserStop,-1
 			return
 		}if(rea.status="break"){
 			debug.Send("stack_get")
 			SetTimer,InsertDebugMessage,-200
 		}if(rea.command="stack_get"){
-			sc:=csc(),stack:=receive.SN("//stack"),exist:=0,v.DebugHighlight:=[]
+			sc:=CSC(),stack:=receive.SN("//stack"),exist:=0,v.DebugHighlight:=[]
 			while(ss:=stack.item[A_Index-1]),ea:=XML.EA(ss){
 				filename:=RegExReplace(RegExReplace(URIDecode(ea.filename),"file:\/\/\/"),"\/","\")
 				if(!IsObject(obj:=v.DebugHighlight[filename]))
@@ -3944,7 +3940,7 @@ Download_Plugins(){
 	return
 	35GuiEscape:
 	35GuiClose:
-	hwnd({rem:35})
+	HWND({rem:35})
 	return
 	dppop:
 	Gui,35:Default
@@ -3963,11 +3959,11 @@ Download_Plugins(){
 	return
 }
 Duplicate_Line(){
-	csc().2404
+	CSC().2404
 }
 Duplicates(){
 	Sleep,300
-	sc:=csc(),sc.2500(3),sc.2505(0,sc.2006),Search:=sc.TextRange((Start:=sc.2143),(End:=sc.2145)),v.LastSearch:=Search
+	sc:=CSC(),sc.2500(3),sc.2505(0,sc.2006),Search:=sc.TextRange((Start:=sc.2143),(End:=sc.2145)),v.LastSearch:=Search
 	if(End-Start<2)
 		return
 	sc.2686(0,sc.2006),sc.2500(3),sc.2198(v.Options.Match_Any_Word?0:0x2),Len:=StrPut(Search,"UTF-8")-1,Obj:=v.DuplicateSelect[sc.2357]:=[],Count:=0
@@ -4039,7 +4035,7 @@ Edit_Hotkeys(ret:=""){
 	all:=menus.SN("//menu/@tv")
 	while(aa:=all.item[A_Index-1])
 		aa.RemoveAttribute("tv")
-	hwnd({rem:"Edit_Hotkeys"}),Hotkeys()
+	HWND({rem:"Edit_Hotkeys"}),Hotkeys()
 	SetTimer,RefreshMenu,-1
 	return
 	ehgo:
@@ -4097,7 +4093,7 @@ EditHotkey(node,window){
 	}hotkey:=hotkey?hotkey:edit
 	StringUpper,uhotkey,hotkey
 	if(!hotkey)
-		return hwnd({rem:"Edit_Hotkey"}),EditNode.RemoveAttribute("hotkey"),%Win%(EditNode),WinActivate(hwnd([Win]))
+		return HWND({rem:"Edit_Hotkey"}),EditNode.RemoveAttribute("hotkey"),%Win%(EditNode),WinActivate(HWND([Win]))
 	dup:=menus.SN("//*[(@hotkey='" hotkey "' or @hotkey='" uhotkey "')and(@clean!='" SSN(EditNode,"@clean").text "')]")
 	if(dup.length){
 		list:=""
@@ -4112,7 +4108,7 @@ EditHotkey(node,window){
 	Edit_HotkeyEscape:
 	Edit_HotkeyClose:
 	KeyWait,Escape,U
-	hwnd({rem:"Edit_Hotkey"}),Hotkeys(1),%Win%(EditNode),WinActivate(hwnd([Win]))
+	HWND({rem:"Edit_Hotkey"}),Hotkeys(1),%Win%(EditNode),WinActivate(HWND([Win]))
 	return
 }
 Edit_Plugin(){
@@ -4139,7 +4135,7 @@ Edit_Replacements(){
 }
 Edited(current:=""){
 	static Edited
-	current:=current?current:Current(),sc:=csc()
+	current:=current?current:Current(),sc:=CSC()
 	if(MainWin.tnsc.sc=sc.sc)
 		return TNotes.Write()
 	if(!cexml.SSN("//*[@sc='" sc.2357 "']"))
@@ -4164,9 +4160,9 @@ Encode(tt,ByRef text,encoding:="UTF-8"){
 }
 Enter(){
 	static map:=new XML("map"),NotIndent:={IfEqual:1,IfNotEqual:1,IfGreater:1,IfGreaterOrEqual:1,IfLess:1,IfLessOrEqual:1,IfInString:1}
-	ControlGetFocus,Focus,% hwnd([1])
+	ControlGetFocus,Focus,% HWND([1])
 	checkqf:
-	sc:=csc(),fixlines:=[],Ind:=Settings.Get("//tab",5),ShowOSD(GetKeyState("Shift","P")?"Shift+Enter":"Enter")
+	sc:=CSC(),fixlines:=[],Ind:=Settings.Get("//tab",5),ShowOSD(GetKeyState("Shift","P")?"Shift+Enter":"Enter")
 	if(InStr(focus,"scintilla")){
 		if(sc.2202)
 			sc.2201
@@ -4251,8 +4247,8 @@ Enter(){
 	return sc.2169,MarginWidth(sc),sc.Enable(1)
 }
 Escape(a*){
-	sc:=csc(),ShowOSD("Escape")
-	ControlGetFocus,Focus,% hwnd([1])
+	sc:=CSC(),ShowOSD("Escape")
+	ControlGetFocus,Focus,% HWND([1])
 	if(!InStr(Focus,"scintilla")){
 		hwnd:=DllCall("GetFocus")
 		;m(hwnd " - " MainWin.FindEdit,"OR!",hwnd " - " MainWin.FindTV,Focus,"Won't have values just yet")
@@ -4293,7 +4289,7 @@ ExecScript(){
 			WinGetText,text,% "ahk_pid" v.exec.ProcessID
 			info:=StripError(text,Current(2).text)
 			if(Info.Line!=""){
-				v.exec.Terminate(),sc:=csc(),Line:=
+				v.exec.Terminate(),sc:=CSC(),Line:=
 				if(info.file!=Current(2).file)
 					tv(SSN(cexml.Find(Current(1),"descendant::file/@file",info.file),"@tv").text)
 				sc.2160(sc.2128(Info.Line),sc.2136(Info.Line))
@@ -4304,7 +4300,7 @@ ExecScript(){
 	}}}else if(text:=v.exec.StdERR.ReadAll()){
 		if(InStr(text,"cannot be opened"))
 			return m(text,"","If the script file is located in the same directory as the main Project try adding #Include %A_ScriptDir% to the main Project file.")
-		exec.Terminate(),sc:=csc(),info:=StripError(text,"*"),tv(SSN(cexml.Find(Current(1),"descendant::file/@file",info.file),"@tv").text),line:=Info.Line
+		exec.Terminate(),sc:=CSC(),info:=StripError(text,"*"),tv(SSN(cexml.Find(Current(1),"descendant::file/@file",info.file),"@tv").text),line:=Info.Line
 		Sleep,100
 		if(!v.Debug)
 			MainWin.DebugWindow()
@@ -4320,7 +4316,7 @@ Exit(ExitApp:=0){
 		if(filename:=cexml.SSN("//*[@sc='" doc "']/@file").text)
 			if(filename!="untitled.ahk")
 				ff.SetAttribute("file",filename)
-	}sc:=csc(),open:=cexml.SN("//files/main"),Top:=Settings.Clear("//open")
+	}sc:=CSC(),open:=cexml.SN("//files/main"),Top:=Settings.Clear("//open")
 	while(oo:=open.item[A_Index-1]),ea:=XML.EA(oo)
 		if(!ea.untitled)
 			Settings.Under(top,"file",,ea.file)
@@ -4338,14 +4334,14 @@ Exit(ExitApp:=0){
 			FileCopy,lib\Tracked Notes.xml,lib\Tracked Notes%A_Now%.xml
 			Break
 	}}last:=MainWin.Gui.SN("//*[@last]")
-	WinGet,max,MinMax,% hwnd([1])
+	WinGet,max,MinMax,% HWND([1])
 	if(max!=1){
 		pos:=MainWin.WinPos().text
 		if(!InStr(pos,"-32000"))
 			Node.SetAttribute("pos",pos)
 	}while(ll:=last.item[A_Index-1])
 		ll.RemoveAttribute("last")
-	RCMXML.Save(1),MainWin.Gui.SSN("//*[@hwnd='" csc().sc "']").SetAttribute("last",1),MainWin.Gui.Save(1),menus.Save(1),GetPos(),positions.Save(1),TNotes.GetPos(),TNotes.XML.Save(1)
+	RCMXML.Save(1),MainWin.Gui.SSN("//*[@hwnd='" CSC().sc "']").SetAttribute("last",1),MainWin.Gui.Save(1),menus.Save(1),GetPos(),positions.Save(1),TNotes.GetPos(),TNotes.XML.Save(1)
 	if(debug.socket)
 		debug.Send("stop")
 	All:=cexml.SN("//*[@file='']")
@@ -4379,7 +4375,7 @@ Export(){
 	indir:=Settings.Find("//export/file/@file",SSN(Current(1),"@file").text),warn:=v.Options.Warn_Overwrite_On_Export?"S16":"S"
 	Text:=Publish(1)
 	if(RegExMatch(Text,"\x3bauto_branch")){
-		Branch:=InputBox(csc().sc+0,"Branch","Enter the branch you wish to use for this Export","Beta")
+		Branch:=InputBox(CSC().sc+0,"Branch","Enter the branch you wish to use for this Export","Beta")
 		Text:=RegExReplace(Text,"(\x3bauto_branch)","Branch:=" Chr(34) Branch Chr(34))
 	}
 	FileSelectFile,filename,%warn%,% indir.text,Export Compiled AHK,*.ahk
@@ -4490,7 +4486,7 @@ FEAdd(value,parent:=0,options:=""){
 	if(v.Options.Hide_File_Extensions){
 		SplitPath,value,,,ext,name
 		value:=ext="ahk"?name:value
-	}Default("SysTreeView321")
+	}TVC.Default(1)
 	return TV_Add(value,parent,options)
 }
 FEUpdate(Redraw:=0){
@@ -4546,7 +4542,7 @@ FEUpdate(Redraw:=0){
 				new:=root.AppendChild(aa.CloneNode(0)),new.SetAttribute("type","File")
 	}}if(Redraw){
 		tv(cexml.SSN("//*[@id='" oid "']/@tv").text)
-		GuiControl,1:+Redraw,SysTreeView321
+		TVC.Enable(1)
 	}
 }
 FileCheck(file:=""){
@@ -4643,24 +4639,24 @@ FileCheck(file:=""){
 }
 Find_Replace(){
 	static
-	LastSC:=csc()
+	LastSC:=CSC()
 	infopos:=positions.Find("//*/@file",Current(3).file),last:=SSN(infopos,"@findreplace").text,ea:=Settings.EA("//findreplace"),nw:=new GUIKeep(30),value:=[]
 	for a,b in ea
 		value[a]:=b?"Checked":""
-	nw.Add("Text,,Find","Edit,w200 vfind","Text,,Replace","Edit,w200 vreplace","Checkbox,vregex " value.regex ",Regex","Checkbox,vcs " value.cs ",Case Sensitive","Checkbox,vgreed " value.greed ",Greed","Checkbox,vml " value.ml ",Multi-Line","Checkbox,xm vInclude " value.Include ",Current Include Only","Checkbox,xm vcurrentsel hwndcs gcurrentsel " value.currentsel ",In Current Selection","Button,gfrfind Default,&Find","Button,x+5 gfrreplace,&Replace","Button,x+5 gfrall,Replace &All"),nw.Show("Find & Replace"),sc:=csc(),order:=[],order[sc.2585(0)]:=1,order[sc.2587(0)]:=1,last:=(order.MinIndex()!=order.MaxIndex())?sc.TextRange(order.MinIndex(),order.MaxIndex()):last,Hotkeys(30,{"!e":"frregex"})
+	nw.Add("Text,,Find","Edit,w200 vfind","Text,,Replace","Edit,w200 vreplace","Checkbox,vregex " value.regex ",Regex","Checkbox,vcs " value.cs ",Case Sensitive","Checkbox,vgreed " value.greed ",Greed","Checkbox,vml " value.ml ",Multi-Line","Checkbox,xm vInclude " value.Include ",Current Include Only","Checkbox,xm vcurrentsel hwndcs gcurrentsel " value.currentsel ",In Current Selection","Button,gfrfind Default,&Find","Button,x+5 gfrreplace,&Replace","Button,x+5 gfrall,Replace &All"),nw.Show("Find & Replace"),sc:=CSC(),order:=[],order[sc.2585(0)]:=1,order[sc.2587(0)]:=1,last:=(order.MinIndex()!=order.MaxIndex())?sc.TextRange(order.MinIndex(),order.MaxIndex()):last,Hotkeys(30,{"!e":"frregex"})
 	if(ea.regex&&order.MinIndex()!=order.MaxIndex())
 		for a,b in StrSplit("\.*?+[{|()^$")
 			if(!InStr(last,"\" b))
 				StringReplace,last,last,%b%,\%b%,All
 	if(!value.currentsel)
-		ControlSetText,Edit1,%last%,% hwnd([30])
+		ControlSetText,Edit1,%last%,% HWND([30])
 	else
 		Gosub,checksel
-	ControlSend,Edit1,^a,% hwnd([30])
+	ControlSend,Edit1,^a,% HWND([30])
 	Gui,1:-Disabled
 	return
 	checksel:
-	sc:=csc()
+	sc:=CSC()
 	if(sc.2008=sc.2009)
 		GuiControl,30:,In Current Selection,0
 	else
@@ -4668,7 +4664,7 @@ Find_Replace(){
 	return
 	frregex:
 	Send,{!e,up}
-	ControlGet,check,Checked,,Button1,% hwnd([30])
+	ControlGet,check,Checked,,Button1,% HWND([30])
 	check:=!check
 	GuiControl,30:,Button1,%check%
 	return
@@ -4677,13 +4673,13 @@ Find_Replace(){
 	info:=nw[],fr:=Settings.Add("findreplace")
 	for a,b in {regex:info.regex,cs:info.cs,greed:info.greed,ml:info.ml,Include:info.Include,currentsel:info.currentsel}
 		fr.SetAttribute(a,b)
-	fr:=positions.Find("//*/@file",Current(3).file),fr.SetAttribute("findreplace",info.find),nw.SavePos(),hwnd({rem:30})
+	fr:=positions.Find("//*/@file",Current(3).file),fr.SetAttribute("findreplace",info.find),nw.SavePos(),HWND({rem:30})
 	if(start!=""&&end!="")
 		sc.2160(start,end),start:=end:="",sc.2500(2),sc.2505(0,sc.2006)
 	return
 	currentsel:
-	ControlGet,check,Checked,,In Current Selection,% hwnd([30])
-	sc:=csc(),sc.2500(2),sc.2505(0,sc.2006)
+	ControlGet,check,Checked,,In Current Selection,% HWND([30])
+	sc:=CSC(),sc.2500(2),sc.2505(0,sc.2006)
 	if(!check){
 		if(start!=""&&end!="")
 			sc.2500(2),sc.2505(0,sc.2006),sc.2160(start,end)
@@ -4695,7 +4691,7 @@ Find_Replace(){
 	}
 	return
 	frfind:
-	info:=nw[],startsearch:=0,sc:=csc(),stop:=Current(3).file,looped:=0,current:=Current(1),pos:=sc.2008,pre:="O",find:="",find:=info.regex?info.find:"\Q" RegExReplace(info.find, "\\E", "\E\\E\Q") "\E",pre.=info.greed?"":"U",pre.=info.cs?"":"i",pre.=info.ml?"":"m`n",find:=pre ")" find ""
+	info:=nw[],startsearch:=0,sc:=CSC(),stop:=Current(3).file,looped:=0,current:=Current(1),pos:=sc.2008,pre:="O",find:="",find:=info.regex?info.find:"\Q" RegExReplace(info.find, "\\E", "\E\\E\Q") "\E",pre.=info.greed?"":"U",pre.=info.cs?"":"i",pre.=info.ml?"":"m`n",find:=pre ")" find ""
 	if(info.currentsel){
 		end:=sc.2509(2,start),text:=SubStr(Update({Get:Current(3).File}),start+1,end-start+1),greater:=sc.2008>sc.2009?sc.2008:sc.2009,pos:=greater>start?greater-start:1
 		if(RegExMatch(text,find,found,pos))
@@ -4731,7 +4727,7 @@ Find_Replace(){
 	Goto,frfind
 	return
 	frall:
-	info:=nw[],sc:=csc(),stop:=Current(3).file,looped:=0,current:=Current(),pos:=sc.2008,pre:="O",find:="",find:=info.regex?info.find:"\Q" RegExReplace(info.find, "\\E", "\E\\E\Q") "\E",pre.=info.greed?"":"U",pre.=info.cs?"":"i",pre.=info.ml?"":"m`n",find:=pre ")" find ""
+	info:=nw[],sc:=CSC(),stop:=Current(3).file,looped:=0,current:=Current(),pos:=sc.2008,pre:="O",find:="",find:=info.regex?info.find:"\Q" RegExReplace(info.find, "\\E", "\E\\E\Q") "\E",pre.=info.greed?"":"U",pre.=info.cs?"":"i",pre.=info.ml?"":"m`n",find:=pre ")" find ""
 	if(info.currentsel)
 		return pos:=1,end:=sc.2509(2,start),text:=SubStr(Update({Get:Current(3).file}),start+1,end-start),text:=RegExReplace(text,find,info.replace),sc.2190(start),sc.2192(end),sc.2194(StrPut(text,"utf-8")-1,[text]),sc.2500(2),sc.2505(0,sc.2006),sc.2504(start,len:=StrPut(text,"utf-8")-1),end:=start+len
 	if(info.Include)
@@ -4748,7 +4744,7 @@ Find_Replace(){
 			ll.SetAttribute("edited",1),TVC.Modify(1,(v.Options.Hide_File_Extensions?"*" ea.nne:"*" ea.filename),ea.tv),WinSetTitle(1,ea)
 	}}return WinActivate(nw.id)
 	frseg:
-	info:=nw[],sc:=csc(),pre:="O",find:="",find:=info.regex?info.find:"\Q" RegExReplace(info.find, "\\E", "\E\\E\Q") "\E",pre.=info.greed?"":"U",pre.=info.cs?"":"i",pre.=info.ml?"":"m`n",find:=pre ")" find "",replace:=NewLines(info.replace),sc.2181(0,[RegExReplace(sc.GetText(),find,replace)]),SetPos(SSN(Current(),"@tv").text)
+	info:=nw[],sc:=CSC(),pre:="O",find:="",find:=info.regex?info.find:"\Q" RegExReplace(info.find, "\\E", "\E\\E\Q") "\E",pre.=info.greed?"":"U",pre.=info.cs?"":"i",pre.=info.ml?"":"m`n",find:=pre ")" find "",replace:=NewLines(info.replace),sc.2181(0,[RegExReplace(sc.GetText(),find,replace)]),SetPos(SSN(Current(),"@tv").text)
 	return
 }
 SearchWin(node:=""){
@@ -4776,7 +4772,7 @@ SearchWin(node:=""){
 	SearchEscape:
 	;m("HERE!!!!")
 	/*
-		MainWin.NewCtrlPos:={ctrl:nw.hwnd+0,win:hwnd(1)}
+		MainWin.NewCtrlPos:={ctrl:nw.hwnd+0,win:HWND(1)}
 		MainWin.Delete()
 	*/
 	return
@@ -4790,7 +4786,7 @@ Find(){
 		FindXML:=new XML("find"),FindXML.Add("top")
 	if(!infopos:=positions.Find("//main/@file",file))
 		infopos:=positions.Add("main",{file:file},,1)
-	last:=SSN(infopos,"@search").text,search:=last?last:"Type in your query here",ea:=Settings.EA("//search/find"),NewWin:=new GUIKeep(5),sc:=csc(),order:=[],file:=Current(2).file
+	last:=SSN(infopos,"@search").text,search:=last?last:"Type in your query here",ea:=Settings.EA("//search/find"),NewWin:=new GUIKeep(5),sc:=CSC(),order:=[],file:=Current(2).file
 	value:=[],order[sc.2585(0)]:=1,order[sc.2587(0)]:=1,last:=(order.MinIndex()!=order.MaxIndex())?sc.TextRange(order.MinIndex(),order.MaxIndex()):last
 	for a,b in ea
 		Value[a]:=b?"Checked":""
@@ -4799,21 +4795,21 @@ Find(){
 	if(value.regex&&order.MinIndex()!=order.MaxIndex())
 		for a,b in StrSplit("\.*?+[{|()^$")
 			StringReplace,last,last,%b%,\%b%,All
-	ControlSetText,Edit1,%last%,% hwnd([5])
-	ControlSend,Edit1,^a,% hwnd([5])
+	ControlSetText,Edit1,%last%,% HWND([5])
+	ControlSend,Edit1,^a,% HWND([5])
 	Gui,1:-Disabled
 	return
 	OnClipboardChange:
-	if(hwnd(5)||hwnd(30)){
-		win:=hwnd(5)?hwnd([5]):hwnd([30])
-		if(win=hwnd([5])&&NewWin[].daioc=0)
+	if(HWND(5)||HWND(30)){
+		win:=HWND(5)?HWND([5]):HWND([30])
+		if(win=HWND([5])&&NewWin[].daioc=0)
 			ControlSetText,Edit1,%Clipboard%,%win%
-		if(WinActive(hwnd([30]))&&hwnd(30))
+		if(WinActive(HWND([30]))&&HWND(30))
 			ControlSetText,Edit1,%Clipboard%,%win%
 	}return
 	FindBack:
 	GuiControl,5:-Redraw,Edit1
-	ControlSend,Edit1,^+{Left}{Backspace},% hwnd([5])
+	ControlSend,Edit1,^+{Left}{Backspace},% HWND([5])
 	GuiControl,5:+Redraw,Edit1
 	return
 	FindCheck:
@@ -4874,8 +4870,8 @@ Find(){
 			WinSet,Transparent,255,% NewWin.ahk
 		SetTimer("CenterSel",-10)
 		if(v.Options.Auto_Close_Find)
-			return hwnd({rem:5})
-		WinActivate(hwnd([5]))
+			return HWND({rem:5})
+		WinActivate(HWND([5]))
 	}else
 		sel:=TV_GetSelection(),TV_Modify(sel,ec:=TV_Get(sel,"E")?"-Expand":"Expand"),SetTimer("FindLabel",-200)
 	return
@@ -4890,7 +4886,7 @@ Find(){
 				tv(cexml.SSN("//file[@id='" ea.ID "']/@tv").text)
 				WinActivate,% NewWin.ID
 				Sleep,200
-			}ea:=XML.EA(Node),sc:=csc(),sc.2160(ea.Pos,ea.Pos+StrPut(ea.text,"UTF-8")-1)
+			}ea:=XML.EA(Node),sc:=CSC(),sc.2160(ea.Pos,ea.Pos+StrPut(ea.text,"UTF-8")-1)
 			if(info.acdc)
 				Goto,5Close
 			return
@@ -4988,7 +4984,7 @@ Find(){
 				WinActivate,% NewWin.ID
 				Sleep,200
 			}
-			sc:=csc()
+			sc:=CSC()
 			sc.2160(ea.Pos,ea.Pos+StrPut(ea.text,"UTF-8")-1)
 		}
 	}
@@ -5000,18 +4996,18 @@ Find(){
 	5Escape:
 	5Close:
 	ea:=NewWin[],Settings.Add("search/find",{daioc:ea.daioc,acdc:ea.acdc,Auto_Show:ea.Auto_Show,regex:ea.regex,cs:ea.cs,sort:ea.sort,gr:ea.gr,allfiles:ea.allfiles}),foundinfo:="",infopos.SetAttribute("search",ea.find)
-	NewWin.SavePos(),hwnd({rem:5})
+	NewWin.SavePos(),HWND({rem:5})
 	return
 	Comment:
-	sc:=csc()
+	sc:=CSC()
 	Toggle_Comment_Line()
 	return
 	FindFocus:
-	ControlFocus,Edit1,% hwnd([5])
+	ControlFocus,Edit1,% HWND([5])
 	return
 }
 Fix_Indent(){
-	sc:=csc()
+	sc:=CSC()
 	/*
 		if(Current(3).ext="ahk")
 			
@@ -5023,7 +5019,7 @@ Fix_Indent(){
 	*/
 }
 FixIndentArea(){
-	sc:=csc(),find:=line:=sc.2166(sc.2008)
+	sc:=CSC(),find:=line:=sc.2166(sc.2008)
 	if(sc.2225(line)>=0){
 		while((find:=sc.2225(find))>=0)
 			line:=find
@@ -5042,7 +5038,7 @@ FixIndentArea(){
 	}
 }
 FixLines(line,total,base:=""){
-	tick:=A_TickCount,sc:=csc(),ind:=Settings.Get("//tab",5),startpos:=sc.2008,code:=StrSplit((codetext:=sc.GetUNI()),"`n"),sc.Enable(),chr:="K",indentation:=sc.2121,lock:=[],block:=[],aaobj:=[],code:=StrSplit(codetext,"`n"),specialbrace:=skipcompile:=aa:=ab:=braces:=0,end:=total+line
+	tick:=A_TickCount,sc:=CSC(),ind:=Settings.Get("//tab",5),startpos:=sc.2008,code:=StrSplit((codetext:=sc.GetUNI()),"`n"),sc.Enable(),chr:="K",indentation:=sc.2121,lock:=[],block:=[],aaobj:=[],code:=StrSplit(codetext,"`n"),specialbrace:=skipcompile:=aa:=ab:=braces:=0,end:=total+line
 	if(base="")
 		base:=Round(sc.2127(line)/ind)
 	IndentRegex:=Keywords.IndentRegex[Current(3).ext],IndentRegex:=IndentRegex?IndentRegex:"if|else|for|while"
@@ -5111,12 +5107,12 @@ FixLines(line,total,base:=""){
 /*
 	Focus(a*){
 		if(a.1=0){
-			sc:=csc()
+			sc:=CSC()
 			if(sc.sc=MainWin.tnsc.sc)
-				csc(2),t("TOP! HERE!")
+				CSC(2),t("TOP! HERE!")
 		}
 		if(a.1=1&&A_Gui=1){
-			csc().2400
+			CSC().2400
 			t("HERE!","time:1")
 			if(a&&v.Options.Check_For_Edited_Files_On_Focus=1)
 				Check_For_Edited()
@@ -5125,22 +5121,22 @@ FixLines(line,total,base:=""){
 	}
 */
 Fold_All(){
-	csc().2662
+	CSC().2662
 }
 UnFold_All(){
-	csc().2662(1)
+	CSC().2662(1)
 }
 Toggle_Fold_All(){
-	csc().2662(2)
+	CSC().2662(2)
 }
 Fold_Current_Level(){
-	sc:=csc(),level:=sc.2223(sc.2166(sc.2008))&0xff,level:=level-1>=0?level-1:level,Fold_Level_X(Level)
+	sc:=CSC(),level:=sc.2223(sc.2166(sc.2008))&0xff,level:=level-1>=0?level-1:level,Fold_Level_X(Level)
 }
 Unfold_Current_Level(){
-	sc:=csc(),level:=sc.2223(sc.2166(sc.2008))&0xff,Unfold_Level_X(Level)
+	sc:=CSC(),level:=sc.2223(sc.2166(sc.2008))&0xff,Unfold_Level_X(Level)
 }
 Fold_Level_X(Level=""){
-	sc:=csc()
+	sc:=CSC()
 	if(level="")
 		level:=InputBox(sc.sc,"Fold Levels","Enter a level to fold`n0-100")
 	current:=0
@@ -5152,10 +5148,10 @@ Fold_Level_X(Level=""){
 	}
 }
 Toggle_Fold(){
-	sc:=csc(),sc.2231(sc.2166(sc.2008))
+	sc:=CSC(),sc.2231(sc.2166(sc.2008))
 }
 Unfold_Level_X(Level=""){
-	sc:=csc()
+	sc:=CSC()
 	if(level="")
 		level:=InputBox(sc.sc,"Fold Levels","Enter a level to Un-fold`n0-100")
 	if(ErrorLevel)
@@ -5169,7 +5165,7 @@ Unfold_Level_X(Level=""){
 	}
 }
 FoldParent(){
-	sc:=csc(),line:=find:=sc.2166(sc.2008)
+	sc:=CSC(),line:=find:=sc.2166(sc.2008)
 	while((find:=sc.2225(find))>=0)
 		line:=find
 	return line
@@ -5183,7 +5179,7 @@ Forum(){
 }
 Full_Backup(Remove:=0){
 	SplashTextOn,300,100,Backing up...,Please wait, This may take some time if it has been a while since your last full backup.
-	Save(),sc:=csc(),Current:=Current(2).File,Dir:=SplitPath(Current).Dir
+	Save(),sc:=CSC(),Current:=Current(2).File,Dir:=SplitPath(Current).Dir
 	if(Remove){
 		Loop,%Dir%\AHK-Studio Backup\*.*,2
 			FileRemoveDir,%A_LoopFileFullPath%,1
@@ -5330,7 +5326,7 @@ GetID(Clear:=0){
 	return ++ID
 }
 GetInclude(){
-	main:=Current(2).file,sc:=csc()
+	main:=Current(2).file,sc:=CSC()
 	SplitPath,main,,dir
 	FileSelectFile,filename,,%dir%,Select a file to include,*.ahk
 	if(ErrorLevel||filename="")
@@ -5338,8 +5334,7 @@ GetInclude(){
 	newfile:=filename~="\.ahk$"?filename:filename ".ahk"
 	Relative:=RelativePath(SSN(Current(),"@file").text,newfile)
 	Encode(" " Relative,return),sc.2003(sc.2008,&return)
-	Gui,1:Default
-	Gui,1:TreeView,SysTreeView321
+	TVC.Default(1)
 	if(!FileExist(newfile)){
 		SplitPath,newfile,,dir
 		if(!FileExist(dir))
@@ -5348,7 +5343,7 @@ GetInclude(){
 	}Save(),Extract(GetMainNode(main)),ScanFiles(),FEUpdate(1)
 }
 GetLanguage(sc:=""){
-	sc:=sc?sc:csc(),VarSetCapacity(Language,4),sc.4012(0,&Language)
+	sc:=sc?sc:CSC(),VarSetCapacity(Language,4),sc.4012(0,&Language)
 	return StrGet(&Language,"UTF-8")
 }
 GetOmni(Ext){
@@ -5364,7 +5359,7 @@ GetOmniText(Ext){
 	return OmniText
 }
 GetOTB(search){
-	sc:=csc(),FileText:=sc.GetUNI(),find:=v.OmniFindText.Class,searchtext:=find.1 (IsObject(search)?search.2:search) find.2
+	sc:=CSC(),FileText:=sc.GetUNI(),find:=v.OmniFindText.Class,searchtext:=find.1 (IsObject(search)?search.2:search) find.2
 	if(RegExMatch(FileText,searchtext,found)){
 		pos:=found.pos(1),start:=StrPut(SubStr(FileText,1,found.pos(1)),"UTF-8")-1
 		while(RegExMatch(FileText,"OUm`n)((?<SkipClose>^\s*\Q*/\E)|(?<SkipOpen>^\s*\Q/*\E)|(?<Close>^\s*}.*((\{)\s*(;.*)*)*)$)|((?<Open>.*\{)(\s+;.*)*(\s*)*$)",found,pos)),pos:=found.pos(0)+found.len(0){
@@ -5399,7 +5394,7 @@ GetOTB(search){
 GetPos(Node:=0){
 	if(!Current(1).xml)
 		return
-	sc:=csc(),cf:=Current(3).file
+	sc:=CSC(),cf:=Current(3).file
 	if(!cexml.SSN("//*[@sc='" sc.2357 "']"))
 		return
 	if(!cf)
@@ -5439,14 +5434,14 @@ GetTotal(obj,line){
 	return total
 }
 Go_To_Line(){
-	sc:=csc()
+	sc:=CSC()
 	value:=InputBox(sc.sc,"Go To Line","Enter the Line Number you want to go to max = " sc.2154,sc.2166(sc.2008)+1)
 	if(RegExMatch(value,"\D")||value="")
 		return m("Please enter a line number")
 	sc.2025(sc.2128(value-1))
 }
 Google_Search_Selected(){
-	sc:=csc(),Text:=sc.GetSelText()
+	sc:=CSC(),Text:=sc.GetSelText()
 	if(!Text)
 		return m("Please select some Text to search for")
 	if(Text~="i)^http(s)?://")
@@ -5456,7 +5451,7 @@ Google_Search_Selected(){
 }
 Goto(){
 	Goto:
-	sc:=csc(),InsertAll(",",1),list:=SN(cexml.Find("//file/@file",Current(3).file),"descendant::info[@type='Label']"),labels:=""
+	sc:=CSC(),InsertAll(",",1),list:=SN(cexml.Find("//file/@file",Current(3).file),"descendant::info[@type='Label']"),labels:=""
 	while(ll:=list.item[A_Index-1])
 		labels.=cexml.EA(ll).text " "
 	Sort,labels,D%A_Space%
@@ -5465,7 +5460,7 @@ Goto(){
 	return
 }
 GotoPos(caret,pos){
-	sc:=csc(),sc.2584(caret,pos),sc.2586(caret,pos)
+	sc:=CSC(),sc.2584(caret,pos),sc.2586(caret,pos)
 }
 Gui(){
 	v.startup:=1,this:=MainWin:=New MainWindowClass(1),ea:=Settings.EA("//theme/descendant::*[@style=32]"),win:=1,Plug()
@@ -5541,12 +5536,12 @@ Gui(){
 	return
 	SetTN:
 	/*
-		ControlGetFocus,focus,% hwnd([1])
-		ControlGet,hwnd,hwnd,,%focus%,% hwnd([1])
+		ControlGetFocus,focus,% HWND([1])
+		ControlGet,hwnd,hwnd,,%focus%,% HWND([1])
 	*/
 	TNotes.Set(),MarginWidth(),VVersion:=new XML("versions",(FileExist("lib\Github.xml")?"lib\Github.xml":"lib\Versions.xml"))
 	SetTimer,ScanWID,-10
-	SetupEnter(1),csc({Set:1})
+	SetupEnter(1),CSC({Set:1})
 	MainWin.Size(1)
 	all:=menus.SN("//*[@startup]")
 	while(aa:=all.item[A_Index-1],ea:=XML.EA(aa)){
@@ -5565,15 +5560,15 @@ class GUIKeep{
 	__Get(){
 		return this.Add()
 	}__New(win,parent:=""){
-		info:=PluginClass.Style(),owner:=WinExist("ahk_id" parent)?parent:"" ;hwnd(1)
+		info:=PluginClass.Style(),owner:=WinExist("ahk_id" parent)?parent:"" ;HWND(1)
 		if(FileExist(A_ScriptFullPath "\AHKStudio.ico"))
 			Menu,Tray,Icon,%A_ScriptFullPath%\AHKStudio.ico
 		owner:=owner?owner:1
-		this.PreviousFocus:="ahk_id" csc().sc
+		this.PreviousFocus:="ahk_id" CSC().sc
 		Gui,%win%:Destroy
 		Gui,%win%:+owner%owner% +hwndhwnd -DPIScale
 		Gui,%win%:+ToolWindow
-		hwnd(win,hwnd)
+		HWND(win,hwnd)
 		if(Settings.SSN("//options/@Add_Margins_To_Windows").text!=1)
 			Gui,%win%:Margin,0,0
 		Gui,%win%:Font,% "c" info.color " s" info.size,% info.font
@@ -5673,7 +5668,7 @@ class GUIKeep{
 		else
 			this.SavePos(),this.Exit()
 	}Exit(){
-		this.SavePos(),hwnd({rem:this.win})
+		this.SavePos(),HWND({rem:this.win})
 	}GetDisplays(){
 		SysGet,mon,MonitorCount
 		Displays:=GUIKeep.Displays
@@ -5764,7 +5759,7 @@ Header(type){
 	return header
 }
 Highlight_to_Matching_Brace(){
-	sc:=csc()
+	sc:=CSC()
 	if((start:=sc.2353(sc.2008-1))>0)
 		return sc.2160(start,sc.2008)
 	Else if((start:=sc.2353(sc.2008))>0)
@@ -5788,7 +5783,7 @@ History(Node,ctrl:=""){
 		Nodes.Back.AppendChild(Node),tv([SSN(Nodes.Back,"file[last()]/@tv").text])
 	return
 }GetHistoryTop(){
-	if(!Node:=History.SSN("//Control[@sc='" (sc:=csc().sc) "']"))
+	if(!Node:=History.SSN("//Control[@sc='" (sc:=CSC().sc) "']"))
 		Node:=History.Add("Control",{sc:sc},,1)
 	if(!Back:=SSN(Node,"back"))
 		Back:=History.Under(Node,"back")
@@ -5800,7 +5795,7 @@ HltLine(){
 	static ranges:=[]
 	if(!v.Options.Highlight_Current_Area)
 		return
-	sc:=csc(),line:=sc.2166(sc.2008)
+	sc:=CSC(),line:=sc.2166(sc.2008)
 	if((parent:=sc.2225(line))>=0){
 		last:=sc.2224(parent,-1),range:=ranges[sc.2357],sc.2045(3),sc.2043(line,3)
 		if(range.parent=parent&&range.last=last)
@@ -5816,7 +5811,7 @@ HltLine(){
 Hotkeys(win:=1,keys:=""){
 	static LastHotkeys:=[],Associate:=[]
 	Associate:=[]
-	Hotkey,IfWinActive,% hwnd([win])
+	Hotkey,IfWinActive,% HWND([win])
 	for a in LastHotkeys[win]
 		Hotkey,%a%,HotkeyLabel,Off
 	LastHotkeys.Delete(win)
@@ -5831,21 +5826,19 @@ Hotkeys(win:=1,keys:=""){
 		}
 		for a,b in {Delete:"Delete",Backspace:"Backspace","~Escape":"Escape","^a":"SelectAll","^v":"Paste",WheelLeft:"ScrollWheel",WheelRight:"ScrollWheel","~Ctrl":"ToggleDuplicate"}{ ;,Hotkeys(1,Enter)
 			Try
-			Hotkey,%a%,%b%,On
+				Hotkey,%a%,%b%,On
 	}}else{
 		for a,b in keys{
 			Try{
 				if(!a)
 					Continue
 				Hotkey,%a%,Associate,On
-				LastHotkeys[win,a]:=1,Associate[hwnd(win),a]:=b
-			}
-		}
-	}
+				LastHotkeys[win,a]:=1,Associate[HWND(win),a]:=b
+	}}}
 	for a,b in ["^R","^E"]{
 		if(!menus.SSN("//*[@hotkey='" b "']"))
 			Try
-		Hotkey,%b%,DeadEnd,On
+				Hotkey,%b%,DeadEnd,On
 	}
 	Hotkey,RButton,RButton,On
 	Hotkey,IfWinActive
@@ -5858,16 +5851,8 @@ Hotkeys(win:=1,keys:=""){
 	clean:=menus.SSN("//*[@hotkey='" A_ThisHotkey "']/@clean").text
 	if(IsFunc(clean)||IsLabel(clean))
 		SetTimer,%clean%,-1
-	else if(v.alloptions[clean])
+	else if(v.AllOptions[clean])
 		Options(clean)
-	/*
-		else if(clean="Quick_Scintilla_Code_Lookup"){
-			MainWin.Gui.Transform()
-			MainWin.Gui.Transform()
-			m(MainWin.gui[])
-			ExitApp
-		}
-	*/
 	else if(plugin:=menus.EA("//*[@clean='" clean "']")){
 		if(!FileExist(plugin.plugin))
 			MissingPlugin(plugin.plugin,clean)
@@ -5880,7 +5865,7 @@ Hotkeys(win:=1,keys:=""){
 	DeadEnd:
 	return
 }
-hwnd(win,hwnd=""){
+HWND(win,hwnd=""){
 	static window:=[]
 	if(win="get")
 		return window
@@ -5895,7 +5880,7 @@ hwnd(win,hwnd=""){
 		window[win.rem]:=""
 		/*
 			if(!win.na)
-				WinActivate(hwnd([1]))
+				WinActivate(HWND([1]))
 		*/
 	}
 	if(IsObject(win))
@@ -5912,7 +5897,7 @@ Icons(il,icons,file,icon){
 	return ricon
 }
 Create_Include_From_Selection(){
-	pos:=PosInfo(),sc:=csc()
+	pos:=PosInfo(),sc:=CSC()
 	if(pos.start=pos.end)
 		return m("Please select some text to create a new Include from")
 	text:=sc.GetSelText(),RegExMatch(text,"^(\w+)",Include)
@@ -5937,7 +5922,7 @@ Increment(){
 Decrement(){
 	crement([0,-1])
 }crement(add){
-	sc:=csc(),sc.2078(),sc.Enable()
+	sc:=CSC(),sc.2078(),sc.Enable()
 	loop,% sc.2570
 	{
 		start:=sc.2585(A_Index-1),end:=sc.2587(A_Index-1),end:=end=start?end+1:end,begin:=0,conclude:=0,text:=sc.TextRange(start,end)
@@ -5960,7 +5945,7 @@ Decrement(){
 */
 ;comments
 IndentFrom(line){
-	sc:=csc()
+	sc:=CSC()
 	begin:=sc.2127(line)
 	FileText:=sc.TextRange(sc.2167(line),sc.2006)
 	;m("Start at line: " line,"Indentation: " begin,"Text:",FileText)
@@ -6003,11 +5988,11 @@ Index_Lib_Files(){
 			StringReplace,Text,Text,`r`n,`n,All
 			Update({file:File,text:Text,load:1,encoding:Encoding}),new.SetAttribute("time",time),new.SetAttribute("encoding",encoding)
 }}}
-InputBox(parent,title,prompt,default=""){
-	sc:=csc()
-	WinGetPos,x,y,,,% "ahk_id" (parent?parent:sc.sc+0)
-	RegExReplace(prompt,"\n","",count),count:=count+3,sc:=csc(),height:=(sc.2279(0)*count)+(v.caption*3)+23+34,y:=((CPos:=sc.2165(0,sc.2008))<height)?y+CPos+sc.2279(sc.2166(sc.2008))+5:y
-	InputBox,var,%title%,%prompt%,,,%height%,%x%,%y%,,,%default%
+InputBox(Parent,Title,Prompt,Default=""){
+	sc:=CSC()
+	WinGetPos,x,y,,,% "ahk_id" (Parent?Parent:sc.sc+0)
+	RegExReplace(Prompt,"\n","",Count),Count:=Count+3,sc:=CSC(),height:=(sc.2279(0)*Count)+(v.caption*3)+23+34,y:=((CPos:=sc.2165(0,sc.2008))<height)?y+CPos+sc.2279(sc.2166(sc.2008))+5:y
+	InputBox,var,%Title%,%Prompt%,,,%height%,%x%,%y%,,,%Default%
 	KeyWait,Escape
 	if(ErrorLevel){
 		sc.Enable(1)
@@ -6016,10 +6001,10 @@ InputBox(parent,title,prompt,default=""){
 	return var
 }
 Insert_Current_Time(){
-	sc:=csc(),sc.2003(sc.2008,[A_Now]),sc.2025(sc.2008+StrLen(A_Now))
+	sc:=CSC(),sc.2003(sc.2008,[A_Now]),sc.2025(sc.2008+StrLen(A_Now))
 }
 InsertAll(text,add){
-	sc:=csc(),sc.2078
+	sc:=CSC(),sc.2078
 	Loop,% sc.2570
 		InsertMultiple(A_Index-1,(pos:=sc.2585(A_Index-1)),text,pos+add)
 	sc.2079
@@ -6042,10 +6027,10 @@ InsertDebugMessage(){
 	sc.2025(sc.2006)
 }
 InsertMultiple(caret,CPos,text,end){
-	sc:=csc(),sc.2686(CPos,CPos),sc.2194(StrPut(text,"UTF-8")-1,text),sc.2584(caret,end),sc.2586(caret,end)
+	sc:=CSC(),sc.2686(CPos,CPos),sc.2194(StrPut(text,"UTF-8")-1,text),sc.2584(caret,end),sc.2586(caret,end)
 }
 Jump_To_First_Available(){
-	sc:=csc(),line:=sc.GetLine(sc.2166(sc.2008)),v.jtfa:=[]
+	sc:=CSC(),line:=sc.GetLine(sc.2166(sc.2008)),v.jtfa:=[]
 	if(RegExMatch(line,"Oi)^\s*\x23include\s*(.*)(\s*;.*)?$",found))
 		Jump_To_Include()
 	else{
@@ -6063,13 +6048,13 @@ Jump_To_First_Available(){
 			if(!InStr(total,"|"))
 				sc.2104
 }}}Jump_To(Type){
-	sc:=csc(),line:=sc.GetLine(sc.2166(sc.2008)),word:=Upper(sc.GetWord())
+	sc:=CSC(),line:=sc.GetLine(sc.2166(sc.2008)),word:=Upper(sc.GetWord())
 	if(node:=SSN(Current(7),"descendant::*[@type='" Type "' and @upper='" word "']"))
 		CEXMLSel(node)
 }Jump_To_Function(){
 	Jump_To("Function")
 }Jump_To_Include(){
-	sc:=csc(),line:=sc.GetLine(sc.2166(sc.2008)),tv(SSN(cexml.Find(Current(1),"descendant::file/@include",Trim(line,"`t`n ")),"@tv").text)
+	sc:=CSC(),line:=sc.GetLine(sc.2166(sc.2008)),tv(SSN(cexml.Find(Current(1),"descendant::file/@include",Trim(line,"`t`n ")),"@tv").text)
 }Jump_To_Label(){
 	Jump_To("Label")
 }Jump_To_Method(){
@@ -6083,7 +6068,7 @@ Jump_To_First_Available(){
 }Jump_To_Project(){
 	Omni_Search("^")
 }Jump_To_Matching_Brace(){
-	sc:=csc(),CPos:=sc.2008
+	sc:=CSC(),CPos:=sc.2008
 	if((pos:=sc.2353(CPos))>=0)
 		sc.2025(pos)
 	else if((pos:=sc.2353(CPos-1))>=0)
@@ -6255,8 +6240,8 @@ LastFiles(){
 LButton(a*){
 	Loop,2
 		MouseClick,Left,,,,,U
-	if(WinExist(hwnd([20])))
-		hwnd({rem:20})
+	if(WinExist(HWND([20])))
+		HWND({rem:20})
 	return 0
 }
 List_Variables(){
@@ -6268,7 +6253,7 @@ Manage_File_Types(){
 	new SettingsClass("Manage File Types")
 }
 Margin_Left(set:=0){
-	sc:=csc()
+	sc:=CSC()
 	if(set){
 		sc.2155(0,Round(Settings.SSN("//marginleft").text))
 		return
@@ -6279,7 +6264,7 @@ Margin_Left(set:=0){
 	Settings.Add("marginleft","",number),Margin_Left(1)
 }
 MarginWidth(sc=""){
-	sc:=sc?sc:csc(),sc.2242(0,sc.2276(33,"a" sc.2154()))
+	sc:=sc?sc:CSC(),sc.2242(0,sc.2276(33,"a" sc.2154()))
 }
 Menu_Help(){
 	static help,NewWin
@@ -6337,8 +6322,8 @@ Menu_Search(){
 }
 Menu(MenuName:="main"){
 	v.Available:=[],menu:=menus.SN("//" MenuName "/descendant::*"),topmenu:=menus.SN("//" MenuName "/*"),track:=[],Exist:=[],Exist[MenuName]:=1
-	if(!top:=v.hkxml.SSN("//win[@hwnd='" hwnd(1) "']"))
-		top:=v.hkxml.Add("win",{hwnd:hwnd(1)},,1)
+	if(!top:=v.hkxml.SSN("//win[@hwnd='" HWND(1) "']"))
+		top:=v.hkxml.Add("win",{hwnd:HWND(1)},,1)
 	Disable:=[]
 	Menu,%MenuName%,UseErrorLevel,On
 	while(mm:=topmenu.Item[A_Index-1],ea:=XML.EA(mm))
@@ -6414,7 +6399,7 @@ Menu(MenuName:="main"){
 	return
 	show:
 	/*
-		WinActivate(hwnd([1]))
+		WinActivate(HWND([1]))
 	*/
 	return
 }
@@ -6630,7 +6615,7 @@ Monitors(){
 	return Coords
 }
 Move_Selected_Lines_Down(){
-	sc:=csc()
+	sc:=CSC()
 	OLine:=line:=sc.2166(sc.2143)
 	if(line+1=sc.2154)
 		return
@@ -6651,7 +6636,7 @@ Move_Selected_Lines_Down(){
 	return
 }
 Move_Selected_Lines_Up(){
-	sc:=csc(),OLine:=line:=sc.2166(sc.2143)
+	sc:=CSC(),OLine:=line:=sc.2166(sc.2143)
 	if(line=0)
 		return
 	sc.Enable(),sc.2078,start:=sc.2166(sc.2143),end:=sc.2166(sc.2145-1),LineStatus.StoreEdited(start,end,-1),Edited()
@@ -6667,7 +6652,7 @@ Move_Selected_Word_Left(){
 	MoveSelectedWord(-1)
 }
 MoveSelectedWord(add){
-	sc:=csc(),sc.2078
+	sc:=CSC(),sc.2078
 	Loop,% sc.2570{
 		index:=A_Index-1,start:=sc.2585(index),end:=sc.2587(index)
 		if(start!=end)
@@ -6701,7 +6686,7 @@ t(x*){
 	return
 }
 New_Caret(add){
-	sc:=csc(),CPos:=sc.2008,line:=sc.2166(CPos),column:=sc.2129(CPos),new:=sc.2456(line+add,column)
+	sc:=CSC(),CPos:=sc.2008,line:=sc.2166(CPos),column:=sc.2129(CPos),new:=sc.2456(line+add,column)
 	Loop,% sc.2570
 		if(sc.2166(sc.2577(A_Index-1))=line+add)
 			return sc.2574(A_Index-1)
@@ -6716,27 +6701,27 @@ New_Caret_Below(){
 New_File_Template(){
 	NewWin:=new GUIKeep(28),NewWin.Add("Edit,w500 r30,,wh","Button,gNFTDefault,Default Template,y","Button,gNFTClose Default,Save,y"),NewWin.show("New File Template")
 	if(template:=Settings.SSN("//template").text)
-		ControlSetText,Edit1,% RegExReplace(template,"\R","`r`n"),% hwnd([28])
+		ControlSetText,Edit1,% RegExReplace(template,"\R","`r`n"),% HWND([28])
 	else
 		Goto,nftdefault
 	return
 	NFTClose:
-	ControlGetText,edit,Edit1,% hwnd([28])
+	ControlGetText,edit,Edit1,% HWND([28])
 	Settings.Add("template",,RegExReplace(edit,"\R","`n"))
 	28Escape:
 	28Close:
-	hwnd({rem:28})
+	HWND({rem:28})
 	return
 	NFTDefault:
 	FileRead,template,c:\windows\shellnew\template.ahk
-	ControlSetText,Edit1,%template%,% hwnd([28])
+	ControlSetText,Edit1,%template%,% HWND([28])
 	rem:=Settings.SSN("//template"),rem.ParentNode.RemoveChild(rem)
 	return
 }
 New_Include(){
 	if(Current(2).untitled)
 		return m("You can not add Includes to untitled documents.  Please save this project before attempting to add Includes to it.")
-	sc:=csc(),parent:=Current(2).file,Filename:=SelectFile("","New Include Name"),AddSpace:=v.Options.New_Include_Add_Space?" ":""
+	sc:=CSC(),parent:=Current(2).file,Filename:=SelectFile("","New Include Name"),AddSpace:=v.Options.New_Include_Add_Space?" ":""
 	SplitPath,Filename,,,,nne
 	function:=Clean(nne),text:=(function~="i)^class_")?(m("Create Class called " (RegExReplace(SubStr(nne,InStr(nne," ")+1)," ","_")) "?","btn:ync")="Yes"?"Class " (RegExReplace(SubStr(nne,InStr(nne," ")+1)," ","_")) AddSpace "{`n`t`n}":"",pos:=StrPut(nne AddSpace "{`t","UTF-8")):(m("Create Function called " function "?","btn:ync")="Yes"?function "()" AddSpace "{`n`t`n}":"",pos:=StrPut(function "(","UTF-8")-1)
 	AddInclude(Filename,text,{start:pos,end:pos})
@@ -6747,7 +6732,7 @@ NewIndent(indentwidth:=""){
 	tick:=A_TickCount
 	filename:=Current(3).file
 	SplitPath,filename,,,ext
-	sc:=csc(),sc.Enable(),skipcompile:=0,chr:="K",codetext:=sc.GetUni(),indentation:=sc.2121,line:=sc.2166(sc.2008),posinline:=sc.2008-sc.2128(line),selpos:=PosInfo(),lock:=[],block:=[],aa:=ab:=braces:=0,code:=StrSplit(codetext,"`n"),aaobj:=[],specialbrace:=0,totalcount:=0
+	sc:=CSC(),sc.Enable(),skipcompile:=0,chr:="K",codetext:=sc.GetUni(),indentation:=sc.2121,line:=sc.2166(sc.2008),posinline:=sc.2008-sc.2128(line),selpos:=PosInfo(),lock:=[],block:=[],aa:=ab:=braces:=0,code:=StrSplit(codetext,"`n"),aaobj:=[],specialbrace:=0,totalcount:=0
 	for a,text in code{
 		totalcount++
 		text:=Trim(text,"`t ")
@@ -6841,7 +6826,7 @@ NewIndent(indentwidth:=""){
 New(FileName:="",text:="",Select:=1){
 	template:=GetTemplate()
 	if(v.Options.New_File_Dialog&&!FileName){
-		FileName:=DLG_FileSave(hwnd(1))
+		FileName:=DLG_FileSave(HWND(1))
 		if(!FileName)
 			return
 		
@@ -6862,11 +6847,11 @@ New(FileName:="",text:="",Select:=1){
 	return new
 }
 New_Include_From_Current_Word(){
-	sc:=csc(),Word:=sc.GetWord(),file:=Current(2).file
+	sc:=CSC(),Word:=sc.GetWord(),file:=Current(2).file
 	if(!Word)
 		return m("Either select a word or place your caret within a word")
 	if(Context(1).Word="gui"){
-		Word:=InputBox(hwnd(1),"Possible g-label detected","Confirm the new Function and File to be created",Word)
+		Word:=InputBox(HWND(1),"Possible g-label detected","Confirm the new Function and File to be created",Word)
 		if(ErrorLevel||Word="")
 			return
 	}SplitPath,file,,Dir
@@ -6883,10 +6868,10 @@ NewLines(text){
 	return text
 }
 Next_File(){
-	Default("SysTreeView321"),TV_Modify(TV_GetNext(TV_GetSelection(),"F"),"Select Vis Focus")
+	TVC.Default(1),TV_Modify(TV_GetNext(TV_GetSelection(),"F"),"Select Vis Focus")
 }
 Next_Found(){
-	sc:=csc(),sc.2606,sc.2169,CenterSel()
+	sc:=CSC(),sc.2606,sc.2169,CenterSel()
 }
 Next_Project(){
 	current:=Current(1)
@@ -7137,7 +7122,7 @@ Notify(csc*){
 	fn:=[],Info:=A_EventInfo,Code:=NumGet(Info+8)
 	if(!Code)
 		return 0
-	sc:=csc({hwnd:(Ctrl:=NumGet(A_EventInfo+0))})
+	sc:=CSC({hwnd:(Ctrl:=NumGet(A_EventInfo+0))})
 	if(Code=2016){
 		pos:=sc.2023(fn.x,fn.y)
 		word:=sc.TextRange(sc.2266(pos,1),sc.2267(pos,1))
@@ -7162,13 +7147,13 @@ Notify(csc*){
 		return 0,SetTimers("BraceHighlight,-10")
 	}else if(Code=2028){
 		if(s.ctrl[Ctrl])
-			sc:=csc({hwnd:hwnd})
+			sc:=CSC({hwnd:hwnd})
 		if(sc.sc=MainWin.tnsc.sc)
 			WinSetTitle(1,"Tracked Notes")
 		else
 			WinSetTitle(1,ea:=cexml.EA("//*[@sc='" sc.2357 "']"))
 		MouseGetPos,,,win
-		if(win=hwnd(1))
+		if(win=HWND(1))
 			SetTimer("LButton",-50)
 		TVC.Disable(1)
 		if(ea.tv)
@@ -7178,10 +7163,10 @@ Notify(csc*){
 			Hotkeys()
 		return 0
 	}else if(Code=2029){
-		v.LastSC:=csc()
+		v.LastSC:=CSC()
 		/*
 			if(s.ctrl[Ctrl])
-				sc:=csc({hwnd:hwnd})
+				sc:=CSC({hwnd:hwnd})
 			push in all of the selections, and also have the scroll position (first line Vis)
 			FocusPos[Ctrl]:={2008:sc.2008,2009:sc.2009}
 		*/
@@ -7206,7 +7191,7 @@ Notify(csc*){
 	ReadLater:
 	Edited:=[]
 	while(fn:=Mem.RemoveAt(1)){
-		sc:=csc({hwnd:fn.Ctrl}),tn:=0,Code:=fn.Code
+		sc:=CSC({hwnd:fn.Ctrl}),tn:=0,Code:=fn.Code
 		if(MainWin.tnsc.sc=fn.Ctrl)
 			TNotes.Write(),tn:=1
 		if(fn.Code=2001){
@@ -7499,11 +7484,11 @@ ObjRegisterActive(Object,CLSID:="{DBD5A90A-A85C-11E4-B0C7-43449580656B}",Flags:=
 }
 Omni_Search(start=""){
 	static NewWin,Select:=[],Pre,Sort,Search,Running
-	if(hwnd(20))
+	if(HWND(20))
 		return
-	sc:=csc()
+	sc:=CSC()
 	if(sc.notes)
-		csc({hwnd:gui.SSN("//*[@type='Scintilla']/@hwnd").text}),sc:=csc(),sc.2400
+		CSC({hwnd:gui.SSN("//*[@type='Scintilla']/@hwnd").text}),sc:=CSC(),sc.2400
 	/*
 		if(v.LineEdited.MinIndex()!="")
 			Scan_Line()
@@ -7663,7 +7648,7 @@ Omni_Search(start=""){
 	return
 	20Escape:
 	20Close:
-	NewWin.SavePos(),hwnd({rem:20})
+	NewWin.SavePos(),HWND({rem:20})
 	return
 	OSGo:
 	if(Running)
@@ -7672,11 +7657,11 @@ Omni_Search(start=""){
 	LV_GetText(num,LV_GetNext(),6),Num:=Num?Num:LV_GetNext(),item:=XML.EA(Node:=Select[num]),Search:=NewWin[].Search,Pre:=SubStr(Search,1,1),LV_GetText(LV_Text,LV_GetNext())
 	if(!num){
 		LV_GetText(item,LV_GetNext())
-		ControlGetText,text,Edit1,% hwnd([20])
+		ControlGetText,text,Edit1,% HWND([20])
 		if(InStr(text,"?")){
-			ControlSetText,Edit1,% RegExReplace(text,"\?"),% hwnd([20])
+			ControlSetText,Edit1,% RegExReplace(text,"\?"),% HWND([20])
 			Send,{End}
-		}ControlFocus,Edit1,% hwnd([20])
+		}ControlFocus,Edit1,% HWND([20])
 		Send,{%item%}
 	}if(SubStr(Search,1,1)=")"){
 		text:=Sort[LV_GetNext()]
@@ -7700,7 +7685,7 @@ Omni_Search(start=""){
 				Run,%Type% "%option%"
 		}}NewWin.Exit()
 	}else if(Pre="+"){
-		NewWin.Exit(),args:=item.args,sc:=csc(),args:=RegExReplace(args,"U)=?" chr(34) "(.*)" chr(34)),build:=item.text "("
+		NewWin.Exit(),args:=item.args,sc:=CSC(),args:=RegExReplace(args,"U)=?" chr(34) "(.*)" chr(34)),build:=item.text "("
 		for a,b in StrSplit(args,",")
 			comma:=A_Index>1?",":"",value:=InputBox(sc.sc,"Add Function Call","Insert a value for : " b " :`n" item.text "(" item.args ")`n" build ")",""),value:=value?value:Chr(34) Chr(34),build.=comma value
 		build.=")"
@@ -7713,7 +7698,7 @@ Omni_Search(start=""){
 		if(TypeInfo.Multiple){
 			if((tv:=SSN(FileNode,"@tv").text)!=TVC.Selection(1))
 				tv(tv),Sleep(400)
-			Search:=RegExReplace(TypeInfo.Regex,"\x60n","`n"),sc:=csc(),Text:=sc.GetUNI(),Pre:=SN(Node,"preceding-sibling::*[@type='" item.Type "' and @text='" item.text "']").Length,Pos:=0
+			Search:=RegExReplace(TypeInfo.Regex,"\x60n","`n"),sc:=CSC(),Text:=sc.GetUNI(),Pre:=SN(Node,"preceding-sibling::*[@type='" item.Type "' and @text='" item.text "']").Length,Pos:=0
 			Loop,% 1+Pre
 				Pos:=RegExMatch(Text,Search,,Pos+1)
 			if(TypeInfo.SelectLine){
@@ -7727,7 +7712,7 @@ Omni_Search(start=""){
 	}else if(item.Type="gui"){
 		NewWin.Exit(),tv(cexml.SSN("//*[@id='" item.id "']/@tv").text)
 		Sleep,200
-		csc().2160(item.Pos,item.Pos+StrLen(item.text)),CenterSel()
+		CSC().2160(item.Pos,item.Pos+StrLen(item.text)),CenterSel()
 		text:=Update({get:item.File})
 		if(Search~=">.*>")
 			m("Edit this GUI",SubStr(text,item.start,item.end-item.start))
@@ -7757,7 +7742,7 @@ Online_Help(){
 	Run,https://github.com/maestrith/AHK-Studio/wiki
 }
 Open_Folder(){
-	sc:=csc()
+	sc:=CSC()
 	file:=Current(3).file
 	SplitPath,file,,dir
 	if(!dir){
@@ -7777,8 +7762,8 @@ Open_Folder(){
 Open(FileList="",Show="",Redraw:=1){
 	static root,top
 	for a,b in [19,14,3,11]{
-		if(hwnd(b)){
-			WinGetTitle,title,% hwnd([b])
+		if(HWND(b)){
+			WinGetTitle,title,% HWND([b])
 			return m("Please close the " title " window before proceeding")
 		}
 	}
@@ -7812,7 +7797,7 @@ Open(FileList="",Show="",Redraw:=1){
 		Gosub,addfile
 		if(CloseID)
 			Close(cexml.SN("//*[@id='" CloseID "']"),,0),CloseID:=""
-		Gui,1:TreeView,SysTreeView321
+		TVC.Default(1)
 		FileList:=SN(cexml.Find("//main/@file",FileName),"descendant::file"),tv(SSN(cexml.Find("//main/@file",FileName),"file/@tv").text)
 		ScanFiles(),Code_Explorer.Refresh_Code_Explorer(),PERefresh(),v.TNGui.Populate(),Settings.Add("open/file",,FileName,1)
 	}else{
@@ -7841,7 +7826,7 @@ Open(FileList="",Show="",Redraw:=1){
 	}
 	return root
 	AutoExpand:
-	Default("SysTreeView321"),current:=TV_GetSelection(),next:=0,TVState()
+	TVC.Default(1),current:=TV_GetSelection(),next:=0,TVState()
 	all:=cexml.SN("//main/descendant::*")
 	while(aa:=all.item[A_Index-1]),ea:=XML.EA(aa)
 		if(SSN(aa,"descendant::*"))
@@ -7852,8 +7837,7 @@ Open(FileList="",Show="",Redraw:=1){
 	Gui,1:Default
 	SplitPath,FileName,fn,dir,,nne
 	FileGetTime,time,%FileName%
-	GuiControl,1:+g,SysTreeView321
-	GuiControl,1:-Redraw,SysTreeView321
+	TVC.Disable(1)
 	Extract(GetMainNode(FileName)),FEUpdate()
 	/*
 		if(!Settings.SSN("//open/file[text()='" FileName "']"))
@@ -7861,9 +7845,9 @@ Open(FileList="",Show="",Redraw:=1){
 	*/
 	Gui,1:Default
 	if(Redraw)
-		GuiControl,1:+Redraw,SysTreeView321
-	if(!v.opening)
-		GuiControl,1:+gtv,SysTreeView321
+		TVC.Redraw(1)
+	if(!v.Opening)
+		TVC.Enable(1)
 	return
 }
 OpenHelpFile(url){
@@ -7894,7 +7878,7 @@ Options(x:=0){
 		alloptions.=disable "|" options "|" other "|" special
 		Sort,alloptions,UD|
 		for a,b in StrSplit(alloptions,"|")
-			v.Options[b]:=0
+			v.Options[b]:=0,v.AllOptions[b]:=1
 		if(Settings.SSN("//options[@Auto_Project_Explorer_Width]"))
 			Settings.SSN("//options").RemoveAttribute("Auto_Project_Explorer_Width")
 		opt:=Settings.EA("//options")
@@ -7907,7 +7891,7 @@ Options(x:=0){
 	}else if(x=0)
 		return new SettingsClass("Options")
 	if(x~=Disable){
-		sc:=csc(),OnOff:=Settings.SSN("//options/@" x).text?0:1,att:=[],att[x]:=OnOff,Settings.Add("options",att),v.Options[x]:=OnOff,ToggleMenu(x),sc[list[x]](OnOff),ea:=Settings.EA("//options")
+		sc:=CSC(),OnOff:=Settings.SSN("//options/@" x).text?0:1,att:=[],att[x]:=OnOff,Settings.Add("options",att),v.Options[x]:=OnOff,ToggleMenu(x),sc[list[x]](OnOff),ea:=Settings.EA("//options")
 		for c,d in s.ctrl{
 			for a,b in ea{
 				if(!IsObject(list[a])){
@@ -7925,14 +7909,14 @@ Options(x:=0){
 			OnOff:=OnOff?4:0,sc[list[x]](OnOff)
 		if(x="Hide_File_Extensions"||x=""){
 			fl:=cexml.SN("//file")
-			GuiControl,1:-Redraw,SysTreeView321
+			TVC.Redraw(1,0)
 			while(ff:=fl.item[A_Index-1]),ea:=XML.EA(ff)
 				TVC.Modify(1,(ea.edited?"*":"")(v.Options.Hide_File_Extensions?ea.nne:ea.filename),ea.tv)
-			GuiControl,1:+Redraw,SysTreeView321
+			TVC.Redraw(1)
 		}if(x="Remove_Directory_Slash")
 			FEUpdate(1)
 		if(x="margin_left")
-			csc().2155(0,6)
+			CSC().2155(0,6)
 		if(x="Center_Caret")
 			sc.2402((OnOff?0x04|0x8:0x8),0),sc.2403((OnOff?0x04|0x8:0x8),0)
 	}else if(x~=other){
@@ -7943,7 +7927,7 @@ Options(x:=0){
 			if(OnOff)
 				HltLine()
 			Else
-				sc:=csc(),sc.2045(2),sc.2045(3)
+				sc:=CSC(),sc.2045(2),sc.2045(3)
 		}if(x="Hide_Tray_Icon")
 			Menu,Tray,% v.Options.Hide_Tray_Icon?"Icon":"NoIcon"
 		v.Options[x]:=OnOff
@@ -7965,41 +7949,41 @@ Options(x:=0){
 		RefreshThemes()
 }
 ShowOSD(show){
-	static List:=new XML("osd"),top,win:="OSD"
+	static List:=new XML("OSD"),top,Win:="OSD"
 	if(!v.Options.OSD)
 		return
-	if(!hwnd(win)){
+	if(!HWND(Win)){
 		rem:=List.SSN("//list"),rem.ParentNode.RemoveChild(rem)
-		Gui,win:Destroy
-		Gui,win:Default
+		Gui,Win:Destroy
+		Gui,Win:Default
 		Gui,Color,0x111111,0x111111
 		Gui,+hwndhwnd +Owner1 -DPIScale
 		Gui,Margin,0,0
-		hwnd(win,hwnd)
+		HWND(Win,hwnd)
 		Gui,Font,s12 c0xff00ff,Consolas
-		Gui,Add,ListView,w300 h400 -Hdr,info|x
+		Gui,Add,ListView,w500 h300 -Hdr,info|x
 		Gui,Show,x0 y0 w0 h0 Hide NA,OSD
-		WinGetPos,x,y,w,h,% hwnd([1])
+		WinGetPos,x,y,w,h,% HWND([1])
 		Gui,-Caption
-		Gui,win:Show,% "x" (x+w-MainWin.Border)-(300) " y" y+MainWin.caption+MainWin.menu+MainWin.Border+(v.Options.top_find?.qfheight:0) " NA AutoSize",OSD
+		Gui,Win:Show,% "x" (x+w-MainWin.Border)-(500) " y" y+h-(300+MainWin.Border) " NA AutoSize",OSD
 		top:=List.Add("list")
 	}show:=RegExReplace(show,"_"," ")
-	Gui,win:Default
-	Gui,win:ListView,SysListView321
-	if((ea:=XML.EA(node:=List.SSN("//list").LastChild())).name=show)
-		node.SetAttribute("count",ea.count+1)
+	Gui,Win:Default
+	Gui,Win:ListView,SysListView321
+	if((ea:=XML.EA(Node:=List.SSN("//list").LastChild())).name=show)
+		Node.SetAttribute("count",ea.count+1)
 	else
-		node:=List.under(top,"item",{name:show,count:1})
+		Node:=List.Under(top,"item",{name:show,count:1})
 	LV_Delete()
 	all:=List.SN("//item")
 	while(aa:=all.item[A_Index-1],ea:=XML.EA(aa))
-		LV_Add("",ea.name,ea.count)
+		LV_Add("",ea.name " " Convert_Hotkey(Menus.SSN("//*[@clean='" Clean(ea.Name) "']/@hotkey").text),ea.count)
 	Loop,2
 		LV_ModifyCol(A_Index,"AutoHDR")
-	SetTimer,killosd,-2000
+	SetTimer,KillOSD,-2000
 	return
-	killosd:
-	hwnd({rem:win,na:1}),rem:=List.SSN("//list"),rem.ParentNode.RemoveAttribute(rem)
+	KillOSD:
+	HWND({rem:Win,na:1}),rem:=List.SSN("//list"),rem.ParentNode.RemoveAttribute(rem)
 	return
 }
 Paste(){
@@ -8007,7 +7991,7 @@ Paste(){
 	if(Focus="Edit1"){
 		SendMessage,0x302,0,0,Edit1,% MainWin.ID
 		return
-	}sc:=csc(),Line:=sc.2166(sc.2008),sc.2078(),sc.2179(),MarginWidth(sc),Edited(),RegExReplace(Clipboard,"\n",,Count)
+	}sc:=CSC(),Line:=sc.2166(sc.2008),sc.2078(),sc.2179(),MarginWidth(sc),Edited(),RegExReplace(Clipboard,"\n",,Count)
 	Loop,% Count+1
 		LineStatus.Add(Line+(A_Index-1),2)
 	if(v.Options.Full_Auto_Indentation&&Current(3).Lang="ahk")
@@ -8026,17 +8010,16 @@ PDX(){
 	GuiControl,98:+Redraw,SysTreeView321
 }
 PERefresh(){
-	Gui,1:Default
-	GuiControl,+Redraw,SysTreeView321
+	TVC.Redraw(1)
 }
 Personal_Variable_List(){
 	static
 	NewWin:=new GUIKeep(6),NewWin.Add("ListView,w200 h400,Variables,wh","Edit,w200 vvariable,,yw","Button,gaddvar Default,&Add,y","Button,x+10 gvdelete,&Delete Selected,y")
 	NewWin.Show("Variables",1),vars:=Settings.SN("//Variables/*")
-	ControlFocus,Edit1,% hwnd([6])
+	ControlFocus,Edit1,% HWND([6])
 	while(vv:=vars.item(A_Index-1))
 		LV_Add("",vv.text)
-	ControlFocus,Edit1,% hwnd([6])
+	ControlFocus,Edit1,% HWND([6])
 	return
 	vdelete:
 	while(LV_GetNext()){
@@ -8050,11 +8033,11 @@ Personal_Variable_List(){
 	if(!Settings.SSN("//Variables/Variable[text()='" variable "']"))
 		Settings.Add("Variables/Variable",,variable,1),LV_Add("",variable)
 	Settings.Transform()
-	ControlSetText,Edit1,,% hwnd([6])
+	ControlSetText,Edit1,,% HWND([6])
 	return
 	6Close:
 	6Escape:
-	Keywords.RefreshPersonal(),NewWin.SavePos(),hwnd({Rem:6})
+	Keywords.RefreshPersonal(),NewWin.SavePos(),HWND({Rem:6})
 	return
 }
 Plug(refresh:=0){
@@ -8091,7 +8074,7 @@ Plug(refresh:=0){
 	return
 }
 PosInfo(){
-	sc:=csc(),current:=sc.2008,line:=sc.2166(current),ind:=sc.2128(line),lineend:=sc.2136(line)
+	sc:=CSC(),current:=sc.2008,line:=sc.2166(current),ind:=sc.2128(line),lineend:=sc.2136(line)
 	if(sc.2008!=sc.2009)
 		startline:=sc.2166(sc.2143),endline:=sc.2166(sc.2145-(sc.2007(sc.2145-1)=10?1:0))
 	else
@@ -8099,13 +8082,13 @@ PosInfo(){
 	return {current:current,line:line,ind:ind,lineend:lineend,start:sc.2143,end:sc.2145,startline:startline,endline:endline}
 }
 Previous_File(){
-	Default("SysTreeView321"),prev:=0,tv:=TV_GetSelection()
+	TVC.Default(1),prev:=0,tv:=TV_GetSelection()
 	while(tv!=prev:=TV_GetNext(prev,"F"))
 		newtv:=prev
 	TV_Modify(newtv,"Select Vis Focus")
 }
 Previous_Found(){
-	sc:=csc(),current:=sc.2575,total:=sc.2570-1,(current=0)?sc.2574(total):sc.2574(--current),CenterSel()
+	sc:=CSC(),current:=sc.2575,total:=sc.2570-1,(current=0)?sc.2574(total):sc.2574(--current),CenterSel()
 }
 Previous_Project(){
 	current:=Current(1)
@@ -8132,7 +8115,7 @@ Previous_Scripts(FileName=""){
 			filelist.push(ss)
 	for a,b in filelist
 		b.ParentNode.RemoveChild(b)
-	m("Removed " Round(filelist.MaxIndex()) " file" (filelist.MaxIndex()=1?"":"s")),WinActivate(hwnd([nw.win]))
+	m("Removed " Round(filelist.MaxIndex()) " file" (filelist.MaxIndex()=1?"":"s")),WinActivate(HWND([nw.win]))
 	Goto,PopulatePS
 	return
 	PSRemove:
@@ -8147,7 +8130,7 @@ Previous_Scripts(FileName=""){
 	return
 	pskey:
 	key:=RegExReplace(A_ThisHotkey,"\+",,count),shift:=count?"+":""
-	ControlSend,SysListView321,%shift%{%key%},% hwnd([nw.win])
+	ControlSend,SysListView321,%shift%{%key%},% HWND([nw.win])
 	return
 	Previous_ScriptsClose:
 	Previous_ScriptsEscape:
@@ -8241,7 +8224,7 @@ Project_Specific_AutoComplete(){
 		LV_Add("",b)
 	return
 	PSAAdd:
-	text:=InputBox(hwnd("Project_Specific_AutoComplete"),"Add Words","Add a list of Space Delimited Words")
+	text:=InputBox(HWND("Project_Specific_AutoComplete"),"Add Words","Add a list of Space Delimited Words")
 	for a,b in StrSplit(text," ")
 		if(!RegExMatch(Node.text,"\b\Q" b "\E\b"))
 			Node.text:=Node.text " " b
@@ -8257,11 +8240,11 @@ Project_Specific_AutoComplete(){
 	return
 	Project_Specific_AutoCompleteGuiEscape:
 	Project_Specific_AutoCompleteGuiClose:
-	hwnd({rem:"Project_Specific_AutoComplete"})
+	HWND({rem:"Project_Specific_AutoComplete"})
 	return
 }
 Add_Selected_To_Project_Specific_AutoComplete(){
-	text:=csc().getseltext()
+	text:=CSC().getseltext()
 	if(!text)
 		return m("Please select some text first")
 	if(!Node:=Settings.Find("//autocomplete/project/@file",Current(2).file))
@@ -8278,7 +8261,7 @@ Add_Selected_To_Project_Specific_AutoComplete(){
 }
 Publish(Return="",Branch:="",Version:=""){
 	static Init
-	sc:=csc(),Text:=Update("get").1,Save(),MainFile:=Current(2).file,Publish:=Update({Get:MainFile}),includes:=SN(Current(1),"descendant::*/@include/..")
+	sc:=CSC(),Text:=Update("get").1,Save(),MainFile:=Current(2).file,Publish:=Update({Get:MainFile}),includes:=SN(Current(1),"descendant::*/@include/..")
 	ea:=XML.EA(Keywords.GetXML(Current(3).Lang).SSN("//AutoReplace"))
 	while(ii:=Includes.item[A_Index-1])
 		if(InStr(Publish,SSN(ii,"@include").Text))
@@ -8382,7 +8365,7 @@ QF(x:=0){
 		return
 	if(x=1)
 		LastFind:=[]
-	sc:=csc(),Break:=1
+	sc:=CSC(),Break:=1
 	ControlGetText,Find,,% "ahk_id" MainWin.QFEdit
 	if(Find=LastFind&&sc.2570>1){
 		if(GetKeyState("Shift","P"))
@@ -8452,13 +8435,13 @@ QF(x:=0){
 	}Select:=[],sc.Enable(1),CenterSel()
 	return
 	Next:
-	sc:=csc(),sc.2606(),sc.2169()
+	sc:=CSC(),sc.2606(),sc.2169()
 	return
 	Clear_Selection:
-	sc:=csc(),sc.2500(2),sc.2505(0,sc.2006),QuickFind.Remove(sc.2357)
+	sc:=CSC(),sc.2500(2),sc.2505(0,sc.2006),QuickFind.Remove(sc.2357)
 	return
 	Set_Selection:
-	sc:=csc(),sc.2505(0,sc.2006),sc.2500(2)
+	sc:=CSC(),sc.2505(0,sc.2006),sc.2500(2)
 	if(sc.2008=sc.2009)
 		Goto,Clear_Selection
 	SetSel:=[]
@@ -8468,14 +8451,14 @@ QF(x:=0){
 		sc.2504(b.min,b.Max-b.min)
 	return
 	Quick_Find:
-	sc:=csc()
+	sc:=CSC()
 	if(v.Options.Copy_Selected_Text_on_Quick_Find)
 		if(Text:=sc.TextRange(sc.2143,sc.2145))
-			ControlSetText,Edit1,%Text%,% hwnd([1])
+			ControlSetText,Edit1,%Text%,% HWND([1])
 	if(v.Options.Auto_Set_Area_On_Quick_Find)
 		Gosub,Set_Selection
 	ControlFocus,,% "ahk_id" MainWin.QFEdit
-	ControlSend,Edit1,^A,% hwnd([1])
+	ControlSend,Edit1,^A,% HWND([1])
 	LastFind:=""
 	return
 	Case_Sensitive:
@@ -8545,7 +8528,7 @@ Quick_Options(){
 	new SettingsClass("Options")
 }
 Quick_Scintilla_Code_Lookup(){
-	sc:=csc(),word:=Upper(sc.TextRange(start:=sc.2266(sc.2008,1),end:=sc.2267(sc.2008,1))),Scintilla()
+	sc:=CSC(),word:=Upper(sc.TextRange(start:=sc.2266(sc.2008,1),end:=sc.2267(sc.2008,1))),Scintilla()
 	ea:=scintilla.EA("//commands/item[@name='" word "']")
 	if(ea.code){
 		syn:=ea.syntax?ea.code "()":ea.code,sc.2160(start,end),sc.2170(0,[syn])
@@ -8569,13 +8552,13 @@ RButton(){
 	MainWin.ContextMenu(1)
 }
 Redo(){
-	csc().2011
+	CSC().2011
 }
 Redraw(){
 	WinSet,Redraw,,% MainWin.ID
 }
 Refresh_Code_Explorer(){
-	FileName:=Current(3).File,Save(),Scanfile.Once:=0,TVC.Delete(1,0),TVC.Delete(2,0),TVC.Add(2,"Please Wait..."),TVC.Add(1,"Please Wait..."),sc:=csc(),sc.2358(0,0),sc.2181(0,"Reloading, Please Wait...")
+	FileName:=Current(3).File,Save(),Scanfile.Once:=0,TVC.Delete(1,0),TVC.Delete(2,0),TVC.Add(2,"Please Wait..."),TVC.Add(1,"Please Wait..."),sc:=CSC(),sc.2358(0,0),sc.2181(0,"Reloading, Please Wait...")
 	All:=cexml.SN("//*[@sc]")
 	while(aa:=All.item[A_Index-1],ea:=XML.EA(aa))
 		sc.2377(0,ea.sc)
@@ -8589,7 +8572,7 @@ Refresh_Code_Explorer(){
 Refresh_Current_File(){
 	Refresh(cexml.SN("//*[@id='" Current(3).ID "']"))
 }Refresh_Current_Project(){
-	Save(),GetPos(),sc:=csc(),sc.2358(0,0),sc.2181(0,"Reloading, Please Wait...")
+	Save(),GetPos(),sc:=CSC(),sc.2358(0,0),sc.2181(0,"Reloading, Please Wait...")
 	File:=Current(3).File
 	Main:=Current(2).File
 	Rem:=Current(1)
@@ -8620,7 +8603,7 @@ RefreshThemes(RefreshColor:=0){
 	cea:=Settings.EA("//theme/find")
 	bcolor:=(cea.tb!=""&&tf)?cea.tb:(cea.bb!=""&&!tf)?cea.bb:ea.Background
 	fcolor:=(cea.tf!=""&&tf)?cea.tf:(cea.bf!=""&&!tf)?cea.bf:ea.Color
-	for win,b in hwnd("get"){
+	for win,b in HWND("get"){
 		WinGet,ControlList,ControlList,% "ahk_id" b
 		Gui,%win%:Default
 		Gui,Color,% RGB(bcolor),% RGB(cea.qfb!=""?cea.qfb:bcolor)
@@ -8629,7 +8612,7 @@ RefreshThemes(RefreshColor:=0){
 			if((b~="i)Static1|Button|Edit1")&&win=1){
 				GuiControl,% "1:+background" RGB(bcolor) " c" RGB(fcolor),%b%
 			}else{
-				ControlGet,HWND,HWND,,%b%,% hwnd([win])
+				ControlGet,HWND,HWND,,%b%,% HWND([win])
 				if(win=1&&(NodeName:=TVC.HWND[HWND])){
 					if(Node:=Settings.SSN("//theme/" NodeName))
 						text:=CompileFont(Node),ea:=XML.EA(Node)
@@ -8684,7 +8667,7 @@ RelativePath(main,new){
 	}
 }
 Remove_Current_Selection(){
-	sc:=csc(),main:=sc.2575,sc.2671(main),sc.2606,sc.2169
+	sc:=CSC(),main:=sc.2575,sc.2671(main),sc.2606,sc.2169
 }
 Remove_Include(){
 	current:=Current(),mainnode:=Current(1),Parent:=Current(1)
@@ -8702,7 +8685,7 @@ Remove_Include(){
 			Update({file:ea.file,text:RegExReplace(text,"\R?\Q" inc "\E\R?","`n")})
 			cexml.SSN("//main[@id='" Current(2).ID "']/file").RemoveAttribute("sc")
 			if(tv:=HistoryEA.tv)
-				Default("SysTreeView321"),TV_Delete(tv)
+				TVC.Default(1),TV_Delete(tv)
 			all:=cexml.SN("//*[@id='" HistoryEA.ID "']")
 			while(aa:=all.item[A_Index-1])
 				aa.ParentNode.RemoveChild(aa)
@@ -8713,10 +8696,10 @@ Remove_Include(){
 	}
 }
 Remove_Scintilla_Window(){
-	this:=MainWin,sc:=csc(),pos:=this.WinPos(sc.sc),this.NewCtrlPos:={x:pos.x,y:pos.y,win:MainWin.hwnd,ctrl:sc.sc},this.Delete()
+	this:=MainWin,sc:=CSC(),pos:=this.WinPos(sc.sc),this.NewCtrlPos:={x:pos.x,y:pos.y,win:MainWin.hwnd,ctrl:sc.sc},this.Delete()
 }
 Remove_Spaces_From_Selected(){
-	sc:=csc()
+	sc:=CSC()
 	if(!text:=sc.GetSelText())
 		return m("Select some text first")
 	sc.2170(0,[RegExReplace(text,"\s")])
@@ -8748,9 +8731,9 @@ Rename_Current_Include(current:=""){
 		return
 	if(cexml.Find(Current(1),"descendant-or-self::file/@file",rename))
 		return m("You can not rename this the same as another #Include in the same project")
-	Rename:=Rename,Code_Explorer.RemoveTV(SN((root:=cexml.Find("//file/@file",ea.file)),"descendant-or-self::*")),MainFile:=SSN(current.ParentNode,"@file").text,sc:=csc(),RootFile:=Current(2).file,Include:=Include(RootFile,Rename),text:=RegExReplace(Update({get:MainFile}),"\Q" ea.include "\E",Include),current.ParentNode.RemoveAttribute("sc"),current.SetAttribute("scan",1),Update({file:MainFile,text:text})
+	Rename:=Rename,Code_Explorer.RemoveTV(SN((root:=cexml.Find("//file/@file",ea.file)),"descendant-or-self::*")),MainFile:=SSN(current.ParentNode,"@file").text,sc:=CSC(),RootFile:=Current(2).file,Include:=Include(RootFile,Rename),text:=RegExReplace(Update({get:MainFile}),"\Q" ea.include "\E",Include),current.ParentNode.RemoveAttribute("sc"),current.SetAttribute("scan",1),Update({file:MainFile,text:text})
 	if(tv:=SSN(current,"@tv").text)
-		Default("SysTreeView321"),TV_Delete(tv)
+		TVC.Default(1),TV_Delete(tv)
 	current.ParentNode.RemoveChild(current),tv(SSN(cexml.Find("//file/@file",MainFile),"@tv").text),Edited(current.ParentNode)
 	FileMove,% ea.file,%Rename%,1
 	SplashTextOn,,100,Indexing Files,Please Wait....
@@ -8761,7 +8744,7 @@ Rename_Current_Include(current:=""){
 	SplashTextOff
 }
 Replace_Selected(){
-	sc:=csc(),TotalReplaced:=sc.2570,OnMessage(6,""),replace:=InputBox(sc.sc,"Replace Selected","Input text to replace what is selected"),clip:=Clipboard
+	sc:=CSC(),TotalReplaced:=sc.2570,OnMessage(6,""),replace:=InputBox(sc.sc,"Replace Selected","Input text to replace what is selected"),clip:=Clipboard
 	if(ErrorLevel)
 		return
 	for a,b in StrSplit("``r,``n,``r``n,\r,\n,\r\n",",")
@@ -8773,7 +8756,7 @@ Replace_Selected(){
 	SetStatus("Total Replaced: " TotalReplaced,3)
 }
 Replace(){
-	sc:=csc(),CP:=sc.2008,Indent:=sc.2128(Line:=sc.2166(CP))
+	sc:=CSC(),CP:=sc.2008,Indent:=sc.2128(Line:=sc.2166(CP))
 	if(CP<Indent)
 		return
 	while((CP--)>Indent){
@@ -8828,7 +8811,7 @@ Replace(){
 	return
 }
 ReplaceText(start,end,text){
-	sc:=csc(),sc.2686(start,end),sc.2194(StrPut(text,"UTF-8")-1,text)
+	sc:=CSC(),sc.2686(start,end),sc.2194(StrPut(text,"UTF-8")-1,text)
 }
 Report_Bugs(){
 	if(m("Do you have a Github account?","btn:yn")="Yes")
@@ -8837,7 +8820,7 @@ Report_Bugs(){
 		Run,https://gitreports.com/issue/maestrith/AHK-Studio
 }
 Reset_Zoom(){
-	csc().2373(0),Settings.SSN("//gui/zoom").text:=0,CenterSel(),MarginWidth()
+	CSC().2373(0),Settings.SSN("//gui/zoom").text:=0,CenterSel(),MarginWidth()
 }
 Restore_Current_File(){
 	static
@@ -8870,7 +8853,7 @@ Restore_Current_File(){
 	RestoreFile:
 	Default(,"Restore_Current_File"),TV:=TV_GetSelection()
 	if(FileExist(File:=AllFiles[TV]))
-		File:=FileOpen(File,"R","UTF-8"),tt:=File.Read(),Len:=Encode(tt,Text,"UTF-8"),csc().2181(0,&Text),File.Close(),NewWin.Escape()
+		File:=FileOpen(File,"R","UTF-8"),tt:=File.Read(),Len:=Encode(tt,Text,"UTF-8"),CSC().2181(0,&Text),File.Close(),NewWin.Escape()
 	return
 	rcfr:
 	Goto,PopulateRestore
@@ -9004,7 +8987,7 @@ Right_Click_Menu_Editor(menu){
 	return
 }
 Run_Comment_Block(){
-	sc:=csc(),tab:=sc.2121,Line:=sc.2166(sc.2008),sc.2045(2),sc.2045(3)
+	sc:=CSC(),tab:=sc.2121,Line:=sc.2166(sc.2008),sc.2045(2),sc.2045(3)
 	if (sc.2127(Line)>0){
 		Up:=Down:=Line
 		ss:=sc.2127(Line)-tab
@@ -9020,7 +9003,7 @@ Run_Program(){
 	debug.Send("run")
 }
 Run_Selected_Text(){
-	sc:=csc()
+	sc:=CSC()
 	if(sc.2570=1)
 		text:=sc.GetSelText()
 	else
@@ -9032,7 +9015,7 @@ Run(){
 	if(v.opening)
 		return
 	KeyWait,Alt,U
-	sc:=csc(),Save(4),file:=Current(2).file
+	sc:=CSC(),Save(4),file:=Current(2).file
 	if(file=A_ScriptFullPath){
 		Run,%A_ScriptFullPath%
 		Exit(1)
@@ -9058,7 +9041,7 @@ Run(){
 		v.runpid:=[]
 	v.runpid[Current(2).file]:=pid
 	if(file=A_ScriptFullPath){
-		sc:=csc()
+		sc:=CSC()
 		for a,b in s.ctrl{
 			node:=gui.SSN("//*[@hwnd='" b.sc+0 "']"),node.SetAttribute("file",cexml.SSN("//*[@sc='" b.2357 "']/@file").text)
 			(b.sc=sc.sc)?node.SetAttribute("last",1):node.RemoveAttribute("last")
@@ -9092,7 +9075,7 @@ SanitizePath(File){
 Save_As(){
 	Send,{Alt Up}
 	Current:=Current(1),CurrentFile:=Current(2).file
-	if(!NewFile:=DLG_FileSave(hwnd(1),0,"Save File As...",CurrentFile))
+	if(!NewFile:=DLG_FileSave(HWND(1),0,"Save File As...",CurrentFile))
 		return
 	SplitPath,CurrentFile,,dir
 	SplitPath,NewFile,NewFN,NewDir,Ext,NNE
@@ -9127,7 +9110,7 @@ Save_Untitled(node,ask:=1){
 				Exit
 			if(option!="Yes")
 				return
-		}FileName:=DLG_FileSave(hwnd(1),,"Save Untitled File")
+		}FileName:=DLG_FileSave(HWND(1),,"Save Untitled File")
 		if(ErrorLevel)
 			return
 		FileName:=FileName,file:=FileOpen(FileName,"W","UTF-8"),file.Write(RegExReplace(text,"\R","`r`n")),file.Length(file.Position),all:=SN(SSN(node,"ancestor-or-self::main"),"descendant-or-self::*[@untitled]")
@@ -9137,7 +9120,7 @@ Save_Untitled(node,ask:=1){
 	}
 }
 Save(option=""){
-	sc:=csc(),Update({sc:sc.2357}),info:=Update("get"),Now:=A_Now
+	sc:=CSC(),Update({sc:sc.2357}),info:=Update("get"),Now:=A_Now
 	/*
 		Scan_Line()
 	*/
@@ -9189,7 +9172,7 @@ Save(option=""){
 	LineStatus.Save(),LineStatus.tv(),SaveGUI(),LastFiles()
 }
 SaveGUI(win:=1){
-	WinGet,max,MinMax,% hwnd([win])
+	WinGet,max,MinMax,% HWND([win])
 	info:=WinPos(win)
 	if(!top:=Settings.SSN("//gui/position[@window='" win "']"))
 		top:=Settings.Add("gui/position",{window:win},,1)
@@ -9244,9 +9227,9 @@ Scan_Line(text:=""){
 		*/
 		
 		/*
-			Text:=Update({get:Current.File}),Pos1:=InStr(Text,"`n",0,1,b.Line),NewText:=(SubStr(Text,1,Pos1) Chr(127) " " SubStr(Text,Pos1+1)),NewText:=ScanFile.RemoveComments(NewText,Current.Lang),Obj:=StrSplit(NewText,Chr(127)),AfterText1:=SubStr(Obj.2,1,InStr(Obj.2,"`n",0,1,2)-1),Document:=csc().2357
+			Text:=Update({get:Current.File}),Pos1:=InStr(Text,"`n",0,1,b.Line),NewText:=(SubStr(Text,1,Pos1) Chr(127) " " SubStr(Text,Pos1+1)),NewText:=ScanFile.RemoveComments(NewText,Current.Lang),Obj:=StrSplit(NewText,Chr(127)),AfterText1:=SubStr(Obj.2,1,InStr(Obj.2,"`n",0,1,2)-1),Document:=CSC().2357
 		*/
-		if(!IsObject(WordsObj:=v.WordsObj[(Document:=csc().2357)]))
+		if(!IsObject(WordsObj:=v.WordsObj[(Document:=CSC().2357)]))
 			WordsObj:=v.WordsObj[Document]:=[]
 		Wordz:=[]
 		for a,b in {AfterText:AfterText,AfterText1:AfterText1}
@@ -9366,10 +9349,10 @@ ScanFiles(Refresh:=0){
 	if(Visible)
 		Code_Explorer.Refresh_Code_Explorer()
 	Sleep,100
-	WinSetTitle(1,cexml.EA("//*[@sc='" csc().2357 "']"))
+	WinSetTitle(1,cexml.EA("//*[@sc='" CSC().2357 "']"))
 	if(v.Options.Auto_Expand_Includes)
 		SetTimer,AutoExpand,-200
-	v.Startup:=0,Words_In_Document(1),Code_Explorer.AutoCList(1),csc({last:1})
+	v.Startup:=0,Words_In_Document(1),Code_Explorer.AutoCList(1),CSC({last:1})
 }
 ScanParent(Text,b){
 	static SP:=new XML("SP")
@@ -9425,7 +9408,7 @@ Scintilla_Code_Lookup(){
 	GuiControl,1:-Redraw,SysListView321
 	LV_Delete()
 	for a,b in {1:"commands",2:"constants",3:"notifications"}{
-		ControlGet,check,Checked,,Button%a%,% hwnd([8])
+		ControlGet,check,Checked,,Button%a%,% HWND([8])
 		value:=b
 		if(Check)
 			break
@@ -9439,7 +9422,7 @@ Scintilla_Code_Lookup(){
 	GuiControl,1:+Redraw,SysListView321
 	return
 	Insert:
-	LV_GetText(code,LV_GetNext(),2),hwnd({rem:8}),sc:=csc(),sc.2003(sc.2008,[code]),npos:=sc.2008+StrLen(code),sc.2025(npos)
+	LV_GetText(code,LV_GetNext(),2),HWND({rem:8}),sc:=CSC(),sc.2003(sc.2008,[code]),npos:=sc.2008+StrLen(code),sc.2025(npos)
 	return
 	lookupud:
 	Gui,8:Default
@@ -9447,11 +9430,11 @@ Scintilla_Code_Lookup(){
 	return
 	8Close:
 	8Escape:
-	NewWin.SavePos(),hwnd({rem:8})
+	NewWin.SavePos(),HWND({rem:8})
 	return
 }
 Scintilla_Control(){
-	sc:=csc(),test:=MainWin.Gui.SN("//*[@type='Scintilla']"),list:="",v.jts:=[]
+	sc:=CSC(),test:=MainWin.Gui.SN("//*[@type='Scintilla']"),list:="",v.jts:=[]
 	while(ss:=test.item[A_Index-1],ea:=XML.EA(ss))
 		list.=ea.file ",",v.jts[ea.file]:=ea.hwnd
 	sc.2106(44),sc.2117(7,Trim(list,",")),sc.2106(32)
@@ -9471,9 +9454,9 @@ Scintilla(){
 ScrollWheel(){
 	scrollwheel:
 	if(A_ThisHotkey="WheelLeft")
-		csc().2168(-5)
+		CSC().2168(-5)
 	else
-		csc().2168(5)
+		CSC().2168(5)
 	return
 }
 Search_Label(){
@@ -9507,10 +9490,10 @@ SearchFor(b,Pos1){
 	}return {Text:SubStr(Text,Start,SavedPos-Start),SavedPos:SavedPos,Pos1:Pos1}
 }
 Select_Current_Word(){
-	sc:=csc(),sc.2160(sc.2266(sc.2008),sc.2267(sc.2008))
+	sc:=CSC(),sc.2160(sc.2266(sc.2008),sc.2267(sc.2008))
 }
 Select_Next_Duplicate(){
-	sc:=csc(),xx:=sc.2577(sc.2575())
+	sc:=CSC(),xx:=sc.2577(sc.2575())
 	for a,b in v.duplicateselect[sc.2357]{
 		if(xx<a){
 			sc.2573(a+b,a),sc.2169()
@@ -9518,15 +9501,15 @@ Select_Next_Duplicate(){
 }}}
 SelectAll(){
 	SelectAll:
-	ControlGetFocus,Focus,% hwnd([1])
-	ControlGet,hwnd,hwnd,,%Focus%,% hwnd([1])
+	ControlGetFocus,Focus,% HWND([1])
+	ControlGet,hwnd,hwnd,,%Focus%,% HWND([1])
 	if(v.Debug.SC=hwnd)
 		return v.Debug.2013
 	if(!InStr(Focus,"Scintilla")){
 		Send,^A
 		return
 	}
-	sc:=csc(),count:=Abs(sc.2008-sc.2009)
+	sc:=CSC(),count:=Abs(sc.2008-sc.2009)
 	if(!count)
 		sc.2013
 	if(!sc.2230(line:=sc.2166(sc.2008)))
@@ -9537,7 +9520,7 @@ SelectAll(){
 				sc.2160(a+b,a)
 		else
 			sc.2573(a+b,a)
-	}
+	}ShowOSD("Select All Ctrl+A")
 	return
 }
 SelectFile(FileName:="",Title:="New File",Ext:="",Options:="S16",Force:=0){
@@ -9550,13 +9533,13 @@ SelectFile(FileName:="",Title:="New File",Ext:="",Options:="S16",Force:=0){
 	FileName:=FileName?FileName:Dir "\" BackupFileName
 	if(!FileExist(Dir))
 		FileCreateDir,%Dir%
-	FileName:=DLG_FileSave(hwnd(1),,Title,FileName,,Force)
+	FileName:=DLG_FileSave(HWND(1),,Title,FileName,,Force)
 	if(ErrorLevel)
 		Exit
 	return FileName
 }
 SelectText(Item,Node:=0){
-	sc:=csc(),Node:=Item?Item:Node,FileNode:=GetFileNode(Node),ea:=XML.EA(Node),FNEA:=XML.EA(FileNode)
+	sc:=CSC(),Node:=Item?Item:Node,FileNode:=GetFileNode(Node),ea:=XML.EA(Node),FNEA:=XML.EA(FileNode)
 	if(TVC.Selection(1)!=SSN(FileNode,"@tv").text)
 		tv(SSN(FileNode,"@tv").text),Sleep(200)
 	Regex:=GetSearchRegex(v.OmniFind[FNEA.Lang][ea.Type].Regex,ea.Text),Text:=Update({Get:SSN(FileNode,"@file").text}),Pos:=1,FoundPos:=[]
@@ -9625,7 +9608,7 @@ SetPos(oea:=""){
 	static
 	if(IsObject(oea)){
 		if(oea.file&&oea.line!=""){
-			sc:=csc()
+			sc:=CSC()
 			tv(SSN(cexml.Find("//file/@file",oea.file),"@tv").text)
 			Sleep,100
 			sc.2160(sc.2128(oea.line),sc.2136(oea.line))
@@ -9638,16 +9621,16 @@ SetPos(oea:=""){
 			sc.2399
 			return
 		}else
-			sc:=csc()
+			sc:=CSC()
 		return
 	}
-	delay:=(WinActive("A")=hwnd(1))?1:200
+	delay:=(WinActive("A")=HWND(1))?1:200
 	if(delay=1)
 		Goto,spnext
 	SetTimer,spnext,-%delay%
 	return
 	spnext:
-	sc:=csc(),sc.2397(0),node:=cexml.SSN("//*[@sc='" sc.2357 "']"),file:=SSN(node,"@file").text,parent:=SSN(node,"ancestor::main/@file").text,posinfo:=positions.Find(positions.Find("//main/@file",parent),"descendant::file/@file",file),doc:=SSN(node,"@sc").text,ea:=XML.EA(posinfo),fold:=ea.fold
+	sc:=CSC(),sc.2397(0),node:=cexml.SSN("//*[@sc='" sc.2357 "']"),file:=SSN(node,"@file").text,parent:=SSN(node,"ancestor::main/@file").text,posinfo:=positions.Find(positions.Find("//main/@file",parent),"descendant::file/@file",file),doc:=SSN(node,"@sc").text,ea:=XML.EA(posinfo),fold:=ea.fold
 	SetTimer,fold,-1
 	return
 	fold:
@@ -9680,10 +9663,10 @@ SetScan(Line,Return:=0){
 SetStatus(text,part=""){
 	static widths:=[],width
 	if(IsObject(text)){
-		WinSet,Redraw,,% hwnd([1])
+		WinSet,Redraw,,% HWND([1])
 		ControlGetPos,,,,h,,% "ahk_id" v.statushwnd
 		v.status:=h,ea:=XML.EA(text)
-		return sc:=csc(),sc.2056(99,ea.font),sc.2055(99,ea.size),width:=sc.2276(99,"a")+1
+		return sc:=CSC(),sc.2056(99,ea.font),sc.2055(99,ea.size),width:=sc.2276(99,"a")+1
 	}
 	Gui,1:Default
 	widths[part]:=width*StrLen(text 1),SB_SetParts(widths.1,widths.2,widths.3),SB_SetText(text,part)
@@ -9702,7 +9685,7 @@ Class SettingsClass{
 	__New(Tab:=""){
 		for a,b in {HotkeyXML:new XML("hotkeys"),TempXML:new XML("temp"),SavedThemes:new XML("SavedThemes","Themes\SavedThemes.xml")}
 			SettingsClass[a]:=b
-		SettingsClass.Hotkeys:=[["Move Selected Item Up","^Up","MSIU"],["Move Selected Item Down","^Down","MSID"],["Move Checked Selected Menu","!M","MCTSM"],["Move Checked Items Up","!Up","MCIU"],["Move Checked Items Down","!Down","MCID"],["Insert Menu","!I","IM"],["Change Hotkey","Enter","CH"],["Insert Separator","!S","IS"],["Remove/Hide Menu Item","Delete","Delete"],["Clear Checks","!C","CC"],["Removed Checked Icons","^!I","RCI"],["Check All Child Menu Items","^A","CACMI"],["Random Icons","^!R","Random"]],Parent:=hwnd(1),SettingsClass.SavedThemes:=new XML("themes","Themes\SavedThemes.xml")
+		SettingsClass.Hotkeys:=[["Move Selected Item Up","^Up","MSIU"],["Move Selected Item Down","^Down","MSID"],["Move Checked Selected Menu","!M","MCTSM"],["Move Checked Items Up","!Up","MCIU"],["Move Checked Items Down","!Down","MCID"],["Insert Menu","!I","IM"],["Change Hotkey","Enter","CH"],["Insert Separator","!S","IS"],["Remove/Hide Menu Item","Delete","Delete"],["Clear Checks","!C","CC"],["Removed Checked Icons","^!I","RCI"],["Check All Child Menu Items","^A","CACMI"],["Random Icons","^!R","Random"]],Parent:=HWND(1),SettingsClass.SavedThemes:=new XML("themes","Themes\SavedThemes.xml")
 		if(!FileExist("Themes"))
 			FileCreateDir,Themes
 		if(!Settings.SSN("//autoadd"))
@@ -10319,13 +10302,13 @@ Setup(window,nodisable=""){
 		Gui,1:+Disabled
 	}else
 		Gui,+Owner1
-	WinGet,ExStyle,ExStyle,% hwnd([1])
+	WinGet,ExStyle,ExStyle,% HWND([1])
 	if(ExStyle&0x8)
 		Gui,%window%:+AlwaysOnTop
 	Gui,Color,%Background%,%Background%
 	Gui,Font,% "s" size " c" color " bold",%font%
 	Gui,%window%:Default
-	v.window[window]:=1,hwnd(window,hwnd)
+	v.window[window]:=1,HWND(window,hwnd)
 	return hwnd
 }
 SetupEnter(On:=0){
@@ -10337,15 +10320,15 @@ SetupEnter(On:=0){
 }
 SetWords(hyphen:=0){
 	if(hyphen=1)
-		csc().2077(0,"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ#-_1234567890")
+		CSC().2077(0,"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ#-_1234567890")
 	else if(hyphen=2)
-		csc().2077(0,"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ#-_1234567890*[];")
+		CSC().2077(0,"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ#-_1234567890*[];")
 	else
-		csc().2444
+		CSC().2444
 }
 Show_Class_Methods(object,search:=""){
 	static list
-	sc:=csc()
+	sc:=CSC()
 	if(object="this")
 		class:=GetCurrentClass(),Node:=SSN(Current(7),"descendant::*[@upper='" Upper(Class) "' and @type='Class']"),list:=SN(Node,"*[@type='Method']")
 	else if(class:=SSN((parent:=Current(7)),"descendant::*[@type='Instance' and @upper='" Upper(object) "']/@class").text)
@@ -10360,7 +10343,7 @@ Show_Class_Methods(object,search:=""){
 	return sc.2102?1:0
 }
 Show_Scintilla_Code_In_Line(){
-	Scintilla(),sc:=csc()
+	Scintilla(),sc:=CSC()
    	text:=sc.TextRange(sc.2128(sc.2166(sc.2008)),sc.2136(sc.2166(sc.2008))),pos:=1
 	while(RegExMatch(text,"O)(\d\d\d\d)",found,pos),pos:=found.pos(1)+found.len(1)){
 		codes:=scintilla.SN("//*[@code='" found.1 "']"),list.="Code : " found.1 " = "
@@ -10372,7 +10355,7 @@ Show_Scintilla_Code_In_Line(){
 		sc.2200(sc.2128(sc.2166(sc.2008)),Trim(list,"`n"))
 }
 ShowAutoComplete(){
-	sc:=csc(),CPos:=sc.2008,SetWords(1),start:=sc.2266(CPos,1),end:=sc.2267(CPos,1),Word:=sc.TextRange(start,CPos),SetWords(),Word:=LTrim(Word,"-")
+	sc:=CSC(),CPos:=sc.2008,SetWords(1),start:=sc.2266(CPos,1),end:=sc.2267(CPos,1),Word:=sc.TextRange(start,CPos),SetWords(),Word:=LTrim(Word,"-")
 	if((sc.2202&&!v.Options.Auto_Complete_While_Tips_Are_Visible)||(sc.2010(CPos)~="\b(13|1|11|3)\b"=1&&!v.Options.Auto_Complete_In_Quotes)){
 	}else{
 		Word:=RegExReplace(Word,"^\d*"),List:=Trim(Keywords.GetSuggestions((Language:=GetLanguage(sc)),FirstTwo:=SubStr(Word,1,2)))
@@ -10391,7 +10374,7 @@ ShowAutoComplete(){
 }
 ShowLabels(x:=0){
 	Code_Explorer.Scan(Current()),all:=cexml.SN("//main[@id='" Current(2).ID "']/descendant::info[@type='Function' or @type='Label']/@text")
-	sc:=csc(),sc.2634(1),dup:=[]
+	sc:=CSC(),sc.2634(1),dup:=[]
 	if(x!="nocomma")
 		Loop,% sc.2570
 			CPos:=sc.2585(A_Index-1),InsertMultiple(A_Index-1,CPos,",",CPos+1)
@@ -10448,11 +10431,11 @@ StripError(text,fn){
 }
 Switch_Focus(){
 	/*
-		ControlGetFocus,focus,% hwnd([1])
-		ControlGet,hwnd,hwnd,,%focus%,% hwnd([1])
+		ControlGetFocus,focus,% HWND([1])
+		ControlGet,hwnd,hwnd,,%focus%,% HWND([1])
 	*/
 	hwnd:=DllCall("GetFocus")
-	hwnd:=hwnd=MainWin.tnsc.sc?MainWin.tnsc.sc+0:hwnd+0,sc:=csc(),test:=MainWin.Gui.SN("//*[@type='Scintilla']"),list:="",v.jts:=[]
+	hwnd:=hwnd=MainWin.tnsc.sc?MainWin.tnsc.sc+0:hwnd+0,sc:=CSC(),test:=MainWin.Gui.SN("//*[@type='Scintilla']"),list:="",v.jts:=[]
 	if(hwnd!=MainWin.tnsc.sc)
 		list:="Tracked Notes,",v.jts["Tracked Notes"]:=MainWin.tnsc.sc
 	while(ss:=test.item[A_Index-1],ea:=XML.EA(ss)){
@@ -10474,7 +10457,7 @@ Switch_Focus(){
 	sc.2106(44),sc.2117(7,Trim(list,",")),sc.2106(32)
 }
 Tab_To_Next_Comma(){
-	sc:=csc()
+	sc:=CSC()
 	Loop,% sc.2570{
 		line:=sc.2166(start:=sc.2585(A_Index-1))
 		sc.2686(start,sc.2136(line))
@@ -10485,7 +10468,7 @@ Tab_To_Next_Comma(){
 	}
 }
 Tab_To_Previous_Comma(){
-	sc:=csc()
+	sc:=CSC()
 	Loop,% sc.2570{
 		line:=sc.2166(start:=sc.2585(A_Index-1))
 		sc.2686(start-1,sc.2167(line))
@@ -10504,11 +10487,11 @@ Tab_Width(){
 	return
 	23GuiEscape:
 	23GuiClose:
-	hwnd({rem:23})
+	HWND({rem:23})
 	return
 	tabwidth:
 	Gui,Submit,Nohide
-	tabwidth:=tabwidth?tabwidth:5,csc().2036(tabwidth),Settings.Add("tab").text:=tabwidth
+	tabwidth:=tabwidth?tabwidth:5,CSC().2036(tabwidth),Settings.Add("tab").text:=tabwidth
 	return
 }
 Test_Plugin(){
@@ -10544,7 +10527,7 @@ Theme(){
 	new SettingsClass("Theme")
 }
 Toggle_Comment_Line(){
-	sc:=csc(),sc.2078,PI:=PosInfo(),sl:=sc.2166(PI.Start),el:=sc.2166((End:=PI.End)),Single:=sl=el?1:0,Replace:=RegExReplace(Settings.Get("//comment",";"),"%a_space%"," "),Comment:=[],SelectionEnd:=PI.End,LineComment:=[],AllComment:=1,Len:=StrPut(Replace,"UTF-8")-1
+	sc:=CSC(),sc.2078,PI:=PosInfo(),sl:=sc.2166(PI.Start),el:=sc.2166((End:=PI.End)),Single:=sl=el?1:0,Replace:=RegExReplace(Settings.Get("//comment",";"),"%a_space%"," "),Comment:=[],SelectionEnd:=PI.End,LineComment:=[],AllComment:=1,Len:=StrPut(Replace,"UTF-8")-1
 	for a,b in StrSplit(Replace)
 		Comment.Push(Asc(b))
 	while((Line:=sl+(A_Index-1))<=el){
@@ -10570,7 +10553,7 @@ ToggleMenu(Label){
 	Menu,% pea.name (pea.hotkey?"`t" Convert_Hotkey(pea.hotkey):""),% (v.Options[label]?"Check":"Uncheck"),% ea.name (ea.hotkey?"`t" Convert_Hotkey(ea.Hotkey):"")
 }
 Toggle_Multiple_Line_Comment(){
-	sc:=csc(),TopStyle:=sc.2010(sc.2143),BottomStyle:=sc.2010(sc.2145),CommentStyle:=Keywords.GetXML(Current(3).ext).SSN("//Styles/multilinecomment/@style").text
+	sc:=CSC(),TopStyle:=sc.2010(sc.2143),BottomStyle:=sc.2010(sc.2145),CommentStyle:=Keywords.GetXML(Current(3).ext).SSN("//Styles/multilinecomment/@style").text
 	if(TopStyle=CommentStyle&&BottomStyle!=CommentStyle||BottomStyle=CommentStyle&&TopStyle!=CommentStyle)
 		return m("I am not exactly sure what you want to do.  Move the selection either inside or outside of a Multiple Line Comment")
 	topline:=sc.2166(sc.2143),bottomline:=sc.2166(sc.2145)
@@ -10630,7 +10613,7 @@ Toolbar_Editor(control){
 	Gui,1:+Disabled
 	oea:=XML.EA(control),OControl:=control,nw:=new GUIKeep("Toolbar_Editor"),width:=Settings.Get("//IconBrowser/Win[@win='Toolbar_Editor']/@w",300),tb:=ToolBar.keep[oea.toolbar]
 	nw.Add("ComboBox,gtesearch w460 vedit gTEFindTV,,w","ListView,xm w260 h200 gTESelect AltSubmit -Multi,Toolbars,h","TreeView,x+0 w200 h200 Checked AltSubmit,,wh","ListView,x+M200 yM w" width " h180 icon Section gSelectIcon AltSubmit,Icon,xh")
-	ControlGet,hwnd,hwnd,,SysListView322,% hwnd(["Toolbar_Editor"])
+	ControlGet,hwnd,hwnd,,SysListView322,% HWND(["Toolbar_Editor"])
 	new Icon_Browser(nw,hwnd,"Toolbar_Editor","xy",300,"Toolbar_Editor","Toolbar_Editor"),nw.Add("Button,xm gTEHighlight,Toolbar Selection Highlight Color,y","Button,x+M gNextChecked,&Next Button,y","Button,x+M gAddExternal,Add &External Program,y"),nw.show("Toolbar Editor"),total:="",cross:=[],Default("SysTreeView321","Toolbar_Editor"),all:=menus.SN("//main/descendant::*")
 	while(aa:=all.item[A_Index-1],ea:=XML.EA(aa)){
 		if(aa.HasChildNodes())
@@ -10776,13 +10759,13 @@ class Tracked_Notes{
 		}this.Populate()
 		return this
 	}GetPos(){
-		sc:=MainWin.tnsc,fold:=0,node:=this.node,node.RemoveAttribute("fold")
+		sc:=MainWin.tnsc,fold:=0,Node:=this.Node,Node.RemoveAttribute("fold")
 		for a,b in {start:sc.2008,end:sc.2009,scroll:sc.2152}
-			node.SetAttribute(a,b)
+			Node.SetAttribute(a,b)
 		while(sc.2618(fold)>=0,fold:=sc.2618(fold))
 			list.=fold ",",fold++
 		if(list)
-			node.SetAttribute("fold",list)
+			Node.SetAttribute("fold",list)
 	}Populate(){
 		TVC.Default(3),this.XML.SSN("//*[@tv='" TV_GetSelection() "']").SetAttribute("last",1),all:=this.XML.SN("//*"),TVC.Delete(3,0)
 		while(aa:=all.item[A_Index-1],ea:=XML.EA(aa)){
@@ -10798,57 +10781,63 @@ class Tracked_Notes{
 	}Set(file:=""){
 		TVC.Disable(3),project:=Current(2).file,file:=Current(3).file
 		if(master:=this.XML.Find("//main/@file",project)){
-			if(node:=this.XML.Find(master,"descendant::file/@file",file))
-				TVC.Modify(3,,SSN(node,"@tv").text,"Select Vis Focus"),this.node:=node
+			if(Node:=this.XML.Find(master,"descendant::file/@file",file))
+				TVC.Modify(3,,SSN(Node,"@tv").text,"Select Vis Focus"),this.Node:=Node
 			else
-				TVC.Modify(3,,SSN(master,"@tv").text,"Select Vis Focus"),this.node:=SSN(master,"global")
+				TVC.Modify(3,,SSN(master,"@tv").text,"Select Vis Focus"),this.Node:=SSN(master,"global")
 			this.SetText()
 		}else
-			node:=this.XML.SSN("//master"),TVC.Modify(3,,SSN(node,"@tv").text,"Select Vis Focus"),this.node:=node,this.SetText()
+			Node:=this.XML.SSN("//master"),TVC.Modify(3,,SSN(Node,"@tv").text,"Select Vis Focus"),this.Node:=Node,this.SetText()
 		TVC.Enable(3)
 	}SetText(){
-		static node
-		sc:=MainWin.tnsc,last:=csc().sc
-		if(this.node.XML!=node.XML&&this.node.XML){
-			Encode(RegExReplace(this.node.text,Chr(127),"`n"),txt),sc.2181(0,&txt)
-			ea:=XML.EA(this.node),sc.2160(Round(ea.start),Round(ea.end))
+		static Node
+		sc:=MainWin.tnsc,last:=CSC().sc
+		if(this.Node.XML!=Node.XML&&this.Node.XML){
+			Encode(RegExReplace(this.Node.text,Chr(127),"`n"),txt),sc.2181(0,&txt)
+			ea:=XML.EA(this.Node),sc.2160(Round(ea.start),Round(ea.end))
 			Sleep,10
 			for a,b in StrSplit(ea.fold,",")
 				sc.2237(b,0)
 			sc.2613(Round(ea.scroll))
 			MarginWidth(sc)
 		}
-		node:=this.node,csc({hwnd:last})
+		Node:=this.Node,CSC({hwnd:last})
 	}tn(){
 		tn:
+		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		;~ !!!!!!!!!!!!!!!!                       after fixing this                        !!!!!!!!!!!!!!!!!
+		;~ !!!!!!!!!!!!!!!! Alt+T or running does not always properly save the open files  !!!!!!!!!!!!!!!!!
+		;~ !!!!!!!!!!!!!!!!                        or positions :(                         !!!!!!!!!!!!!!!!!
+		;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		;#[Tracked Notes this needs fixed]
+		ToolTip,%A_GuiEvent% @ %A_TickCount% Class Tracked_Notes,0,0,4
 		if(A_GuiEvent="S"){
-			if(node:=TNotes.XML.SSN("//*[@tv='" A_EventInfo "']")){
-				TNotes.node:=node
-				if(node.NodeName!="master"){
-					if(tv:=SSN(cexml.Find("//file/@file",SSN(node,"@file").text),"@tv").text)
-						tv(tv)
+			if(Node:=TNotes.XML.SSN("//*[@tv='" A_EventInfo "']")){
+				TNotes.Node:=Node
+				if(Node.NodeName!="master"){
+					if(tv:=SSN(cexml.Find("//file/@file",SSN(Node,"@file").text),"@tv").text)
+						tv(tv),TNotes.SetText()
 					else
-						TNotes.node:=TNotes.node.NodeName="main"?SSN(TNotes.node,"global"):TNotes.node,TNotes.SetText()
-				}else
-					TNotes.SetText()
+						TNotes.Node:=TNotes.Node.NodeName="main"?SSN(TNotes.Node,"global"):TNotes.Node,TNotes.SetText()
+				}
 		}}
 		return
 	}Track(){
 		project:=Current(2).file,file:=Current(3).file,id:=0
-		if(node:=this.XML.Find("//*/@file",file))
-			return m("File already being tracked",node.xml,"","",file)
+		if(Node:=this.XML.Find("//*/@file",file))
+			return m("File already being tracked",Node.xml,"","",file)
 		if(!project||!file)
 			return
 		if(!master:=this.XML.Find("//main/@file",project))
 			master:=this.XML.Add("main",{file:project},,1),this.XML.Under(master,"global"),TVC.Add(3,cexml.Find("//file/@file",project,"@filename").text)
-		if(!node:=this.XML.Find(master,"descendant::file/@file",file))
-			node:=this.XML.Under(master,"file",{file:file})
-		if(!SSN(node,"@id"))
+		if(!Node:=this.XML.Find(master,"descendant::file/@file",file))
+			Node:=this.XML.Under(master,"file",{file:file})
+		if(!SSN(Node,"@id"))
 			while(this.XML.SSN("//*[@id='" ++id "']")){
-			}node.SetAttribute("id",id)
-		this.node:=node,this.Populate(),this.Set(file)
+			}Node.SetAttribute("id",id)
+		this.Node:=Node,this.Populate(),this.Set(file)
 	}Write(){
-		this.node.text:=RegExReplace(csc().GetUni(),"\R",Chr(127))
+		this.Node.text:=RegExReplace(CSC().GetUni(),"\R",Chr(127))
 	}
 }
 tv(tv*){
@@ -10856,7 +10845,7 @@ tv(tv*){
 		static fn,noredraw,tvbak,historysave
 	*/
 	static lasttv,LastExt:=[],Last
-	Default("SysTreeView321",1),ctv:=TV_GetSelection()
+	TVC.Default(1),ctv:=TV_GetSelection()
 	/*
 		Scan_Line()
 	*/
@@ -10868,17 +10857,17 @@ tv(tv*){
 		sel:=tv.1.1
 	lasttv:=sel
 	if(!tv.2.sc)
-		sc:=csc()
+		sc:=CSC()
 	else
-		sc:=csc({hwnd:tv.2.sc})
+		sc:=CSC({hwnd:tv.2.sc})
 	if(sc.sc=MainWin.tnsc.sc||sc.sc=v.debug.sc)
-		sc:=csc(1)
+		sc:=CSC(1)
 	if(sc.sc=MainWin.tnsc.sc)
-		sc:=csc({set:1})
+		sc:=CSC({set:1})
 	if(tv.1="Split")
 		sel:=Current(3).tv
 	if(sel){
-		sc:=csc()
+		sc:=CSC()
 		/*
 			sc.2112(0,".(")
 			sc.2105(0,".,")
@@ -10936,22 +10925,22 @@ tv(tv*){
 		pos:=tv.2,sc.2160(pos.start,pos.end),CenterSel()
 	else{
 		SetTimer,ScanWID,-200
-		Default("SysTreeView321"),TV_Modify(A_EventInfo,(TV_Get(A_EventInfo,"Expand")?"-":"") "Expand")
+		TVC.Default(1),TV_Modify(A_EventInfo,(TV_Get(A_EventInfo,"Expand")?"-":"") "Expand")
 		return
 	}
-	if(SplitPath(ea.file).ext="cxx"){
-		for a,b in ["fold","foldComment","foldCommentMultiline","foldSyntaxBased","foldCommentExplicit","foldExplicitAnywhere","foldPreprocessorAtElse","foldPreprocessor","foldCompact","foldAtElse",""]
-			sc.4004(b,["1"])
-		sc.4004("foldExplicitStart","//{")
-		sc.4004("foldExplicitEnd","//}")
-		sc.2056(11,"Consolas")
-		sc.2051(11,0xFFFFFF)
-		text=auto array bool break case char class complex ComplexInf ComplexNaN const continue default delete do double else enum export extern float for foreach Goto if Inf inline int long namespace NaN new NULL private public register restrict return short signed sizeof static string_t struct switch this typedef union unsigned using void volatile wchar_t while __declspec
-		/*
+	/*
+		if(SplitPath(ea.file).ext="cxx"){
+			for a,b in ["fold","foldComment","foldCommentMultiline","foldSyntaxBased","foldCommentExplicit","foldExplicitAnywhere","foldPreprocessorAtElse","foldPreprocessor","foldCompact","foldAtElse",""]
+				sc.4004(b,["1"])
+			sc.4004("foldExplicitStart","//{")
+			sc.4004("foldExplicitEnd","//}")
+			sc.2056(11,"Consolas")
+			sc.2051(11,0xFFFFFF)
+			text=auto array bool break case char class complex ComplexInf ComplexNaN const continue default delete do double else enum export extern float for foreach Goto if Inf inline int long namespace NaN new NULL private public register restrict return short signed sizeof static string_t struct switch this typedef union unsigned using void volatile wchar_t while __declspec
 			Loop,10
 				sc.4005(A_Index-1,text)
-		*/
-	}
+		}
+	*/
 	SetTimer,ScanWID,-200
 	sc.2400(),WinSetTitle(1,ea),DebugHighlight()
 	if(!v.startup)
@@ -10991,16 +10980,13 @@ TVIcons(x:=""){
 	TV_SetImageList(il)
 }
 TVState(x:=0){
-	if(x){
-		GuiControl,1:+gtv,SysTreeView321
-		GuiControl,1:+Redraw,SysTreeView321
-	}else{
-		GuiControl,1:+g,SysTreeView321
-		GuiControl,1:-Redraw,SysTreeView321
-	}
+	if(x)
+		TVC.Enable(1)
+	else
+		TVC.Disable(1)
 }
 UnderlineDuplicateWords(){
-	sc:=csc(),sc.2500(6),sc.2505(0,sc.2006)
+	sc:=CSC(),sc.2500(6),sc.2505(0,sc.2006)
 	if(sc.2507(6,sc.2008))
 		return
 	Word:=sc.GetWord(),Length:=StrPut(Word,"UTF-8")-1
@@ -11016,7 +11002,7 @@ UnderlineDuplicateWords(){
 			sc.2500(6),sc.2504(b,Length)
 }}
 Undo(){
-	csc().2176
+	CSC().2176
 }
 UnSaved(){
 	un:=cexml.SN("//main[@untitled]"),ts:=Settings.SSN("//template").text,file:=FileOpen("c:\windows\shellnew\template.ahk",0),td:=file.Read(file.length),file.Close(),template:=ts?ts:td
@@ -11025,7 +11011,7 @@ UnSaved(){
 		if(text=template)
 			Continue
 		if(m(ea.file,"This is an untitled document meaning there is no file created to the HDD/SSD yet.","Would you like to save it?","Contents:",SubStr(text,1,200) (StrLen(text)>200?"...":""),b,"btn:ync")="Yes"){
-			NewFile:=DLG_FileSave(hwnd(1),,"Save Untitled File")
+			NewFile:=DLG_FileSave(HWND(1),,"Save Untitled File")
 			if(ErrorLevel||NewFile="")
 				Continue
 			if(FileExist(NewFile)){
@@ -11061,9 +11047,9 @@ Update_Github_Info(){
 	return
 	36GuiEscape:
 	36GuiClose:
-	hwnd({rem:36})
-	if WinExist(hwnd([10]))
-		WinActivate,% hwnd([10])
+	HWND({rem:36})
+	if WinExist(HWND([10]))
+		WinActivate,% HWND([10])
 	return
 	gettoken:
 	Run,https://github.com/settings/applications
@@ -11077,7 +11063,7 @@ Update(Info){
 	if(Info.Delete)
 		return Update.Delete(Info.Delete),Updated.Delete(Info.Delete)
 	else if(Info.sc){
-		return Update[cexml.SSN("//*[@sc='" Info.sc "']/@file").text]:=csc().GetUNI()
+		return Update[cexml.SSN("//*[@sc='" Info.sc "']/@file").text]:=CSC().GetUNI()
 	}else if(Info.remove)
 		return Update.Delete(Info.remove),Updated.Delete(Info.remove)
 	else if(Info="Updated")
@@ -11132,7 +11118,7 @@ Upper(text){
 }
 UpPos(NoContext:=0){
 	static LastLine,LastPos,Multi
-	sc:=csc(),CPos:=sc.2008,EPos:=sc.2009,Line:=sc.2166(CPos),Length:=sc.2006
+	sc:=CSC(),CPos:=sc.2008,EPos:=sc.2009,Line:=sc.2166(CPos),Length:=sc.2006
 	if(v.track.Line)
 		if(v.track.Line!=Line||v.track.file!=Current(2).file)
 			v.track:=[]
@@ -11231,7 +11217,7 @@ VarBrowser(){
 	if(A_GuiEvent~="Normal|I"){
 		Default("SysListView321",98),LV_GetText(file,LV_GetNext(),2),LV_GetText(line,LV_GetNext(),3)
 		if(tv:=SSN(cexml.Find("//file/@file",file),"@tv").text){
-			tv(tv),sc:=csc()
+			tv(tv),sc:=CSC()
 			Sleep,40
 			SelectDebugLine(line-1)
 	}}
@@ -11289,17 +11275,17 @@ WinSetTitle(win:=1,Title:="AHK Studio",Open:=0){
 			v.NoCurrentEditFile:=1
 		else
 			v.NoCurrentEditFile:=0
-		WinSetTitle,% hwnd([win]),,% (open?"Include Open!  -  ":"") "AHK Studio - " (Current(3).edited?"*":"") (Title.dir "\" (v.Options.Hide_File_Extensions?Title.nne:Title.filename))
+		WinSetTitle,% HWND([win]),,% (open?"Include Open!  -  ":"") "AHK Studio - " (Current(3).edited?"*":"") (Title.dir "\" (v.Options.Hide_File_Extensions?Title.nne:Title.filename))
 	}else if(Title!="AHK Studio"){
-		WinSetTitle,% hwnd([win]),,%Title%
+		WinSetTitle,% HWND([win]),,%Title%
 	}else{
 		Info:=Current(3)
-		WinSetTitle,% hwnd([win]),,% (open?"Include Open!  -  ":"") "AHK Studio - " (Info.edited?"*":"") (Info.dir "\" (v.Options.Hide_File_Extensions?Info.nne:Info.filename))
+		WinSetTitle,% HWND([win]),,% (open?"Include Open!  -  ":"") "AHK Studio - " (Info.edited?"*":"") (Info.dir "\" (v.Options.Hide_File_Extensions?Info.nne:Info.filename))
 	}
 }
 Words_In_Document(NoDisplay:=0,Text:="",Remove:="",AllowLastWord:=0){
 	Current:=Current(3),Text:=Update({Get:Current.File}),Words:=Trim(RegExReplace(RegExReplace(RegExReplace(Text,"(\b\d+\b|\b(\w{1,2})\b)"),"x)([^\w])"," "),"\s{2,}"," "))
-	sc:=csc(),CurrentWord:=sc.GetWord()
+	sc:=CSC(),CurrentWord:=sc.GetWord()
 	if(Text~="i)" CurrentWord "\w+")
 		Words:=RegExReplace(Words,"\b" CurrentWord "\b")
 	Obj:=v.WordsObj[(Document:=Current.sc)]:=[]
@@ -11312,7 +11298,7 @@ Words_In_Document(NoDisplay:=0,Text:="",Remove:="",AllowLastWord:=0){
 	}
 }
 Wrap_Word_In_Quotes(){
-	sc:=csc(),sc.2078,CPos:=sc.2008,start:=sc.2266(sc.2008,1),end:=sc.2267(sc.2008,1),sc.2003(start,Chr(34)),sc.2003(end+1,Chr(34)),sc.2025(CPos+1),sc.2079
+	sc:=CSC(),sc.2078,CPos:=sc.2008,start:=sc.2266(sc.2008,1),end:=sc.2267(sc.2008,1),sc.2003(start,Chr(34)),sc.2003(end+1,Chr(34)),sc.2025(CPos+1),sc.2079
 }
 GetMainNode(File,Parent:=""){
 	if(Parent){
@@ -11344,7 +11330,7 @@ Regex_Replace_Selected_Dialog(){
 	static
 	Gui,Regex:Destroy
 	Gui,Regex:Default
-	sc:=csc(),Text:=sc.TextRange(sc.2585(0),sc.2587(0))
+	sc:=CSC(),Text:=sc.TextRange(sc.2585(0),sc.2587(0))
 	NewWin:=new GUIKeep("Regex"),NewWin.Add("Edit,vText w500,,w","ListView,w500 r5 AltSubmit gLVRegexReplace,Name|In|Out,wh","Edit,gGoRegEx w250 vIn,Regex String,y","Edit,x+0 gGoRegEx w250 vOut,Regex Replace,wy","Edit,xm w500 h200,,wy","Button,gReplaceRegexGo,&Replace Selected,y","Button,x+M gSaveReplaceRegex,&Save,y","Button,x+M gReplaceRegexDelete,&Delete,y")
 	GuiControl,Regex:,Edit1,%Text%
 	NewWin.Show("Regex Replace")
@@ -11399,7 +11385,7 @@ Regex_Replace_Selected_Dialog(){
 	return
 }
 Regex_Replace_Selected(){
-	sc:=csc()
+	sc:=CSC()
 	if(sc.2008=sc.2009)
 		return m("Please select some text first")
 	all:=Settings.SN("//ReplaceRegex/Replace/@name")
@@ -11459,7 +11445,7 @@ Create_Comment(){
 	;~ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	if(!CommentChar:=Settings.SSN("//comment").text)
 		CommentChar:=KeyWords.GetXML((Lang:=Current(3).Lang)).SSN("//Comments/@Single").text
-	NewWin:=new GuiKeep("Create_Comment"),sc:=csc(),IndentWidth:=Settings.Get("//tab",5)
+	NewWin:=new GuiKeep("Create_Comment"),sc:=CSC(),IndentWidth:=Settings.Get("//tab",5)
 	NewWin.Add("Text,,Comment","Edit,w500 h200 vComment -Wrap","Text,,Comment Width","Edit,w500 vWidth,100","Text,,Fill Character","Edit,w500 vFill,-","Button,gCreateComment,Create C&omment","Button,x+M gDeleteSelectedComment,&Replace Selected Comment"),NewWin.Show("Create Comment")
 	for a,b in Obj:=Settings.EA("//Create_Comment")
 		NewWin.SetValue(a,b)
@@ -11883,7 +11869,7 @@ Class Version_Tracker Extends ConvertStyle{
 		return
 		AddWinEscape:
 		AddWinClose:
-		hwnd({Rem:"AddWin"}),EditNode:=""
+		HWND({Rem:"AddWin"}),EditNode:=""
 		WinActivate,% NewWin.ID
 		return
 		AddWinDelete:
@@ -12500,7 +12486,7 @@ VersionDropFiles(FileList,Ctrl,x,y,Object){
 	}}Version_Tracker.Populate(1)
 }
 Create_Function_From_Selected(){
-	sc:=csc(),Start:=sc.2167((Line:=sc.2166(sc.2143))),End:=sc.2136(sc.2166(sc.2145)),Text:=sc.TextRange(Start,End)
+	sc:=CSC(),Start:=sc.2167((Line:=sc.2166(sc.2143))),End:=sc.2136(sc.2166(sc.2145)),Text:=sc.TextRange(Start,End)
 	if(Start=End){
 		m("Select some text first")
 		ExitApp
@@ -12519,11 +12505,11 @@ Create_Function_From_Selected(){
 	Total.="}`n"
 	Loop,%Add%
 		Total.="`t"
-	Encode(Total,return),csc().2170(0,&return),sc.2025(sc.2128(Line)+StrPut(Function,"UTF-8"))
+	Encode(Total,return),CSC().2170(0,&return),sc.2025(sc.2128(Line)+StrPut(Function,"UTF-8"))
 	SetTimer("CFFSFocus","-100")
 	return
 	CFFSFocus:
-	WinActivate,% hwnd([1])
+	WinActivate,% HWND([1])
 	sc.2400()
 	return
 }
