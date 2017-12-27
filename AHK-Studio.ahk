@@ -7,13 +7,13 @@ SetControlDelay,-1
 SetWinDelay,-1
 DetectHiddenWindows,On
 CoordMode,ToolTip,Screen
-global v:=[],MainWin,Settings:=new XML("settings","lib\Settings.xml"),Positions:=new XML("positions","lib\Positions.xml"),cexml:=new XML("cexml","Lib\CEXML.xml"),History:=new XML("HistoryXML"),VVersion,scintilla,TVC:=new EasyView(),RCMXML:=new XML("RCM","lib\RCM.xml"),TNotes,DebugWin,Selection:=new SelectionClass(),Menus,Vault:=new XML("vault","lib\Vault.xml")
+global v:=[],MainWin,Settings:=new XML("settings",A_ScriptDir "\lib\Settings.xml"),Positions:=new XML("positions",A_ScriptDir "\lib\Positions.xml"),cexml:=new XML("cexml",A_ScriptDir "\Lib\CEXML.xml"),History:=new XML("HistoryXML"),VVersion,scintilla,TVC:=new EasyView(),RCMXML:=new XML("RCM",A_ScriptDir "\lib\RCM.xml"),TNotes,DebugWin,Selection:=new SelectionClass(),Menus,Vault:=new XML("vault",A_ScriptDir "\lib\Vault.xml")
 v.WordsObj:=[],v.Tick:=A_TickCount,new ScanFile(),History("Startup")
 if(!settings[]){
 	Run,lib\Settings.xml
 	m("Oh boy...check the settings file to see what's up.")
 }v.LineEdited:=[],v.LinesEdited:=[],v.RunObject,ComObjError(0),new Keywords(),FileCheck(%True%)
-Options("startup"),Menus:=new XML("menus","Lib\Menus.xml"),Gui(),DefaultRCM(),CheckLayout(),Allowed(),SetTimer("RemoveXMLBackups",-1000),CheckOpen()
+Options("startup"),Menus:=new XML("menus",A_ScriptDir "\Lib\Menus.xml"),Gui(),DefaultRCM(),CheckLayout(),Allowed(),SetTimer("RemoveXMLBackups",-1000),CheckOpen()
 SetTimer("SplashDestroy",-1000)
 return
 SplashDestroy:
@@ -104,7 +104,7 @@ WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
 TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE 
 OR PERFORMANCE OF THIS SOFTWARE. 
 )
-	Setup(11),Hotkeys(11,{"Esc":"11Close"}), Version:="1.005.01"
+	Setup(11),Hotkeys(11,{"Esc":"11Close"}), Version:="1.005.02"
 	Gui,Margin,0,0
 	sc:=new s(11,{pos:"x0 y0 w700 h500"}),CSC({hwnd:sc})
 	Gui,Add,Button,gdonate,Donate
@@ -580,7 +580,7 @@ Check_For_Update(startup:=""){
 		if(Auto.Reset>A_Now)
 			return
 	}
-	Version:="1.005.01"
+	Version:="1.005.02"
 	NewWin:=new GUIKeep("CFU"),NewWin.Add("Edit,w400 h400 ReadOnly,No New Version,wh"
 								  ,"Radio,gSwitchBranch Checked vmaster,Master Branch,y"
 								  ,"Radio,x+M gSwitchBranch vBeta,Beta Branch,y"
@@ -1163,7 +1163,7 @@ Class MainWindowClass{
 		Gui,Add,StatusBar,hwndsb,Testing
 		Gui,Color,0xAAAAAA,0xAAAAAA
 		ControlGetPos,,,,h,,ahk_id%sb%
-		this.Gui:=new XML("gui","lib\Gui.xml"),this.main:=main,this.ID:="ahk_id" main,this.sb:=h,OnMessage(0xA0,MainWindowClass.ChangePointer),OnMessage(0xA1,MainWindowClass.Resize),OnMessage(0x232,MainWindowClass.ExitSizeMove),OnMessage(0x0211,MainWindowClass.EnterOff),OnMessage(0x0212,MainWindowClass.EnterOn),OnMessage(6,"Activate")
+		this.Gui:=new XML("gui",A_ScriptDir "\lib\Gui.xml"),this.main:=main,this.ID:="ahk_id" main,this.sb:=h,OnMessage(0xA0,MainWindowClass.ChangePointer),OnMessage(0xA1,MainWindowClass.Resize),OnMessage(0x232,MainWindowClass.ExitSizeMove),OnMessage(0x0211,MainWindowClass.EnterOff),OnMessage(0x0212,MainWindowClass.EnterOn),OnMessage(6,"Activate")
 		for a,b in {all:32646,ns:32645,ew:32644}
 			this["curs" a]:=DllCall("LoadCursor",int,0,int,b,uptr)
 		Gui,Margin,0,0
@@ -1832,7 +1832,7 @@ Class PluginClass{
 	}m(Info*){
 		m(Info*)
 	}MoveStudio(){
-		Version:="1.005.01"
+		Version:="1.005.02"
 		SplitPath,A_ScriptFullPath,,,,name
 		FileMove,%A_ScriptFullPath%,%name%-%version%.ahk,1
 	}Open(Info){
@@ -1877,7 +1877,7 @@ Class PluginClass{
 	}Update(filename,text){
 		Update({file:filename,text:text})
 	}Version(){
-		Version:="1.005.01"
+		Version:="1.005.02"
 		return version
 	}
 }
@@ -1961,8 +1961,8 @@ class ScanFile{
 		}this.ScanText(Node)
 	}ScanText(Node){
 		static ScanTextXML:=new XML("ScanFile")
-		Oea:=ea:=XML.EA(Node),this.RemoveComments(ea),Before:=ScanFile.Before,OText:=ScanFile.CurrentText,Node:=cexml.SSN("//file[@id='" ea.ID "']"),all:=SN(Node,"info")
-		while(aa:=all.item[A_Index-1])
+		Oea:=ea:=XML.EA(Node),this.RemoveComments(ea),Before:=ScanFile.Before,OText:=ScanFile.CurrentText,All:=SN(Node,"info")
+		while(aa:=All.item[A_Index-1])
 			aa.ParentNode.RemoveChild(aa)
 		Omni:=GetOmniOrder(ea.Ext),ScanTextXML.XML.LoadXML("<ScanFile/>"),No:=ScanTextXML.SSN("//*")
 		for c,d in Omni{
@@ -2024,23 +2024,7 @@ class ScanFile{
 										Atts[q]:=r
 									Spam:=cexml.Under(Node,"info",Atts),No.AppendChild(Spam.CloneNode(0))
 						}}}LastPos:=Pos
-		}}}}
-		/*
-			if(!ScanFile.Once&&SSN(No,"//info")){
-				m(No.xml)
-				ScanFile.Once:=1
-			}
-		*/
-		/*
-			for a,b in {Breakpoint:"OUm`n)(\s+|^);\*\[(?<Text>.*)\]",Bookmark:"OUm`n)(\s+|^);#\[(?<Text>.*)\]"}{
-				LastPos:=Pos:=1
-				while(RegExMatch(Text,b,Found,Pos),Pos:=Found.Pos(1)+Found.Len("Text")){
-					Spam:=cexml.Under(Node,"info",{type:a,text:Found.Text,upper:Upper(Found.Text)}),No.AppendChild(Spam.CloneNode(0))
-					if(Pos=LastPos),LastPos:=Pos
-						Break
-			}}
-		*/
-}}
+}}}}}}
 class s{
 	static ctrl:=[],main:=[],temp:=[],hidden:=[]
 	__New(window,info){
@@ -2329,8 +2313,8 @@ Class XML{
 	__Get(x=""){
 		return this.XML.xml
 	}__New(Param*){
-		if(!FileExist(A_ScriptDir "\Lib"))
-			FileCreateDir,%A_ScriptDir%\Lib
+		if(!FileExist(A_WorkingDir "\Lib"))
+			FileCreateDir,%A_WorkingDir%\Lib
 		Root:=Param.1,File:=Param.2,File:=File?File:Root ".xml",New:=ComObjCreate("MSXML2.DOMDocument"),New.SetProperty("SelectionLanguage","XPath"),this.XML:=New,this.File:=File,XML.Keep[Root]:=this
 		/*
 			if(Param.3)
@@ -2416,6 +2400,7 @@ Class XML{
 		if(x.1=1)
 			this.Transform()
 		FileName:=this.File?this.File:x.1.1,Text:=this.OriginalText
+		FileAppend,%FileName%`n,Lib\SavedXMLPaths.txt
 		if(!this[])
 			return m("Error saving the " this.File " XML.  Please get in touch with maestrith if this happens often")
 		if(InStr(this.File,"CEXML.xml")){
@@ -2441,16 +2426,11 @@ Class XML{
 		}
 		if(text!=this[]){
 			SplitPath,FileName,,,,NNE
-			File:=((Folder:="Lib\XML Backup\"  NNE) "\" NNE " " A_Now ".xml")
+			File:=((Folder:=A_ScriptDir "\Lib\XML Backup\"  NNE) "\" NNE " " A_Now ".xml")
 			if(!FileExist(Folder))
 				FileCreateDir,%Folder%
 			FileMove,%FileName%,%File%
 			File:=FileOpen(FileName,"W","UTF-8"),File.Write(this[]),File.Length(File.Position),File.Close()
-			/*
-				if(InStr(this.File,"cexml.xml")){
-					m("Yep, lets see if this works",File,FileName)
-				}
-			*/
 		}else{
 			/*
 				if(InStr(this.File,"Settings.xml")||InStr(this.File,"CEXML.xml")){
@@ -3854,6 +3834,7 @@ DLG_FileSave(HWND:=0,DefaultFilter=0,DialogTitle="Select file to open",DefaultFi
 		FileName.=Chr(Char)
 	SplitPath,FileName,,Dir
 	Settings.Add("SaveAs").Text:=Dir
+	WinActivate,% hwnd([1])
 	return FileName
 }
 Dlg_Font(Node,DefaultNode:="//theme/default",window="",Attribute:="color",Effects=1){
@@ -4328,7 +4309,7 @@ Exit(ExitApp:=0){
 		Node.SetAttribute("max",1)
 	else
 		Node.RemoveAttribute("max")
-	list:=TNotes.XML.SN("//master|//main|//global|//file"),temp:=new XML("Tracked_Notes","lib\Tracked Notes.xml")
+	list:=TNotes.XML.SN("//master|//main|//global|//file"),temp:=new XML("Tracked_Notes",A_ScriptDir "\lib\Tracked Notes.xml")
 	while(ll:=list.item[A_Index-1]),ea:=XML.EA(ll){
 		if(!ll.text&&temp.SSN("//*[@id='" ea.id "']").text){
 			FileCopy,lib\Tracked Notes.xml,lib\Tracked Notes%A_Now%.xml
@@ -4368,6 +4349,11 @@ Exit(ExitApp:=0){
 		cexml.Save(1)
 	}if(ExitApp)
 		Reload
+	/*
+		for a,b in v.Fylz
+			Total.=a "`n"
+		m("All Fylz in Exit","Some code in Class XML.ahk to clean up",Total)
+	*/
 	ExitApp
 	return
 }
@@ -5539,7 +5525,7 @@ Gui(){
 		ControlGetFocus,focus,% HWND([1])
 		ControlGet,hwnd,hwnd,,%focus%,% HWND([1])
 	*/
-	TNotes.Set(),MarginWidth(),VVersion:=new XML("versions",(FileExist("lib\Github.xml")?"lib\Github.xml":"lib\Versions.xml"))
+	TNotes.Set(),MarginWidth(),VVersion:=new XML("versions",(FileExist("lib\Github.xml")?A_ScriptDir "\lib\Github.xml":A_ScriptDir "\lib\Versions.xml"))
 	SetTimer,ScanWID,-10
 	SetupEnter(1),CSC({Set:1})
 	MainWin.Size(1)
@@ -5573,7 +5559,7 @@ class GUIKeep{
 			Gui,%win%:Margin,0,0
 		Gui,%win%:Font,% "c" info.color " s" info.size,% info.font
 		Gui,%win%:Color,% info.Background,% info.Background
-		this.XML:=new XML("gui"),this.XML.Add("window",{name:win}),this.gui:=[],this.sc:=[],this.hwnd:=hwnd,this.con:=[],this.AHKID:=this.id:="ahk_id" hwnd,this.win:=win,this.Table[win]:=this,this.var:=[],this.classcount:=[],this.Table[HWND]:=this
+		this.XML:=new XML("gui",A_ScriptDir "\Lib\Gui.xml"),this.XML.Add("window",{name:win}),this.gui:=[],this.sc:=[],this.hwnd:=hwnd,this.con:=[],this.AHKID:=this.id:="ahk_id" hwnd,this.win:=win,this.Table[win]:=this,this.var:=[],this.classcount:=[],this.Table[HWND]:=this
 		for a,b in {border:A_OSVersion~="^10"?3:0,caption:DllCall("GetSystemMetrics",int,4,"int")}
 			this[a]:=b
 		Gui,%win%:+LabelGUIKeep.
@@ -6076,18 +6062,18 @@ Jump_To_First_Available(){
 }
 Class Keywords{
 	__New(){
-		static Dates:={ahk:"20171217134307",xml:"20171201061116",html:"20171201061319"},BaseURL:="https://raw.githubusercontent.com/maestrith/AHK-Studio/master/lib/Languages/",BaseDir:="Lib\Languages\"
+		static Dates:={ahk:"20171217134307",xml:"20171201061116",html:"20171201061319"},BaseURL:="https://raw.githubusercontent.com/maestrith/AHK-Studio/master/lib/Languages/",BaseDir:=A_ScriptDir "\Lib\Languages\"
 		for a,b in StrSplit("IndentRegex,KeywordList,Suggestions,Languages,Comments,OmniOrder,CodeExplorerExempt,Words,FirstChar,Delimiter,ReplaceFirst,SearchTrigger",",")
 			Keywords[b]:=[]
 		if(!IsObject(v.OmniFind))
 			v.OmniFind:=[],v.OmniFindText2:=[]
-		if(!FileExist("Lib\Languages"))
-			FileCreateDir,Lib\Languages
+		if(!FileExist(A_ScriptDir "\Lib\Languages"))
+			FileCreateDir,%A_ScriptDir%\Lib\Languages
 		FileList:=[]
 		for a,b in Dates
 			FileList[BaseDir a ".xml"]:=1
-		Loop,Files,Lib\Languages\*.xml
-			FileList[A_LoopFileFullPath]:=1
+		Loop,Files,%A_ScriptDir%\Lib\Languages\*.xml
+			FileList[A_LoopFileLongPath]:=1
 		for a in FileList
 		{
 			SplitPath,a,,,,NNE
@@ -6662,6 +6648,7 @@ MoveSelectedWord(add){
 m(x*){
 	static list:={btn:{oc:1,ari:2,ync:3,yn:4,rc:5,ctc:6},ico:{"x":16,"?":32,"!":48,"i":64}},msg:=[]
 	list.title:="AHK Studio",list.def:=0,list.time:=0,value:=0,txt:=""
+	WinGetTitle,Title,A
 	for a,b in x
 		obj:=StrSplit(b,":"),(vv:=List[obj.1,obj.2])?(value+=vv):(list[obj.1]!="")?(List[obj.1]:=obj.2):txt.=b "`n"
 	msg:={option:value+262144+(list.def?(list.def-1)*256:0),title:list.title,time:list.time,txt:txt}
@@ -6670,6 +6657,7 @@ m(x*){
 	for a,b in {OK:value?"OK":"",Yes:"YES",No:"NO",Cancel:"CANCEL",Retry:"RETRY"}
 		IfMsgBox,%a%
 			return b
+	WinActivate,%Title%
 }
 t(x*){
 	for a,b in x{
@@ -7336,7 +7324,7 @@ Notify(csc*){
 		}else if(fn.Code=2014){
 			if(fn.listtype=1){
 				if(!IsObject(scintilla))
-					scintilla:=new xml("scintilla","lib\scintilla.xml")
+					scintilla:=new xml("scintilla",A_ScriptDir "\lib\scintilla.xml")
 				command:=fn.Text,info:=scintilla.SSN("//commands/item[@name='" command "']"),ea:=XML.EA(info),Start:=sc.2266(sc.2008,1),end:=sc.2267(sc.2008,1),syn:=ea.syntax?ea.Code "()":ea.Code,sc.2160(Start,end),sc.2170(0,[syn])
 				if(ea.syntax)
 					sc.2025(sc.2008-1),sc.2200(Start,ea.Code ea.syntax)
@@ -8597,12 +8585,7 @@ RefreshThemes(RefreshColor:=0){
 		SetStatus(Statusbar)
 	else
 		SetStatus(Settings.SSN("//theme/default"))
-	ea:=Settings.EA("//theme/default")
-	default:=ea.Clone()
-	tf:=v.Options.Top_Find
-	cea:=Settings.EA("//theme/find")
-	bcolor:=(cea.tb!=""&&tf)?cea.tb:(cea.bb!=""&&!tf)?cea.bb:ea.Background
-	fcolor:=(cea.tf!=""&&tf)?cea.tf:(cea.bf!=""&&!tf)?cea.bf:ea.Color
+	ea:=Settings.EA("//theme/default"),default:=ea.Clone(),tf:=v.Options.Top_Find,cea:=Settings.EA("//theme/find"),bcolor:=(cea.tb!=""&&tf)?cea.tb:(cea.bb!=""&&!tf)?cea.bb:ea.Background,fcolor:=(cea.tf!=""&&tf)?cea.tf:(cea.bf!=""&&!tf)?cea.bf:ea.Color
 	for win,b in HWND("get"){
 		WinGet,ControlList,ControlList,% "ahk_id" b
 		Gui,%win%:Default
@@ -9447,9 +9430,8 @@ Scintilla(){
 		Sleep,500
 		SplashTextOff
 	}
-	if(!IsObject(scintilla)){
-		Scintilla:=new XML("scintilla","lib\scintilla.xml")
-	}
+	if(!IsObject(scintilla))
+		Scintilla:=new XML("scintilla",A_ScriptDir "\lib\scintilla.xml")
 }
 ScrollWheel(){
 	scrollwheel:
@@ -9683,9 +9665,9 @@ SetTimers(Timers*){
 Class SettingsClass{
 	static pos:=[],Controls:=[],Sizes:=[],Node:=[],Types:=[],scc:=[],Current:=[],DefaultStyle:={"default":1,"inlinecomment":1,"numbers":1,"punctuation":1,"multilinecomment":1,"completequote":1,"incompletequote":1,"backtick":1,"linenumbers":1,"indentguide":1,"hex":1,"hexerror":1}
 	__New(Tab:=""){
-		for a,b in {HotkeyXML:new XML("hotkeys"),TempXML:new XML("temp"),SavedThemes:new XML("SavedThemes","Themes\SavedThemes.xml")}
+		for a,b in {HotkeyXML:new XML("hotkeys"),TempXML:new XML("temp"),SavedThemes:new XML("SavedThemes",A_ScriptDir "\Themes\SavedThemes.xml")}
 			SettingsClass[a]:=b
-		SettingsClass.Hotkeys:=[["Move Selected Item Up","^Up","MSIU"],["Move Selected Item Down","^Down","MSID"],["Move Checked Selected Menu","!M","MCTSM"],["Move Checked Items Up","!Up","MCIU"],["Move Checked Items Down","!Down","MCID"],["Insert Menu","!I","IM"],["Change Hotkey","Enter","CH"],["Insert Separator","!S","IS"],["Remove/Hide Menu Item","Delete","Delete"],["Clear Checks","!C","CC"],["Removed Checked Icons","^!I","RCI"],["Check All Child Menu Items","^A","CACMI"],["Random Icons","^!R","Random"]],Parent:=HWND(1),SettingsClass.SavedThemes:=new XML("themes","Themes\SavedThemes.xml")
+		SettingsClass.Hotkeys:=[["Move Selected Item Up","^Up","MSIU"],["Move Selected Item Down","^Down","MSID"],["Move Checked Selected Menu","!M","MCTSM"],["Move Checked Items Up","!Up","MCIU"],["Move Checked Items Down","!Down","MCID"],["Insert Menu","!I","IM"],["Change Hotkey","Enter","CH"],["Insert Separator","!S","IS"],["Remove/Hide Menu Item","Delete","Delete"],["Clear Checks","!C","CC"],["Removed Checked Icons","^!I","RCI"],["Check All Child Menu Items","^A","CACMI"],["Random Icons","^!R","Random"]],Parent:=HWND(1),SettingsClass.SavedThemes:=new XML("themes",A_ScriptDir "\Themes\SavedThemes.xml")
 		if(!FileExist("Themes"))
 			FileCreateDir,Themes
 		if(!Settings.SSN("//autoadd"))
@@ -10498,6 +10480,7 @@ Test_Plugin(){
 	Exit(1)
 }
 Testing(){
+	return New_Plugin()
 	if(A_UserName!="maest")
 		return m("Testing")
 	return m("I'm sleepy.")
@@ -10748,7 +10731,7 @@ Toolbar_Editor(control){
 class Tracked_Notes{
 	keep:=[]
 	__New(){
-		this.XML:=new XML("Tracked_Notes","lib\Tracked Notes.XML")
+		this.XML:=new XML("Tracked_Notes",A_ScriptDir "\lib\Tracked Notes.XML")
 		if(!this.XML.SSN("//master"))
 			this.XML.Under(this.XML.Add("master",{file:"Global Notes",id:1}),"global")
 		list:=this.XML.SN("//Tracked_Notes/descendant::*[not(@id)]")
@@ -12512,6 +12495,13 @@ Create_Function_From_Selected(){
 	WinActivate,% HWND([1])
 	sc.2400()
 	return
+}
+New_Plugin(){
+	PluginName:=InputBox(HWND(1),"New Plugin Name","This will be the FileName and also the Default Menu name")
+	if(FileExist((File:=A_ScriptDir "\Plugins\" PluginName ".ahk")))
+		return m("File Already Exists.")
+	FileAppend,% "#SingleInstance,Force`n;menu " PluginName "`n;Your Plugin Code`nExitApp "";Always Exit Your App",%File%
+	Open(File,1)
 }
 DebugWindow(Text,Clear:=0,LineBreak:=0,Sleep:=0,AutoHide:=0,MsgBox:=0){
 	x:=ComObjActive("{DBD5A90A-A85C-11E4-B0C7-43449580656B}"),x.DebugWindow(Text,Clear,LineBreak,Sleep,AutoHide,MsgBox)
