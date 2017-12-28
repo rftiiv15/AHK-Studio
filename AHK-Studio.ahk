@@ -11024,7 +11024,7 @@ Update_Github_Info(){
 	UpdateGithubInfo:
 	Gui,36:Submit,NoHide
 	if !hub:=Settings.SSN("//github")
-		hub:=Settings.Add({path:"github"})
+		hub:=Settings.Add("github")
 	for a,b in {owner:owner,email:email,name:name,token:token}
 		hub.SetAttribute(a,b)
 	return
