@@ -7937,10 +7937,14 @@ Options(x:=0){
 		RefreshThemes()
 }
 ShowOSD(show){
-	static List:=new XML("OSD"),top,Win:="OSD"
+	static List:=new XML("OSD"),top,Win:="OSD",MenuXML
 	if(!v.Options.OSD)
 		return
-	if(!HWND(Win)){
+	if(!IsObject(MenuXML)){
+		if(!FileExist(A_ScriptDir "\Lib\Base Menu.xml"))
+			URLDownloadToFile,https://raw.githubusercontent.com/maestrith/AHK-Studio/master/lib/menus.xml,%A_ScriptDir%\Lib\Base Menu.xml
+		MenuXML:=new XML("menus",A_ScriptDir "\Lib\Base Menu.xml")
+	}if(!HWND(Win)){
 		rem:=List.SSN("//list"),rem.ParentNode.RemoveChild(rem)
 		Gui,Win:Destroy
 		Gui,Win:Default
@@ -7965,7 +7969,7 @@ ShowOSD(show){
 	LV_Delete()
 	all:=List.SN("//item")
 	while(aa:=all.item[A_Index-1],ea:=XML.EA(aa))
-		LV_Add("",ea.name " " Convert_Hotkey(Menus.SSN("//*[@clean='" Clean(ea.Name) "']/@hotkey").text),ea.count)
+		LV_Add("",ea.name " " Convert_Hotkey(MenuXML.SSN("//*[@clean='" Clean(ea.Name) "']/@hotkey").text),ea.count)
 	Loop,2
 		LV_ModifyCol(A_Index,"AutoHDR")
 	SetTimer,KillOSD,-2000
@@ -7982,6 +7986,8 @@ Paste(){
 	}sc:=CSC(),Line:=sc.2166(sc.2008),sc.2078(),sc.2179(),MarginWidth(sc),Edited(),RegExReplace(Clipboard,"\n",,Count)
 	Loop,% Count+1
 		LineStatus.Add(Line+(A_Index-1),2)
+	sc.2079
+	sc.2078
 	if(v.Options.Full_Auto_Indentation&&Current(3).Lang="ahk")
 		FixIndentArea()
 	sc.2079
