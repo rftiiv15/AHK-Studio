@@ -3957,9 +3957,9 @@ Duplicates(){
 DynaRun(Script,Wait:=true,name:="Untitled"){
 	static exec,started,filename
 	filename:=name,MainWin.Size(),exec.Terminate()
-	if(!InStr(Script,"m(x*){"))
+	if(Script~="i)m(.*)\{"=0)
 		Script.="`n" "m(x*){`nfor a,b in x`nlist.=b Chr(10)`nMsgBox,,AHK Studio,% list`n}"
-	if(!InStr(Script,"t(x*){"))
+	if(Script~="i)t(.*)\{"=0)
 		Script.="`n" "t(x*){`nfor a,b in x`nlist.=b Chr(10)`nToolTip,% list`n}"
 	shell:=ComObjCreate("WScript.Shell"),exec:=shell.Exec("AutoHotkey.exe /ErrorStdOut *"),exec.StdIn.Write(Script),exec.StdIn.Close(),started:=A_Now
 	SetTimer,CheckForError,120
