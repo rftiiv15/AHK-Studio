@@ -301,7 +301,7 @@ AutoMenu(){
 }
 Backspace(sub:=1){
 	ControlGetFocus,focus,A
-	Send:=sub?"Backspace":"Delete",sc:=CSC(),Start:=sc.2166(sc.2008)
+	Send:=sub?"Backspace":"Delete",sc:=CSC(),Start:=sc.2166(sc.2008),SetTimer("UpPos","-100")
 	if(!v.LineEdited[Start])
 		SetScan(Start)
 	if(!InStr(focus,"Scintilla")){
@@ -311,13 +311,13 @@ Backspace(sub:=1){
 		Send,{%Send%}
 		LineStatus.DelayAdd(sc.2166(sc.2008),1),Update({sc:sc.2357})
 		if(!Current(3).Edited)
-			return Edited(),UpPos()
+			return Edited()
 		return Edited()
 	}if(sc.2570=1){
 		CPos:=(opos:=sc.2585(0))-sub,chr:=Chr(sc.2007(CPos))
 		if(chr~="\(|\)|\[|\]|\x22|<|>|'|\{|\}"=0){
 			Send,{%Send%}
-			return Edited(),UpPos(),Update({sc:sc.2357})
+			return Edited(),Update({sc:sc.2357})
 	}}if(sc.2102)
 		sc.2101
 	if(sc.2102){
@@ -325,7 +325,7 @@ Backspace(sub:=1){
 			Send,{Backspace}
 		else
 			sc.2101
-		return Edited(),UpPos(),Update({sc:sc.2357})
+		return Edited(),Update({sc:sc.2357})
 	}sc.2078
 	Loop,% sc.2570{
 		index:=A_Index-1,CPos:=sc.2585(index)-sub,chr:=Chr(cc:=sc.2007(CPos)),style:=sc.2010(CPos),pos:=sc.2585(index),line:=sc.2166(CPos)
