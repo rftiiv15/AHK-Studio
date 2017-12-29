@@ -3,6 +3,7 @@
 	<main>
 		<menu name="&amp;File" clean="File" top="1">
 			<menu name="&amp;New" hotkey="^N" clean="New"></menu>
+			<menu name="Scratch Pad" hotkey="^N" clean="Scratch_Pad"></menu>
 			<menu name="&amp;Open" clean="Open" hotkey="^O"></menu>
 			<menu name="Open Fol&amp;der" clean="Open_Folder" hotkey="^!D"></menu>
 			<menu clean="Close" name="&amp;Close"></menu>
